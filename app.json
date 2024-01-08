@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "BarON",
+    "slug": "BarON",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "BarON"
+}
