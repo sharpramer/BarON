@@ -2,7 +2,7 @@ import React, {useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native";
 
 export default function PaginaLogin({navigation}) {
-    const [opLoginAluno, setOpLoginAluno] = useState(true)
+    const [opLogin, setOpLogin] = useState("Aluno")
     const [codAluno, setCodAluno] = useState('')
     const [passeAluno, setPasseAluno] = useState('')
     const [codFuncionario, setCodFuncionario] = useState('')
@@ -10,22 +10,23 @@ export default function PaginaLogin({navigation}) {
     
     return(
       <View style={estilos.loginConteiner}>
-        <View style={estilos.opLoginConteiner}>
+        {/* Conteiner opção aluno/funcionário */}
+        <View style={estilos.opLoginConteiner}> 
           <TouchableHighlight 
-            style={estilos.btnOpLogin}
-            onPress={() => {setOpLoginAluno(true)}}
+            style={[estilos.btnOpLogin, {backgroundColor: opLogin === 'Aluno' ? 'blue' : 'white' }]}
+            onPress={() => {setOpLogin("Aluno")}}
           >
             <Text>Aluno</Text>
           </TouchableHighlight>
           <TouchableHighlight 
-            style={estilos.btnOpLogin}
-            onPress={() => {setOpLoginAluno(false)}}
+            style={[estilos.btnOpLogin, {backgroundColor: opLogin === 'Funcionario' ? 'blue' : 'white' }]}
+            onPress={() => {setOpLogin("Funcionario")}}
           >
             <Text>Funcionário</Text>
           </TouchableHighlight>
         </View>
         {/* Conteiner login Aluno */}
-        { opLoginAluno ?
+        { opLogin ?
           <View>
             {/* Caixa de texto Codigo aluno */}
             <TextInput
@@ -88,8 +89,10 @@ const estilos = StyleSheet.create({
     },
   
     btnOpLogin:{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
       padding: 10,
-      backgroundColor:'white',
     },
   
     txt:{
@@ -100,6 +103,6 @@ const estilos = StyleSheet.create({
     },
 
     btnLogin:{
-        backgroundColor: '#900'
+      backgroundColor: '#900'
     }
 });  
