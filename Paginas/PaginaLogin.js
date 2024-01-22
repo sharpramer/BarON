@@ -14,12 +14,17 @@ export default function PaginaLogin({navigation}) {
         <View style={estilos.opLoginConteiner}> 
           <TouchableHighlight 
             style={[estilos.btnOpLogin, {backgroundColor: opLogin === 'Aluno' ? 'blue' : 'white' }]}
-            onPress={() => {setOpLogin("Aluno")}}
+            onPress={() => {
+              setOpLogin("Aluno")
+            }}
           >
             <Text>Aluno</Text>
           </TouchableHighlight>
           <TouchableHighlight 
-            style={[estilos.btnOpLogin, {backgroundColor: opLogin === 'Funcionario' ? 'blue' : 'white' }]}
+            style={[
+              estilos.btnOpLogin, 
+              {backgroundColor: opLogin === 'Funcionario' ? 'blue' : 'white' }
+            ]}
             onPress={() => {setOpLogin("Funcionario")}}
           >
             <Text>Funcionário</Text>
@@ -30,20 +35,31 @@ export default function PaginaLogin({navigation}) {
           <View>
             {/* Caixa de texto Codigo aluno */}
             <TextInput
-              style={estilos.txt}
+              style={
+                /* Estilo caixa de texto código aluno*/
+                estilos.txt
+              } 
               onChangeText={(texto) => {setCodAluno(texto)}}
               value={codAluno}
             />
-            {/* Caixa de texto Passe aluno */}
+            {/* Caixa de texto passe aluno */}
             <TextInput            
-              style={estilos.txt}
+              style={
+                /* Estilo caixa de texto passe aluno*/
+                estilos.txt
+              }
               onChangeText={(texto) => {setPasseAluno(texto)}}
               value={passeAluno}
             />
             {/* Botão login aluno */}
             <TouchableHighlight
               style={estilos.btnLogin}
-              onPress={() => {navigation.navigate('PaginaInicialAluno')}}
+              onPress={() => {
+                if (codAluno === '' || passeAluno === '')
+                  alert('Favor preencher todos os campos')
+                else
+                  navigation.navigate('PaginaInicialAluno')
+              }}
             >
               <Text>Login</Text>
             </TouchableHighlight>
@@ -65,7 +81,12 @@ export default function PaginaLogin({navigation}) {
             {/* Botão login funcionário */}
             <TouchableHighlight
               style={estilos.btnLogin}
-              onPress={() => {navigation.navigate('PaginaInicialFuncionario')}}
+              onPress={() => {
+                if (codFuncionario === '' || passeFuncionario === '')
+                  alert('Favor preencher todos os campos')
+                else
+                  navigation.navigate('PaginaInicialFuncionario')
+              }}
             >
               <Text>Login</Text>
             </TouchableHighlight>
