@@ -1,10 +1,39 @@
-import React, {useState} from "react"
-import { StyleSheet, View, TouchableHighlight, TextInput, Text, Image} from "react-native";
+import React from "react";
+import { View, Text } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-export default function PaginaInicialAluno({navigation}) {
-    return(
-      <View>
-        <Text>Ínicio Aluno</Text>
-      </View>
-    )
+const Separador = createBottomTabNavigator();
+
+function PaginaInicio() {
+  return (
+    <View>
+      <Text>Início</Text>
+    </View>
+  );
+}
+
+function PaginaSaldo() {
+  return (
+    <View>
+      <Text>Saldo</Text>
+    </View>
+  );
+}
+
+function PaginaDefinicoes() {
+  return (
+    <View>
+      <Text>Definições</Text>
+    </View>
+  );
+}
+
+export default function PaginaInicialAluno() {
+  return (
+    <Separador.Navigator>
+      <Separador.Screen name="Saldo" component={PaginaSaldo} />
+      <Separador.Screen name="Inicio" component={PaginaInicio} />
+      <Separador.Screen name="Definicoes" component={PaginaDefinicoes} />
+    </Separador.Navigator>
+  );
 }
