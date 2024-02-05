@@ -20,7 +20,7 @@ export default function App() {
         <Navegador.Screen
           name='PaginaInicialAluno'
           component={ PaginaInicialAluno }
-          options={ { title:'Início' } }
+          options={ { title:'Jose' } }
         />
         <Navegador.Screen
           name='PaginaInicialFuncionario'
