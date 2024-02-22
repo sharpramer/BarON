@@ -17,7 +17,7 @@ function Tabela({ dados }){
         <Text style={estilos.linhaTexto}>Pedido</Text>
         <Text style={estilos.linhaTexto}>Data</Text>
         <Text style={estilos.linhaTexto}>Hora</Text>
-        <Text style={estilos.linhaTexto}>Status</Text>
+        <Text style={estilos.linhaTexto}>Estado</Text>
         <Text style={estilos.linhaTexto}>Valor</Text>
       </View>
       <FlatList
@@ -50,7 +50,6 @@ export default function PaginaInicio() {
 const estilos = StyleSheet.create({
   linha:{
     flexDirection: 'row',
-    padding: 5
   },
 
   linhaTexto:{
