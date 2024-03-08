@@ -120,7 +120,7 @@ const estilos = StyleSheet.create({
     backgroundColor: 'black'
   },
 
-  opLoginConteiner:{
+  opLoginConteiner:{ // Estilo do conteiner com as opçoes de login
     flexDirection: 'row',
     justifyContent: 'center',
     color: 'white',

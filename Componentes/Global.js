@@ -3,11 +3,13 @@ export default class Aluno{
     static dataNascimento = ''
     static numero = ''
     static email = ''
+    static passe = ''
 }
 
 export class Funcionario{
     static nome = ''
     static dataNascimento = ''
-    static numFuncionario = ''
+    static numero = ''
     static email = ''
+    static passe = ''
 }

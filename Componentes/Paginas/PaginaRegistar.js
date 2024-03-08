@@ -4,18 +4,20 @@ import Aluno, { Funcionario } from "../Global";
 
 export default class PaginaRegistar extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       opRegistar: 'Aluno',
       nomeAluno: '',
       dataNascimentoAluno: '',
       numAluno: '',
       emailAluno: '',
+      passeAluno: '',
       nomeFuncionario: '',
       dataNascimentoFuncionario: '',
       numFuncionario: '',
-      emailFuncionario: ''
-    };
+      emailFuncionario: '',
+      passeFuncionario: '',
+    }
   }
 
   render() {
@@ -30,11 +32,12 @@ export default class PaginaRegistar extends Component {
               }
             ]}
             onPress={() => {
-              this.setState({ opRegistar: "Aluno" });
+              this.setState({ opRegistar: "Aluno" })
             }}
           >
             <Text>Aluno</Text>
           </TouchableHighlight>
+
           {/* Botão opção de registar funcionário */}
           <TouchableHighlight
             style={[
@@ -45,6 +48,7 @@ export default class PaginaRegistar extends Component {
           >
             <Text>Funcionário</Text>
           </TouchableHighlight>
+          
         </View>
 
         {this.state.opRegistar === 'Aluno' ?
@@ -80,11 +84,22 @@ export default class PaginaRegistar extends Component {
             <TextInput
               style={estilos.txt}
               onChangeText={txtEmail => {
-                this.setState({ emailAluno: txtEmail });
+                this.setState({ emailAluno: txtEmail })
               }}
               value={this.state.emailAluno}
             />
 
+            {/* Caixa de texto passe do aluno */}
+            <TextInput
+              style={estilos.txt}
+              onChangeText={txtPasse => {
+                this.setState({ passeAluno: txtPasse })
+                
+              }}
+              value={this.state.passeAluno}
+            />
+
+            {/* Botão registar aluno */}
             <TouchableHighlight
               style={{backgroundColor: 'green'}}
               onPress={ () => {
@@ -95,6 +110,8 @@ export default class PaginaRegistar extends Component {
                   Aluno.dataNascimento = this.state.dataNascimentoAluno
                   Aluno.numero = this.state.numAluno
                   Aluno.email = this.state.emailAluno
+                  Aluno.passe = this.state.passeAluno
+                  
                 }
               }}
             >
@@ -134,26 +151,32 @@ export default class PaginaRegistar extends Component {
             <TextInput
               style={estilos.txt}
               onChangeText={txtEmail => {
-                this.setState({ emailFuncionario: txtEmail });
+                this.setState({ emailFuncionario: txtEmail })
               }}
               value={this.state.emailFuncionario}
+            />
+            
+            {/* Caixa de texto passe do aluno */}
+            <TextInput
+              style={estilos.txt}
+              onChangeText={txtPasse => {
+                this.setState({ passeFuncionario: txtPasse })
+              }}
+              value={this.state.passeFuncionario}
             />
 
             {/* Botão registar funcionário */}
             <TouchableHighlight
               style={{backgroundColor: 'green'}}
               onPress={ () => {
-                if (this.state.nomeFuncionario === '' || this.state.dataNascimentoFuncionario === '' || this.state.numFuncionario === '' || this.state.emailFuncionario === '')
+                if (this.state.nomeFuncionario === '' || this.state.dataNascimentoFuncionario === '' || this.state.numFuncionario === '' || this.state.emailFuncionario === '' || this.state.passeFuncionario === '')
                   alert('Favor preencher todos os campos')
                 else {
                   Funcionario.nome = this.state.nomeFuncionario
-                  console.log(Funcionario.nome)
                   Funcionario.dataNascimento = this.state.dataNascimentoFuncionario
-                  console.log(Funcionario.dataNascimento)
                   Funcionario.numero = this.state.numFuncionario
-                  console.log(Funcionario.numero)
                   Funcionario.email = this.state.emailFuncionario
-                  console.log(Funcionario.email)
+                  Funcionario.passe = this.state.passeFuncionario
                 }
               }}
             >
@@ -162,7 +185,7 @@ export default class PaginaRegistar extends Component {
           </View>
         }
       </View>
-    );
+    )
   }
 }
 

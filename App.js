@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import PaginaLogin from "./Paginas/PaginaLogin";
-import PaginaRegistar from './Paginas/PaginaRegistar';
-import PaginaInicialAluno from "./Paginas/PaginaInicialAluno";
-import PaginaInicialFuncionario from "./Paginas/PaginaInicialFuncionario";
+import PaginaLogin from "./Componentes/Paginas/PaginaLogin";
+import PaginaRegistar from './Componentes/Paginas/PaginaRegistar';
+import PaginaInicialAluno from "./Componentes/Paginas/PaginaInicialAluno";
+import PaginaInicialFuncionario from "./Componentes/Paginas/PaginaInicialFuncionario";
 
 const Navegador = createStackNavigator()
 
