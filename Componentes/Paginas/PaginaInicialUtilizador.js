@@ -6,7 +6,7 @@ import PaginaSaldo from "./PaginaSaldo";
 
 const Separador = createBottomTabNavigator();
 
-export default function PaginaInicialAluno() {
+export default function PaginaInicialUtilizador() {
   return (
     <Separador.Navigator initialRouteName='Inicio'>
       <Separador.Screen name="Saldo" component={PaginaSaldo} options={{title: 'Saldo'}}/>

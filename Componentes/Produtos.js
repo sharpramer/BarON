@@ -45,7 +45,7 @@ export default function Produtos() {
                         }}
                         style={estilos.fecharBotao}
                     >
-                        <Text style={estilos.buttonText}>Close</Text>
+                        <Text style={estilos.buttonText}>Fechar</Text>
                     </TouchableHighlight>
                 </View>
             </Modal>

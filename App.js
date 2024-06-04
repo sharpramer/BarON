@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import PaginaLogin from "./Componentes/Paginas/PaginaLogin";
 import PaginaRegistar from './Componentes/Paginas/PaginaRegistar';
-import PaginaInicialAluno from "./Componentes/Paginas/PaginaInicialAluno";
+import PaginaInicialUtilizador from "./Componentes/Paginas/PaginaInicialUtilizador";
 import PaginaInicialFuncionario from "./Componentes/Paginas/PaginaInicialFuncionario";
 
 const Navegador = createStackNavigator()
@@ -23,8 +23,8 @@ export default function App() {
         />
 
         <Navegador.Screen
-          name='PaginaInicialAluno'
-          component={ PaginaInicialAluno }
+          name='PaginaInicialUtilizador'
+          component={ PaginaInicialUtilizador }
         />
 
         <Navegador.Screen

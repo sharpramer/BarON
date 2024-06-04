@@ -2,28 +2,28 @@ import React, {useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native";
 
 export default function PaginaLogin({navigation}) {
-  const [opLogin, setOpLogin] = useState("Aluno")
-  const [codAluno, setCodAluno] = useState('')
-  const [passeAluno, setPasseAluno] = useState('')
+  const [opLogin, setOpLogin] = useState("Utilizador")
+  const [codUtilizador, setCodUtilizador] = useState('')
+  const [passeUtilizador, setPasseUtilizador] = useState('')
   const [codFuncionario, setCodFuncionario] = useState('')
   const [passeFuncionario, setPasseFuncionario] = useState('')
   
   return(
-    <View style={estilos.loginConteiner}>
-      {/* Conteiner opção de login aluno/funcionário */}
+    <View style={estilos.conteiner}>
+      {/* Conteiner opção de login utilizador/funcionário */}
       <View style={estilos.opLoginConteiner}> 
-        {/* Botão opção de login aluno */}
+        {/* Botão opção de login utilizador */}
         <TouchableHighlight 
           style={[
             estilos.btnOpLogin, {
-              backgroundColor: opLogin === 'Aluno' ? 'blue' : 'white' 
+              backgroundColor: opLogin === 'Utilizador' ? 'blue' : 'white' 
             }
           ]}
           onPress={() => {
-            setOpLogin("Aluno")
+            setOpLogin("Utilizador")
           }}
         >
-          <Text>Aluno</Text>
+          <Text>Utilizador</Text>
         </TouchableHighlight>
         {/* Botão opção de login funcionário */}
         <TouchableHighlight 
@@ -37,35 +37,35 @@ export default function PaginaLogin({navigation}) {
         </TouchableHighlight>
       </View>
 
-      {/* Conteiner login Aluno */}
-      { opLogin === 'Aluno' ?
-        <View>
-          {/* Caixa de texto Codigo aluno */}
+      {/* Conteiner login utilizador */}
+      { opLogin === 'Utilizador' ?
+        <View style={estilos.loginConteiner}>
+          {/* Caixa de texto Codigo utilizador */}
           <TextInput
             style={
-              /* Estilo caixa de texto código aluno*/
-              estilos.txt
-            } 
-            onChangeText={(texto) => {setCodAluno(texto)}}
-            value={codAluno}
-          />
-          {/* Caixa de texto passe aluno */}
-          <TextInput            
-            style={
-              /* Estilo caixa de texto passe aluno*/
+              /* Estilo caixa de texto código utilizador*/
               estilos.txt
             }
-            onChangeText={(texto) => {setPasseAluno(texto)}}
-            value={passeAluno}
+            onChangeText={(texto) => {setCodUtilizador(texto)}}
+            value={codUtilizador}
           />
-          {/* Botão login aluno */}
+          {/* Caixa de texto passe utilizador */}
+          <TextInput            
+            style={
+              /* Estilo caixa de texto passe utilizador*/
+              estilos.txt
+            }
+            onChangeText={(texto) => {setPasseUtilizador(texto)}}
+            value={passeUtilizador}
+          />
+          {/* Botão login utilizador */}
           <TouchableHighlight
             style={estilos.btnLogin}
             onPress={() => {
-              if (codAluno === '' || passeAluno === '')
+              if (codUtilizador === '' || passeUtilizador === '')
                 alert('Favor preencher todos os campos')
               else
-                navigation.navigate('PaginaInicialAluno')
+                navigation.navigate('PaginaInicialUtilizador')
             }}
           >
             <Text>Login</Text>
@@ -101,7 +101,7 @@ export default function PaginaLogin({navigation}) {
           </TouchableHighlight>
         </View>
       }
-      <View style={{flex: 1, justifyContent: 'flex-end' }}>
+      <View>
         <TouchableHighlight
           style={{backgroundColor: 'purple'}}
           onPress={() => {navigation.navigate('PaginaRegistar')}}
@@ -114,10 +114,10 @@ export default function PaginaLogin({navigation}) {
 }
 
 const estilos = StyleSheet.create({
-  loginConteiner:{
+  conteiner:{ // Estilo do aplicativo
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
 
   opLoginConteiner:{ // Estilo do conteiner com as opçoes de login
@@ -126,7 +126,11 @@ const estilos = StyleSheet.create({
     color: 'white',
   },
 
-  btnOpLogin:{
+  loginConteiner:{ // Estilo do conteiner login
+
+  },
+
+  btnOpLogin:{ // Estilo botões com as opções de login
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
