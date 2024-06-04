@@ -1,3 +1,4 @@
+import Checkbox from 'expo-checkbox';
 import React, {useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native";
 
@@ -5,8 +6,10 @@ export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
   const [codUtilizador, setCodUtilizador] = useState('')
   const [passeUtilizador, setPasseUtilizador] = useState('')
+  const [guardarPasseUtilizador, setGuardarPasseUtilizador] = useState(false)
   const [codFuncionario, setCodFuncionario] = useState('')
   const [passeFuncionario, setPasseFuncionario] = useState('')
+  const [mostrarPasse, setMostrarPasse] = useState(true)
   
   return(
     <View style={estilos.conteiner}>
@@ -67,6 +70,25 @@ export default function PaginaLogin({navigation}) {
           />
           
           <View style={estilos.separadorTxt}></View>
+
+          <View style={estilos.conteinerCheckbox}> 
+            {/* Conteiner Checkbox */} 
+            <Checkbox // Checkbox guardar passe
+              style={estilos.chb}
+              value={guardarPasseUtilizador}
+              onValueChange={setGuardarPasseUtilizador}
+              color={guardarPasseUtilizador ? "black" : undefined}
+            />
+            <Text style={{color: "white"}}>Memorizar passe</Text>
+
+            <Checkbox // Checkbox mostrar passe
+              style={estilos.chb}
+              value={mostrarPasse}
+              onValueChange={setMostrarPasse}
+              color={mostrarPasse ? "black" : undefined}
+            />
+            <Text style={{color: "white"}}>Mostrar passe</Text>
+          </View>
 
           {/* Botão login utilizador */}
           <TouchableHighlight
@@ -163,21 +185,32 @@ const estilos = StyleSheet.create({
 
   separadorTxt:{
     width: 120,
+    marginBottom: 15,
     backgroundColor: "#0f73d1",
     borderWidth: 3,
     borderColor: "#0f73d1",
     borderRadius: 5
   },
 
+  conteinerCheckbox:{
+    flexDirection:"row",
+  },
+
+  chb:{
+    marginRight: 8,
+    marginLeft: 14
+  },
+
   btnLogin:{
-    marginTop: 20,
+    marginTop: 15,
     width: 70, 
     backgroundColor: '#11a7ed',
     padding: 7,
     borderRadius: 9
   },
-  
+
   txtBtnLogin:{
     textAlign: "center",
-  }
+  },
+
 });  
