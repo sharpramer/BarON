@@ -16,7 +16,7 @@ export default function PaginaLogin({navigation}) {
         <TouchableHighlight 
           style={[
             estilos.btnOpLogin, {
-              backgroundColor: opLogin === 'Utilizador' ? 'blue' : 'white' 
+              backgroundColor: opLogin === 'Utilizador' ? '#0f73d1' : 'white' 
             }
           ]}
           onPress={() => {
@@ -29,7 +29,7 @@ export default function PaginaLogin({navigation}) {
         <TouchableHighlight 
           style={[
             estilos.btnOpLogin, 
-            {backgroundColor: opLogin === 'Funcionario' ? 'blue' : 'white' }
+            {backgroundColor: opLogin === 'Funcionario' ? '#0f73d1' : 'white' }
           ]}
           onPress={() => {setOpLogin("Funcionario")}}
         >
@@ -47,8 +47,13 @@ export default function PaginaLogin({navigation}) {
               estilos.txt
             }
             onChangeText={(texto) => {setCodUtilizador(texto)}}
+            placeholder="Código ou email"
+            placeholderTextColor={"white"}
             value={codUtilizador}
           />
+          
+          <View style={estilos.separadorTxt}></View>
+
           {/* Caixa de texto passe utilizador */}
           <TextInput            
             style={
@@ -56,8 +61,13 @@ export default function PaginaLogin({navigation}) {
               estilos.txt
             }
             onChangeText={(texto) => {setPasseUtilizador(texto)}}
+            placeholder="Palavra-Passe"
+            placeholderTextColor={"white"}
             value={passeUtilizador}
           />
+          
+          <View style={estilos.separadorTxt}></View>
+
           {/* Botão login utilizador */}
           <TouchableHighlight
             style={estilos.btnLogin}
@@ -68,24 +78,32 @@ export default function PaginaLogin({navigation}) {
                 navigation.navigate('PaginaInicialUtilizador')
             }}
           >
-            <Text>Login</Text>
+            <Text style={estilos.txtBtnLogin}>Login</Text>
           </TouchableHighlight>
         </View> :
 
-        <View>
+        <View style={estilos.loginConteiner}>
           {/* Caixa de texto Codigo funcionário */}
           <TextInput
             style={estilos.txt}
             onChangeText={(texto) => {setCodFuncionario(texto)}}
+            placeholder="Código ou email"
+            placeholderTextColor={"white"}
             value={codFuncionario}
           />
+
+          <View style={estilos.separadorTxt}></View>
           
           {/* Caixa de texto Passe funcionário */}
           <TextInput            
             style={estilos.txt}
             onChangeText={(texto) => {setPasseFuncionario(texto)}}
+            placeholder="Palavra-Passe"
+            placeholderTextColor={"white"}
             value={passeFuncionario}
           />
+          
+          <View style={estilos.separadorTxt}></View>
 
           {/* Botão login funcionário */}
           <TouchableHighlight
@@ -97,7 +115,7 @@ export default function PaginaLogin({navigation}) {
                 navigation.navigate('PaginaInicialFuncionario')
             }}
           >
-            <Text>Login</Text>
+            <Text style={estilos.txtBtnLogin}>Login</Text>
           </TouchableHighlight>
         </View>
       }
@@ -117,7 +135,7 @@ const estilos = StyleSheet.create({
   conteiner:{ // Estilo do aplicativo
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: "#2b2b2b",
   },
 
   opLoginConteiner:{ // Estilo do conteiner com as opçoes de login
@@ -127,7 +145,9 @@ const estilos = StyleSheet.create({
   },
 
   loginConteiner:{ // Estilo do conteiner login
-
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   btnOpLogin:{ // Estilo botões com as opções de login
@@ -138,13 +158,26 @@ const estilos = StyleSheet.create({
   },
 
   txt:{
-    backgroundColor: 'green', 
     color: 'white',
-    borderWidth: 2,
-    borderColor:'#900',
+  },
+
+  separadorTxt:{
+    width: 120,
+    backgroundColor: "#0f73d1",
+    borderWidth: 3,
+    borderColor: "#0f73d1",
+    borderRadius: 5
   },
 
   btnLogin:{
-    backgroundColor: '#900'
+    marginTop: 20,
+    width: 70, 
+    backgroundColor: '#11a7ed',
+    padding: 7,
+    borderRadius: 9
+  },
+  
+  txtBtnLogin:{
+    textAlign: "center",
   }
 });  
