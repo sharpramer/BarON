@@ -9,7 +9,8 @@ export default function PaginaLogin({navigation}) {
   const [guardarPasseUtilizador, setGuardarPasseUtilizador] = useState(false)
   const [codFuncionario, setCodFuncionario] = useState('')
   const [passeFuncionario, setPasseFuncionario] = useState('')
-  const [mostrarPasse, setMostrarPasse] = useState(true)
+  const [guardarPasseFuncionario, setGuardarPasseFuncionario] = useState(false)
+  const [mostrarPasse, setMostrarPasse] = useState(false)
   
   return(
     <View style={estilos.conteiner}>
@@ -45,10 +46,7 @@ export default function PaginaLogin({navigation}) {
         <View style={estilos.loginConteiner}>
           {/* Caixa de texto Codigo utilizador */}
           <TextInput
-            style={
-              /* Estilo caixa de texto código utilizador*/
-              estilos.txt
-            }
+            style={estilos.txt}
             onChangeText={(texto) => {setCodUtilizador(texto)}}
             placeholder="Código ou email"
             placeholderTextColor={"white"}
@@ -59,13 +57,11 @@ export default function PaginaLogin({navigation}) {
 
           {/* Caixa de texto passe utilizador */}
           <TextInput            
-            style={
-              /* Estilo caixa de texto passe utilizador*/
-              estilos.txt
-            }
+            style={estilos.txt}
             onChangeText={(texto) => {setPasseUtilizador(texto)}}
             placeholder="Palavra-Passe"
             placeholderTextColor={"white"}
+            secureTextEntry={!mostrarPasse} 
             value={passeUtilizador}
           />
           
@@ -76,7 +72,7 @@ export default function PaginaLogin({navigation}) {
             <Checkbox // Checkbox guardar passe
               style={estilos.chb}
               value={guardarPasseUtilizador}
-              onValueChange={setGuardarPasseUtilizador}
+              onValueChange={() => {setGuardarPasseUtilizador(prevGuardarPasse => !prevGuardarPasse, console.log(`Guardar passe: ${guardarPasseUtilizador}`))}}
               color={guardarPasseUtilizador ? "black" : undefined}
             />
             <Text style={{color: "white"}}>Memorizar passe</Text>
@@ -84,7 +80,7 @@ export default function PaginaLogin({navigation}) {
             <Checkbox // Checkbox mostrar passe
               style={estilos.chb}
               value={mostrarPasse}
-              onValueChange={setMostrarPasse}
+              onValueChange={() => {setMostrarPasse(prevMostrarPasse => !prevMostrarPasse, console.log(`Mostrar passe ${mostrarPasse}`))}}
               color={mostrarPasse ? "black" : undefined}
             />
             <Text style={{color: "white"}}>Mostrar passe</Text>
@@ -122,10 +118,30 @@ export default function PaginaLogin({navigation}) {
             onChangeText={(texto) => {setPasseFuncionario(texto)}}
             placeholder="Palavra-Passe"
             placeholderTextColor={"white"}
+            secureTextEntry={!mostrarPasse}
             value={passeFuncionario}
           />
           
           <View style={estilos.separadorTxt}></View>
+
+          <View style={estilos.conteinerCheckbox}>
+            {/* Conteiner Checkbox */}
+              <Checkbox
+                style={estilos.chb}
+                value={guardarPasseFuncionario}
+                onValueChange={() => setGuardarPasseFuncionario(prevGuardarPasse => !prevGuardarPasse)}
+                color={guardarPasseFuncionario ? "black" : undefined}
+              />
+              <Text style={{color: "white"}}>Memorizar passe</Text>
+
+              <Checkbox
+                style={estilos.chb}
+                value={mostrarPasse}
+                onValueChange={() => setMostrarPasse(prevMostrarPasse => !prevMostrarPasse)}
+                color={mostrarPasse ? "black" : undefined}
+              />
+              <Text style={{color: "white"}}>Mostrar passe</Text>
+          </View>
 
           {/* Botão login funcionário */}
           <TouchableHighlight
