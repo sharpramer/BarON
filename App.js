@@ -11,7 +11,7 @@ const Navegador = createStackNavigator()
 export default function App() {
   return (
     <NavigationContainer>
-      <Navegador.Navigator>
+      <Navegador.Navigator screenOptions={{ headerShown: false }}>
         <Navegador.Screen
           name='PaginaLogin'
           component={ PaginaLogin }

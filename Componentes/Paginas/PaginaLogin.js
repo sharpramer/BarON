@@ -1,6 +1,7 @@
 import Checkbox from 'expo-checkbox';
 import React, {useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
@@ -13,7 +14,7 @@ export default function PaginaLogin({navigation}) {
   const [mostrarPasse, setMostrarPasse] = useState(false)
   
   return(
-    <View style={estilos.conteiner}>
+    <SafeAreaView style={estilos.conteiner}>
       {/* Conteiner opção de login utilizador/funcionário */}
       <View style={estilos.opLoginConteiner}> 
         {/* Botão opção de login utilizador */}
@@ -113,7 +114,7 @@ export default function PaginaLogin({navigation}) {
           <View style={estilos.separadorTxt}></View>
           
           {/* Caixa de texto Passe funcionário */}
-          <TextInput            
+          <TextInput
             style={estilos.txt}
             onChangeText={(texto) => {setPasseFuncionario(texto)}}
             placeholder="Palavra-Passe"
@@ -124,8 +125,8 @@ export default function PaginaLogin({navigation}) {
           
           <View style={estilos.separadorTxt}></View>
 
+          {/* Conteiner Checkbox */}
           <View style={estilos.conteinerCheckbox}>
-            {/* Conteiner Checkbox */}
               <Checkbox
                 style={estilos.chb}
                 value={guardarPasseFuncionario}
@@ -165,7 +166,7 @@ export default function PaginaLogin({navigation}) {
           <Text>Registar</Text>
         </TouchableHighlight>
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -197,6 +198,7 @@ const estilos = StyleSheet.create({
 
   txt:{
     color: 'white',
+    textAlign: "center"
   },
 
   separadorTxt:{
