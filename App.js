@@ -3,8 +3,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import PaginaLogin from "./Componentes/Paginas/PaginaLogin";
 import PaginaRegistar from './Componentes/Paginas/PaginaRegistar';
-import PaginaInicialUtilizador from "./Componentes/Paginas/PaginaInicialUtilizador";
-import PaginaInicialFuncionario from "./Componentes/Paginas/PaginaInicialFuncionario";
+import PaginaInicialUtilizador from "./Componentes/Paginas/Utilizador/PaginaInicialUtilizador";
+import PaginaInicialFuncionario from "./Componentes/Paginas/Funcionário/PaginaInicialFuncionario";
 
 const Navegador = createStackNavigator()
 

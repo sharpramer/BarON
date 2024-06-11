@@ -1,59 +1,69 @@
-import React, { useState } from "react";
-import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal } from "react-native";
+import React, { useState } from "react"
+import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal } from "react-native"
 
-const produtos = [
-    { id: '1', imagem: require("./img/sumo-laranja.png"), preco: '1,00€', nome: 'Sumo de laranja' },
-    { id: '2', imagem: require("./img/risoles.jpg"), preco: '1,20€', nome: 'Risoles' },
-    { id: '3', imagem: require("./img/tosta-mista.png"), preco: '1,60€', nome: 'Tosta mista' },
-    { id: '4', imagem: require("./img/coxinha.png"), preco: '2,00€', nome: 'Coxinha' }
+const produtosArray = [
+    { id: 1, imagem: require("./img/sumo-laranja.png"), preco: '1,00€', nome: 'Sumo de laranja' },
+    { id: 2, imagem: require("./img/risoles.jpg"), preco: '1,20€', nome: 'Risoles' },
+    { id: 3, imagem: require("./img/tosta-mista.png"), preco: '1,60€', nome: 'Tosta mista' },
+    { id: 4, imagem: require("./img/coxinha.png"), preco: '2,00€', nome: 'Coxinha' }
 ];
+
+function getImagemId(id) {
+    const produto = produtosArray.find(produto => produto.id === id)
+    if (produto) {
+        console.log(`Imagem do produto: ${produto.imagem}`)
+        return produto.imagem
+    } else {
+        console.log(`Produto com id ${id}, não encontrado.`)
+        return null
+    }
+}
 
 export default function Produtos() {
     const [modalVisibilidade, setModalVisibilidade] = useState(false);
-
-    // Log para verificar se as imagens são resolvidas corretamente
-    produtos.forEach(produto => {
-        const resolved = Image.resolveAssetSource(produto.imagem);
-        console.log('Resolved imagem:', resolved);
-    });
-
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
     const renderItem = ({ item }) => {
         return (
             <View key={item.id} style={estilos.conteudoConteiner}>
-                <TouchableHighlight onPress={() => setModalVisibilidade(true)}>
+                <TouchableHighlight onPress={() => {
+                    setProdutoSelecionado(item)
+                    setModalVisibilidade(true)
+                }}>
                     <Image 
                         source={item.imagem} 
-                        style={estilos.ImagemProduto} 
-                        onError={(error) => console.error('Erro ao renderizar imagem:', error.nativeEvent.error)} 
+                        style={estilos.ImagemProduto}
                     />
                 </TouchableHighlight>
                 <Text>{item.preco}</Text>
                 <Text>{item.nome}</Text>
             </View>
-        );
-    };
+        )
+    }
 
     return (
         <View>
             <FlatList
                 style={estilos.produtosTabela}
-                data={produtos}
+                data={produtosArray}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
                 numColumns={2}
             />
             <Modal
-                transparent={true}
                 visible={modalVisibilidade}
                 onRequestClose={() => setModalVisibilidade(false)}
             >
                 <View style={estilos.conteudoModalConteiner}>
-                    <Text style={{ color: 'black' }}>Teste modal</Text>
+                    { produtoSelecionado && (
+                        <Image
+                            source={produtoSelecionado.imagem} 
+                        />
+                    )}
                     <TouchableHighlight
                         onPress={() => setModalVisibilidade(false)}
                         style={estilos.fecharBotao}
                     >
-                        <Text style={estilos.buttonText}>Fechar</Text>
+                        <Text style={estilos.txtBtnFecharModal}>X</Text>
                     </TouchableHighlight>
                 </View>
             </Modal>
@@ -88,7 +98,7 @@ const estilos = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    buttonText: {
+    txtBtnFecharModal: {
         color: 'black',
     },
 });

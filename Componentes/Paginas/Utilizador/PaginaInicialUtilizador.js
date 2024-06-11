@@ -8,7 +8,7 @@ const Separador = createBottomTabNavigator();
 
 export default function PaginaInicialUtilizador() {
   return (
-    <Separador.Navigator initialRouteName='Inicio'>
+    <Separador.Navigator initialRouteName='Inicio' screenOptions={{ headerShown: false }}>
       <Separador.Screen name="Saldo" component={PaginaSaldo} options={{title: 'Saldo'}}/>
       <Separador.Screen name="Inicio" component={PaginaInicio} options={{title: 'Início'}}/>
       <Separador.Screen name="Definicoes" component={PaginaDefinicoes} options={{title: 'Definições'}}/>

@@ -1,10 +1,10 @@
 import React from "react"
 import { View, Text, StyleSheet, FlatList, TouchableHighlight } from "react-native";
 
-function PaginaPedidos() {
-    return(
-      <CriarItem/>
-    )
+function Pedidos() {
+  return(
+    <CriarItem/>
+  )
 }
 
 function TabelaPedidos({ dados }){
