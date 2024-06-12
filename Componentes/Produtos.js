@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal } from "react-native"
+import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal, SafeAreaView } from "react-native"
 
 const produtosArray = [
     { id: 1, imagem: require("./img/sumo-laranja.png"), preco: '1,00€', nome: 'Sumo de laranja' },
@@ -20,8 +20,9 @@ function getImagemId(id) {
 }
 
 export default function Produtos() {
-    const [modalVisibilidade, setModalVisibilidade] = useState(false);
-    const [produtoSelecionado, setProdutoSelecionado] = useState(null);
+    const [modalVisibilidade, setModalVisibilidade] = useState(false)
+    const [produtoSelecionado, setProdutoSelecionado] = useState(null)
+    const [quantidadePedido, setQuantidadePedido] = useState(1)
     const renderItem = ({ item }) => {
         return (
             <View key={item.id} style={estilos.conteudoConteiner}>
@@ -41,7 +42,7 @@ export default function Produtos() {
     }
 
     return (
-        <View>
+        <SafeAreaView>
             <FlatList
                 style={estilos.produtosTabela}
                 data={produtosArray}
@@ -49,25 +50,72 @@ export default function Produtos() {
                 keyExtractor={item => item.id}
                 numColumns={2}
             />
+
             <Modal
                 visible={modalVisibilidade}
                 onRequestClose={() => setModalVisibilidade(false)}
             >
-                <View style={estilos.conteudoModalConteiner}>
-                    { produtoSelecionado && (
-                        <Image
-                            source={produtoSelecionado.imagem} 
-                        />
-                    )}
-                    <TouchableHighlight
+                <SafeAreaView style={estilos.conteudoModalConteiner}>
+                    <TouchableHighlight // Botão fechar modal
                         onPress={() => setModalVisibilidade(false)}
                         style={estilos.fecharBotao}
                     >
                         <Text style={estilos.txtBtnFecharModal}>X</Text>
                     </TouchableHighlight>
-                </View>
+
+                    { produtoSelecionado && (
+                        <View>
+                            <Image
+                                source={produtoSelecionado.imagem} 
+                            />
+
+                            <Text>{produtoSelecionado.preco}</Text>
+                            <Text>Preço com IVA incluído</Text>
+                            
+                            <Text>Quantidade</Text>
+                            <View>
+                                <TouchableHighlight
+                                    style={{backgroundColor: "black"}}
+                                    onPress={() => {
+                                        if (quantidadePedido > 1) {
+                                            setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade - 1)
+                                            console.log(quantidadePedido)
+                                        }
+                                    }}
+                                >
+                                    <Text style={{color: "white", alignSelf:"center"}}>-</Text>
+                                </TouchableHighlight>
+
+                                <Text style={{color: "black", alignSelf:"center"}}>{quantidadePedido}</Text>
+
+                                <TouchableHighlight
+                                    style={{backgroundColor: "black"}}
+                                    onPress={() => {
+                                        setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade + 1)
+                                        console.log(quantidadePedido)
+                                    }}
+                                >
+                                    <Text style={{color:"white", alignSelf:"center"}}>+</Text>
+                                </TouchableHighlight>
+                            </View>
+                            <View>
+                                <TouchableHighlight
+                                    onPress={() => alert("Pedido adicionada ao carrinho!")}
+                                >
+                                    <Text>Carrinho</Text>
+                                </TouchableHighlight>
+
+                                <TouchableHighlight
+                                    onPress={() => alert("Pedido reservado com sucesso!")}
+                                >
+                                    <Text>Reservar</Text>
+                                </TouchableHighlight>
+                                </View>
+                        </View>
+                    )}
+                </SafeAreaView>
             </Modal>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -75,22 +123,26 @@ const estilos = StyleSheet.create({
     produtosTabela: {
         marginTop: 20,
     },
+
     ImagemProduto: {
         width: 200,
         height: 200,
     },
+
     fecharBotao: {
         marginTop: 20,
         backgroundColor: '#DDDDDD',
         padding: 10,
         borderRadius: 5,
     },
+
     conteudoConteiner: {
         flex: 1,
         margin: 5,
         justifyContent: "center",
         alignItems: "center",
     },
+
     conteudoModalConteiner: {
         backgroundColor: 'white',
         width: '100%',
@@ -98,7 +150,9 @@ const estilos = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+
     txtBtnFecharModal: {
         color: 'black',
     },
+
 });
