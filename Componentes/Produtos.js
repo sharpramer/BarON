@@ -2,21 +2,20 @@ import React, { useState } from "react"
 import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal, SafeAreaView } from "react-native"
 
 const produtosArray = [
-    { id: 1, imagem: require("./img/sumo-laranja.png"), preco: '1,00€', nome: 'Sumo de laranja' },
-    { id: 2, imagem: require("./img/risoles.jpg"), preco: '1,20€', nome: 'Risoles' },
-    { id: 3, imagem: require("./img/tosta-mista.png"), preco: '1,60€', nome: 'Tosta mista' },
-    { id: 4, imagem: require("./img/coxinha.png"), preco: '2,00€', nome: 'Coxinha' }
+    { id: 1, imagem: require("./img/sumo-laranja.png"), preco: '1,00', nome: 'Sumo de laranja' },
+    { id: 2, imagem: require("./img/risoles.jpg"), preco: '1,20', nome: 'Risoles' },
+    { id: 3, imagem: require("./img/tosta-mista.png"), preco: '1,60', nome: 'Tosta mista' },
+    { id: 4, imagem: require("./img/coxinha.png"), preco: '2,00', nome: 'Coxinha' }
 ];
 
-function getImagemId(id) {
-    const produto = produtosArray.find(produto => produto.id === id)
-    if (produto) {
-        console.log(`Imagem do produto: ${produto.imagem}`)
-        return produto.imagem
-    } else {
-        console.log(`Produto com id ${id}, não encontrado.`)
-        return null
-    }
+function converterPrecoParaFloat(preco) {
+    // Substitui a vírgula por ponto
+    const precoFormatado = preco.replace(',', '.');
+    return parseFloat(precoFormatado);
+}
+
+function formatarFloat(numero) {
+    return numero.toFixed(2).replace('.', ',');
 }
 
 export default function Produtos() {
@@ -35,8 +34,8 @@ export default function Produtos() {
                         style={estilos.ImagemProduto}
                     />
                 </TouchableHighlight>
-                <Text>{item.preco}</Text>
-                <Text>{item.nome}</Text>
+                <Text style={estilos.txtPrecoProduto}>{item.preco}€</Text>
+                <Text style={estilos.txtNomeProduto}>{item.nome}</Text>
             </View>
         )
     }
@@ -55,10 +54,10 @@ export default function Produtos() {
                 visible={modalVisibilidade}
                 onRequestClose={() => setModalVisibilidade(false)}
             >
-                <SafeAreaView style={estilos.conteudoModalConteiner}>
+                <View style={estilos.conteudoModalConteiner}>
                     <TouchableHighlight // Botão fechar modal
                         onPress={() => setModalVisibilidade(false)}
-                        style={estilos.fecharBotao}
+                        style={estilos.btnFecharModal}
                     >
                         <Text style={estilos.txtBtnFecharModal}>X</Text>
                     </TouchableHighlight>
@@ -69,12 +68,16 @@ export default function Produtos() {
                                 source={produtoSelecionado.imagem} 
                             />
 
-                            <Text>{produtoSelecionado.preco}</Text>
+                            {/* Texto preço produto */}
+                            <Text style={{alignSelf: "center"}}>
+                                {formatarFloat(converterPrecoParaFloat(produtoSelecionado.preco) * quantidadePedido)}€
+                            </Text>
+                            
                             <Text>Preço com IVA incluído</Text>
                             
                             <Text>Quantidade</Text>
                             <View>
-                                <TouchableHighlight
+                                <TouchableHighlight // Botão diminuir quantidade pedido
                                     style={{backgroundColor: "black"}}
                                     onPress={() => {
                                         if (quantidadePedido > 1) {
@@ -86,9 +89,10 @@ export default function Produtos() {
                                     <Text style={{color: "white", alignSelf:"center"}}>-</Text>
                                 </TouchableHighlight>
 
+                                {/* Texto quantidade pedido */}
                                 <Text style={{color: "black", alignSelf:"center"}}>{quantidadePedido}</Text>
 
-                                <TouchableHighlight
+                                <TouchableHighlight // Botão aumentar quantidade pedido
                                     style={{backgroundColor: "black"}}
                                     onPress={() => {
                                         setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade + 1)
@@ -98,22 +102,24 @@ export default function Produtos() {
                                     <Text style={{color:"white", alignSelf:"center"}}>+</Text>
                                 </TouchableHighlight>
                             </View>
+
+                            {/* Conteiner para adicionar o pedido ao carrinho ou para reservar o pedido */}
                             <View>
-                                <TouchableHighlight
-                                    onPress={() => alert("Pedido adicionada ao carrinho!")}
+                                <TouchableHighlight // Botão adicionar pedido ao carrinho
+                                    onPress={() => {alert("Pedido adicionada ao carrinho!")}}
                                 >
                                     <Text>Carrinho</Text>
                                 </TouchableHighlight>
 
-                                <TouchableHighlight
+                                <TouchableHighlight // Botão reservar pedido
                                     onPress={() => alert("Pedido reservado com sucesso!")}
                                 >
                                     <Text>Reservar</Text>
                                 </TouchableHighlight>
-                                </View>
+                            </View>
                         </View>
                     )}
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );
@@ -121,38 +127,52 @@ export default function Produtos() {
 
 const estilos = StyleSheet.create({
     produtosTabela: {
-        marginTop: 20,
+        marginTop: 40,
     },
 
     ImagemProduto: {
-        width: 200,
-        height: 200,
+        width: 130,
+        height: 130,
+        marginTop: 20 
     },
 
-    fecharBotao: {
-        marginTop: 20,
-        backgroundColor: '#DDDDDD',
-        padding: 10,
-        borderRadius: 5,
-    },
-
+    
     conteudoConteiner: {
         flex: 1,
         margin: 5,
         justifyContent: "center",
         alignItems: "center",
     },
-
+        
     conteudoModalConteiner: {
         backgroundColor: 'white',
         width: '100%',
         height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
+    },
+            
+    btnFecharModal: {
+        width: 30,
+        height: 30,
+        alignSelf: "flex-end",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#e80e0e',
+        borderRadius: 5,
     },
 
     txtBtnFecharModal: {
         color: 'black',
     },
 
+    txtPrecoProduto: {
+        margin: 2,
+        marginTop: 5,
+        color: "red",
+        fontWeight: 'bold',
+        fontSize: 15
+    },
+
+    txtNomeProduto: {
+        
+    }
 });
