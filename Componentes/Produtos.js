@@ -171,8 +171,4 @@ const estilos = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 15
     },
-
-    txtNomeProduto: {
-        
-    }
 });

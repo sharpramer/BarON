@@ -1,4 +1,4 @@
-export default class Aluno{
+export default class Utilizador{
     static nome = ''
     static dataNascimento = ''
     static numero = ''

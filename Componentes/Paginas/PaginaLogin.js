@@ -1,7 +1,8 @@
 import Checkbox from 'expo-checkbox';
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Utilizador, { Funcionario } from "../Global";
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
@@ -13,6 +14,11 @@ export default function PaginaLogin({navigation}) {
   const [guardarPasseFuncionario, setGuardarPasseFuncionario] = useState(false)
   const [mostrarPasse, setMostrarPasse] = useState(false)
   
+  useEffect(() => {
+    Utilizador.nome = codUtilizador
+    Funcionario.nome = codFuncionario
+  }, [])
+
   return(
     <SafeAreaView style={estilos.conteiner}>
       {/* Conteiner opção de login utilizador/funcionário */}
