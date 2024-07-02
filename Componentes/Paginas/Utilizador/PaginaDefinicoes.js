@@ -4,7 +4,102 @@ import Utilizador from "../../Global";
 
 function MenuConta() {
   const [modalContaVisibilidade, setModalContaVisibilidade] = useState(false)
+  const [modalEditarVisibilidade, setModalEditarVisibilidade] = useState(false)
+  const [modalRelatorioMensalVisibilidade, setModalRelatorioMensalVisibilidade] = useState(false)
+  const [modalEliminarVisibilidade, setModalEliminarVisibilidade] = useState(false)
+  
+  function MenuEditar() { // Menu editar
+    return(
+      <View>
+        {/* Botão menu editar */}
+        <TouchableHighlight
+          onPress={() => {
+            setModalEditarVisibilidade(true)
+          }}
+          >
+          <Text>Editar</Text>
+        </TouchableHighlight>
+        
+        <Modal
+          visible={modalEditarVisibilidade}
+          onRequestClose={setModalEditarVisibilidade}
+        >
+          {/* Botão fechar modal menu editar */}
+          <TouchableHighlight
+            style={estilos.btnFecharModal}
+            onPress={() => {
+              setModalEditarVisibilidade(false)
+            }}
+            >
+            <Text>X</Text>
+          </TouchableHighlight>
+        </Modal>
+      </View>
+    )
+  }
 
+  function MenuRelatorioMensal() { // Menu relatório mensal 
+    return(
+      <View>
+        {/* Botão menu relatório mensal */}
+        <TouchableHighlight
+          onPress={() => {
+            setModalRelatorioMensalVisibilidade(true)
+          }}
+          >
+          <Text>Relatório mensal</Text>
+        </TouchableHighlight>
+        
+        <Modal
+          visible={modalRelatorioMensalVisibilidade}
+          onRequestClose={setModalRelatorioMensalVisibilidade}
+          >
+          {/* Botão fechar modal menu relatório mensal */}
+          <TouchableHighlight
+            style={estilos.btnFecharModal}
+            onPress={() => {
+              setModalRelatorioMensalVisibilidade(false)
+            }}
+            >
+            <Text>X</Text>
+          </TouchableHighlight>
+          
+        </Modal>
+      </View>
+    )
+  }
+
+  function MenuEliminar() { // Menu eliminar 
+    return(
+      <View>
+        {/* Botão menu eliminar */}
+        <TouchableHighlight
+          onPress={() => {
+            setModalEliminarVisibilidade(true)
+          }}
+          >
+          <Text>Eliminar</Text>
+        </TouchableHighlight>
+        
+        <Modal
+          visible={modalEliminarVisibilidade}
+          onRequestClose={setModalEliminarVisibilidade}
+          >
+          {/* Botão fechar modal menu eliminar */}
+          <TouchableHighlight
+            style={estilos.btnFecharModal}
+            onPress={() => {
+              setModalEliminarVisibilidade(false)
+            }}
+            >
+            <Text>X</Text>
+          </TouchableHighlight>
+          
+        </Modal>
+      </View>
+    )
+  }
+  
   return(
     <View>
       {/* Botão menu definições conta */}
@@ -19,15 +114,21 @@ function MenuConta() {
       {/* Modal definições conta  */}
       <Modal
         visible={modalContaVisibilidade}
-        onRequestClose={() => setModalContaVisibilidade(false)}
+        onRequestClose={() => setModalContaVisibilidade}
       >
+        {/* Botão fechar modal */}
         <TouchableHighlight
+          style={estilos.btnFecharModal}
           onPress={() => {
             setModalContaVisibilidade(false)
           }}
         >
           <Text>X</Text>
         </TouchableHighlight>
+        
+        <MenuEditar modalVisibilidade={modalEditarVisibilidade}/>
+        <MenuRelatorioMensal/>
+        <MenuEliminar/>
       </Modal>
     </View>
   )
@@ -50,8 +151,9 @@ function MenuAparencia() { // Menu aparência
       {/* Submenu definições aparência */}
       <Modal
         visible={modalAparenciaVisibilidade}
-        onRequestClose={() => setModalAparenciaVisibilidade(false)}
+        onRequestClose={() => setModalAparenciaVisibilidade}
       >
+        {/* Botão fechar modal */}
         <TouchableHighlight
           onPress={() => {
             setModalAparenciaVisibilidade(false)
@@ -81,8 +183,9 @@ function MenuSobre() {
       {/* Modal definições Sobre */}
       <Modal
         visible={modalSobreVisibilidade}
-        onRequestClose={() => setModalSobreVisibilidade(false)}
+        onRequestClose={() => setModalSobreVisibilidade}
       >
+        {/* Botão fechar modal */}
         <TouchableHighlight
           onPress={() => {
             setModalSobreVisibilidade(false)
@@ -97,11 +200,11 @@ function MenuSobre() {
 
 function MenuSair() {
   return(
-    /* Botão menu definições Sobre */
+    /* Botão menu definições Sair */
     <TouchableHighlight
       onPress={() => {console.log("sair")}}
     >
-      <Text>Sobre</Text>
+      <Text>Sair</Text>
     </TouchableHighlight>
   )
 }
@@ -118,7 +221,6 @@ export default function PaginaDefinicoes() { // Página definições utilizador
       {/* Conteiner cabeçalho */}
       <View>
         <Image
-          style={estilos.imgUtilizador}
           source={require('../../img/utilizador.png')}
         />
         <Text>Olá { nomeUtilizador }</Text>
@@ -140,7 +242,7 @@ export default function PaginaDefinicoes() { // Página definições utilizador
 }
 
 const estilos = StyleSheet.create({
-  imgUtilizador:{
+  btnFecharModal:{
 
   }
 })
