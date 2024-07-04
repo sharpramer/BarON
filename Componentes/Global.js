@@ -1,3 +1,6 @@
+import React from "react"
+import { StyleSheet } from "react-native"
+
 export default class Utilizador{
     static nome = ''
     static dataNascimento = ''
@@ -13,3 +16,15 @@ export class Funcionario{
     static email = ''
     static passe = ''
 }
+
+export const estilos = StyleSheet.create({
+    btnFechar: {
+        width: 30,
+        height: 30,
+        alignSelf: "flex-end",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: '#e80e0e',
+        borderRadius: 5,
+    }
+})

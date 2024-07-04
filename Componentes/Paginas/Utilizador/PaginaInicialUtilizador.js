@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import PaginaInicio from "./PaginaInicio";
-import PaginaDefinicoes from "./PaginaDefinicoes";
+import PaginaDefinicoes from "./PaginaDefinicoes/PaginaDefinicoes";
 import PaginaSaldo from "./PaginaSaldo";
 
 const Separador = createBottomTabNavigator();
