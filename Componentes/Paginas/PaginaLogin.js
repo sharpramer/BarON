@@ -36,6 +36,7 @@ export default function PaginaLogin({navigation}) {
         >
           <Text>Utilizador</Text>
         </TouchableHighlight>
+
         {/* Botão opção de login funcionário */}
         <TouchableHighlight 
           style={[
@@ -53,7 +54,7 @@ export default function PaginaLogin({navigation}) {
         <View style={estilos.loginConteiner}>
           {/* Caixa de texto Codigo utilizador */}
           <TextInput
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={(texto) => {setCodUtilizador(texto)}}
             placeholder="Código ou email"
             placeholderTextColor={"white"}
@@ -64,7 +65,7 @@ export default function PaginaLogin({navigation}) {
 
           {/* Caixa de texto passe utilizador */}
           <TextInput            
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={(texto) => {setPasseUtilizador(texto)}}
             placeholder="Palavra-Passe"
             placeholderTextColor={"white"}
@@ -110,7 +111,7 @@ export default function PaginaLogin({navigation}) {
         <View style={estilos.loginConteiner}>
           {/* Caixa de texto Codigo funcionário */}
           <TextInput
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={(texto) => {setCodFuncionario(texto)}}
             placeholder="Código ou email"
             placeholderTextColor={"white"}
@@ -121,7 +122,7 @@ export default function PaginaLogin({navigation}) {
           
           {/* Caixa de texto Passe funcionário */}
           <TextInput
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={(texto) => {setPasseFuncionario(texto)}}
             placeholder="Palavra-Passe"
             placeholderTextColor={"white"}
@@ -202,7 +203,7 @@ const estilos = StyleSheet.create({
     padding: 10,
   },
 
-  txt:{
+  cx:{
     color: 'white',
     textAlign: "center"
   },

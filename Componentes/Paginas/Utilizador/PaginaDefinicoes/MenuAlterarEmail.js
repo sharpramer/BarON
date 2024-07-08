@@ -1,35 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { View, TouchableHighlight, Modal, Text } from "react-native";
-import { estilos } from "../../../Global"
+import React, { useState } from "react";
+import { View, TouchableHighlight, Modal, Text, TextInput } from "react-native";
+import Utilizador, { estilos } from "../../../Global";
 
 export default function MenuAlterarEmail() {
   const [modalAlterarEmailVisibilidade, setModalAlterarEmailVisibilidade] = useState(false);
-    return (
-      <View>
-        {/* Botão alterar email */}
+  const [novoEmailUtilizador, setNovoEmailUtilizador] = useState('');
+  const [emailUtilizador, setEmailUtilizador] = useState('');
+
+  return (
+    <View>
+      {/* Botão alterar email */}
+      <TouchableHighlight
+        onPress={() => setModalAlterarEmailVisibilidade(true)}
+      >
+        <Text>Alterar email</Text>
+      </TouchableHighlight>
+
+      <Modal
+        visible={modalAlterarEmailVisibilidade}
+        onRequestClose={() => setModalAlterarEmailVisibilidade(false)}
+      >
+        {/* Botão fechar modal menu alterar email */}
         <TouchableHighlight
           style={estilos.btnFecharModal}
-          onPress={() => { setModalAlterarEmailVisibilidade(true) }}
+          onPress={() => setModalAlterarEmailVisibilidade(false)}
         >
-          <Text>Alterar email</Text>
+          <Text>X</Text>
         </TouchableHighlight>
 
-        
-
-        <Modal 
-          visible={modalAlterarEmailVisibilidade}
-          onRequestClose={setModalAlterarEmailVisibilidade}
-        >
-          {/* Botão fechar modal menu alterar email */}
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          {/* Caixa de texto Codigo utilizador */}
+          <TextInput
+            style={estilos.cx}
+            onChangeText={(texto) => setEmailUtilizador(texto)}
+            placeholder="Email antigo"
+            placeholderTextColor={"black"}
+            value={emailUtilizador}
+          />
+          <View style={estilos.separadorCx}></View>
+          <TextInput
+            style={estilos.cx}
+            onChangeText={(texto) => setNovoEmailUtilizador(texto)}
+            placeholder="Email novo"
+            placeholderTextColor={"black"}
+            value={novoEmailUtilizador}
+          />
+          <View style={estilos.separadorCx}></View>
           <TouchableHighlight
-            style={estilos.btnFecharModal}
-            onPress={() => {
-              setModalAlterarEmailVisibilidade(false);
-            }}
+            onPress={() => { Utilizador.email = novoEmailUtilizador }}
           >
-            <Text>X</Text>
+            <Text>Guardar</Text>
           </TouchableHighlight>
-        </Modal>
-      </View>
-    );
+        </View>
+      </Modal>
+    </View>
+  );
 }
