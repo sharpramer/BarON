@@ -28,7 +28,7 @@ export default function MenuAlterarEmail() {
           <Text>X</Text>
         </TouchableHighlight>
 
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View style={estilos.conteiner}>
           {/* Caixa de texto Codigo utilizador */}
           <TextInput
             style={estilos.cx}
@@ -38,6 +38,7 @@ export default function MenuAlterarEmail() {
             value={emailUtilizador}
           />
           <View style={estilos.separadorCx}></View>
+
           <TextInput
             style={estilos.cx}
             onChangeText={(texto) => setNovoEmailUtilizador(texto)}
@@ -46,8 +47,9 @@ export default function MenuAlterarEmail() {
             value={novoEmailUtilizador}
           />
           <View style={estilos.separadorCx}></View>
+
           <TouchableHighlight
-            onPress={() => { Utilizador.email = novoEmailUtilizador }}
+            onPress={() => { Utilizador.email = novoEmailUtilizador, alert("Palavra-Passe alterada com sucesso!") }}
           >
             <Text>Guardar</Text>
           </TouchableHighlight>
