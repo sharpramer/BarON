@@ -13,7 +13,7 @@ export default function MenuEliminar() {
                 setModalEliminarVisibilidade(true);
                 }}
             >
-                <Text>Editar</Text>
+                <Text>Eliminar</Text>
             </TouchableHighlight>
 
             <Modal

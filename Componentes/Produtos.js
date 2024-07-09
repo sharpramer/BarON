@@ -22,6 +22,7 @@ export default function Produtos() {
     const [modalVisibilidade, setModalVisibilidade] = useState(false)
     const [produtoSelecionado, setProdutoSelecionado] = useState(null)
     const [quantidadePedido, setQuantidadePedido] = useState(1)
+    
     const renderItem = ({ item }) => {
         return (
             <View key={item.id} style={estilos.conteudoConteiner}>
