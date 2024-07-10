@@ -13,11 +13,6 @@ export default function PaginaLogin({navigation}) {
   const [passeFuncionario, setPasseFuncionario] = useState('')
   const [guardarPasseFuncionario, setGuardarPasseFuncionario] = useState(false)
   const [mostrarPasse, setMostrarPasse] = useState(false)
-  
-  useEffect(() => {
-    Utilizador.nome = codUtilizador
-    Funcionario.nome = codFuncionario
-  }, [])
 
   return(
     <SafeAreaView style={estilos.conteiner}>
@@ -100,8 +95,9 @@ export default function PaginaLogin({navigation}) {
             onPress={() => {
               if (codUtilizador === '' || passeUtilizador === '')
                 alert('Favor preencher todos os campos')
-              else
+              else{
                 navigation.navigate('PaginaInicialUtilizador')
+              }
             }}
           >
             <Text style={estilos.txtBtnLogin}>Login</Text>
