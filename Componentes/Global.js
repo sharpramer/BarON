@@ -6,6 +6,7 @@ export default class Utilizador{
     static codigo = ''
     static email = ''
     static passe = ''
+    static aparencia = ''
 }
 
 export class Funcionario{
@@ -21,7 +22,6 @@ export const estilos = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: "white",
     },
 
     btnFechar: {
@@ -46,4 +46,31 @@ export const estilos = StyleSheet.create({
         borderColor: "#0f73d1",
         borderRadius: 5
     },
+    
+    conteinerModoEscuro:{
+        height: '100%',
+        backgroundColor: '#2b2b2b',
+    },
+
+    conteinerModoClaro:{
+        height: '100%',
+        backgroundColor: 'white',
+    },
+
+    modoEscuro:{
+        color: 'white'
+    },
+
+    modoClaro:{
+        backgroundColor: 'white',
+        color: 'black'
+    },
 })
+
+export function MudarAparenciaConteinerUtilizador() {
+    return Utilizador.aparencia === 'claro' ? estilos.conteinerModoClaro : estilos.conteinerModoEscuro 
+}
+
+export function MudarAparenciaTextoUtilizador() {
+    return Utilizador.aparencia === 'claro' ? estilos.modoClaro : estilos.modoEscuro 
+}
