@@ -1,18 +1,27 @@
-import Checkbox from 'expo-checkbox';
+import Checkbox from 'expo-checkbox'
 import React, {useEffect, useState} from "react"
-import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Utilizador, { Funcionario } from "../Global";
+import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native"
+import { SafeAreaView } from 'react-native-safe-area-context'
+import Utilizador, { Funcionario, guardarLocal, buscarLocal, apagarLocal, buscarTudoLocal } from "../Global"
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
   const [codUtilizador, setCodUtilizador] = useState('')
   const [passeUtilizador, setPasseUtilizador] = useState('')
-  const [guardarPasseUtilizador, setGuardarPasseUtilizador] = useState(false)
+  const [guardarPasseUtilizador, setGuardarPasseUtilizador] = useState(true)
+  
   const [codFuncionario, setCodFuncionario] = useState('')
   const [passeFuncionario, setPasseFuncionario] = useState('')
-  const [guardarPasseFuncionario, setGuardarPasseFuncionario] = useState(false)
+  const [guardarPasseFuncionario, setGuardarPasseFuncionario] = useState(true)
   const [mostrarPasse, setMostrarPasse] = useState(false)
+
+  useEffect(() => {
+    const carregarPasse = async () => {
+      const passeGuardada = await buscarLocal('Passe')
+      passeGuardada ? [setPasseUtilizador(passeGuardada), navigation.navigate('PaginaInicialUtilizador')] : setPasseUtilizador('') 
+    }
+    carregarPasse()
+  },[])
 
   return(
     <SafeAreaView style={estilos.conteiner}>
@@ -70,12 +79,18 @@ export default function PaginaLogin({navigation}) {
           
           <View style={estilos.separadorTxt}></View>
 
+          <TouchableHighlight
+            onPress={() => {console.log(guardarPasseUtilizador)}}
+          >
+            <Text style={{color: 'white'}}>Memorizar passe</Text>
+          </TouchableHighlight>
+          
           <View style={estilos.conteinerCheckbox}> 
             {/* Conteiner Checkbox */} 
-            <Checkbox // Checkbox guardar passe
+            <Checkbox // Checkbox guardar passe / memorizar passe utilizador
               style={estilos.chb}
               value={guardarPasseUtilizador}
-              onValueChange={() => {setGuardarPasseUtilizador(prevGuardarPasse => !prevGuardarPasse, console.log(`Guardar passe: ${guardarPasseUtilizador}`))}}
+              onValueChange={() => {setGuardarPasseUtilizador(prevGuardarPasse => !prevGuardarPasse)}}
               color={guardarPasseUtilizador ? "black" : undefined}
             />
             <Text style={{color: "white"}}>Memorizar passe</Text>
@@ -92,10 +107,13 @@ export default function PaginaLogin({navigation}) {
           {/* Botão login utilizador */}
           <TouchableHighlight
             style={estilos.btnLogin}
-            onPress={() => {
-              if (codUtilizador === '' || passeUtilizador === '')
-                alert('Favor preencher todos os campos')
-              else{
+            onPress={async () => {
+              if (codUtilizador === '' || passeUtilizador === '') {
+                Alert.alert('Favor preencher todos os campos')
+              } else {
+                if (guardarPasseUtilizador) {
+                  guardarLocal('Passe', passeUtilizador)
+                }
                 navigation.navigate('PaginaInicialUtilizador')
               }
             }}
@@ -128,23 +146,23 @@ export default function PaginaLogin({navigation}) {
           
           <View style={estilos.separadorTxt}></View>
 
-          {/* Conteiner Checkbox */}
+          {/* Conteiner Checkbox Funcionário */}
           <View style={estilos.conteinerCheckbox}>
-              <Checkbox
-                style={estilos.chb}
-                value={guardarPasseFuncionario}
-                onValueChange={() => setGuardarPasseFuncionario(prevGuardarPasse => !prevGuardarPasse)}
-                color={guardarPasseFuncionario ? "black" : undefined}
-              />
-              <Text style={{color: "white"}}>Memorizar passe</Text>
+            <Checkbox
+              style={estilos.chb}
+              value={guardarPasseFuncionario}
+              onValueChange={() => setGuardarPasseFuncionario(prevGuardarPasse => !prevGuardarPasse, console.log())}
+              color={guardarPasseFuncionario ? "black" : undefined}
+            />
+            <Text style={{color: "white"}}>Memorizar passe</Text>
 
-              <Checkbox
-                style={estilos.chb}
-                value={mostrarPasse}
-                onValueChange={() => setMostrarPasse(prevMostrarPasse => !prevMostrarPasse)}
-                color={mostrarPasse ? "black" : undefined}
-              />
-              <Text style={{color: "white"}}>Mostrar passe</Text>
+            <Checkbox
+              style={estilos.chb}
+              value={mostrarPasse}
+              onValueChange={() => setMostrarPasse(prevMostrarPasse => !prevMostrarPasse)}
+              color={mostrarPasse ? "black" : undefined}
+            />
+            <Text style={{color: "white"}}>Mostrar passe</Text>
           </View>
 
           {/* Botão login funcionário */}
@@ -234,4 +252,4 @@ const estilos = StyleSheet.create({
     textAlign: "center",
   },
 
-});  
+})  
