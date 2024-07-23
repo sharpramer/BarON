@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { View, Text, TouchableHighlight, Modal, StyleSheet } from "react-native"
-import { estilos } from "../../../Global"
+import { estilos } from "../../../estilos"
 import MenuEditar from "./MenuEditar"
 import MenuRelatorioMensal from "./MenuRelatorioMensal"
 import MenuEliminar from "./MenuEliminar"

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableHighlight, Modal, Text, StyleSheet } from "react-native";
-import { estilos } from "../../../Global"
+import { estilos } from "../../../estilos"
 import MenuAlterarEmail from "./MenuAlterarEmail";
 import MenuAlterarPasse from "./MenuAlterarPasse";
 

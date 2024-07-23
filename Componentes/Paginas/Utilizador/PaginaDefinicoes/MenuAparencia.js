@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TouchableHighlight, Modal } from "react-native"
-import Utilizador, { estilos, MudarAparenciaConteinerUtilizador, MudarAparenciaTextoUtilizador } from "../../../Global";
+import Utilizador, { MudarAparenciaConteinerUtilizador, MudarAparenciaTextoUtilizador } from "../../../Global";
 
 export function MenuAparencia() {
   const [modalAparenciaVisibilidade, setModalAparenciaVisibilidade] = useState(false)

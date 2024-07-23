@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { View, TouchableHighlight, Modal, Text, StyleSheet, FlatList } from "react-native";
-import { estilos } from "../../../Global"
+import { estilos } from "../../../estilos"
 
 function TabelaRelatorioMensal({ dados }) {
     const renderizarItem = ({ item }) => (

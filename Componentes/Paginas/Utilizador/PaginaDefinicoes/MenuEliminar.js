@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { View, Text, TouchableHighlight, Modal, TextInput } from "react-native"
-import { estilos } from "../../../Global"
+import { estilos } from "../../../estilos"
 
 export default function MenuEliminar() {
     const [modalEliminarVisibilidade, setModalEliminarVisibilidade] = useState(false)

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableHighlight, Modal, Text, TextInput } from "react-native";
-import { estilos } from "../../../Global"
+import { estilos } from "../../../estilos"
 
 export default function MenuAlterarPasse() {
   const [modalAlterarPasseVisibilidade, setModalAlterarPasseVisibilidade] = useState(false);

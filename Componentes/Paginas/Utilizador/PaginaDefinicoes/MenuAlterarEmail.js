@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableHighlight, Modal, Text, TextInput } from "react-native";
-import Utilizador, { estilos } from "../../../Global";
+import Utilizador from "../../../Global";
+import { estilos } from "../../../estilos"
 
 export default function MenuAlterarEmail() {
   const [modalAlterarEmailVisibilidade, setModalAlterarEmailVisibilidade] = useState(false);
