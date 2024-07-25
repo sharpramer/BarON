@@ -5,6 +5,7 @@ import { estilos } from "../../estilos";
 import { TouchableHighlight } from "react-native-gesture-handler"
 
 export default function PaginaSaldo() {
+  const [email, setEmail] = useState('')
   const [valor, setValor] = useState('')
 
   return (
@@ -26,7 +27,7 @@ export default function PaginaSaldo() {
             onChangeText={texto => {setEmail(texto)}}
             placeholder="Email"
             placeholderTextColor={"black"}
-            value={valor}
+            value={email}
             />
           <View style={estilos.separadorCx}></View>
           <TextInput
