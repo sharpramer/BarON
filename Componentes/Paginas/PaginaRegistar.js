@@ -1,26 +1,15 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
-import Aluno, { Funcionario } from "../Global";
+import Utilizador, { Funcionario } from "../Global";
 
-export default class PaginaRegistar extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      opRegistar: 'Aluno',
-      nomeAluno: '',
-      dataNascimentoAluno: '',
-      numAluno: '',
-      emailAluno: '',
-      passeAluno: '',
-      nomeFuncionario: '',
-      dataNascimentoFuncionario: '',
-      numFuncionario: '',
-      emailFuncionario: '',
-      passeFuncionario: '',
-    }
-  }
-
-  render() {
+export default function PaginaRegistar() {
+  const [opRegistar, setOpRegistar] = useState('Utilizador')
+  const [nomeUtilizador, setNomeUtilizador] = useState('')
+  const [dataNascimentoUtilizador, setDataNascimentoUtilizador] = useState('')
+  const [numUtilizador, setNumUtilizador] = useState('')
+  const [emailUtilizador, setEmailUtilizador] = useState('')
+  const [passeUtilizador, setPasseUtilizador] = useState('')
+  
     return (
       <View style={estilos.registarConteiner}> 
         <View style={estilos.opRegistarConteiner}>
@@ -28,90 +17,84 @@ export default class PaginaRegistar extends Component {
           <TouchableHighlight
             style={[
               estilos.btnOpRegistar, {
-                backgroundColor: this.state.opRegistar === 'Aluno' ? 'blue' : 'white'
+                backgroundColor: opRegistar === 'Utilizador' ? 'blue' : 'white'
               }
             ]}
             onPress={() => {
-              this.setState({ opRegistar: "Aluno" })
+              setOpRegistar({ opRegistar: "Utilizador" })
             }}
           >
-            <Text>Aluno</Text>
+            <Text>Utilizador</Text>
           </TouchableHighlight>
 
           {/* Botão opção de registar funcionário */}
           <TouchableHighlight
             style={[
               estilos.btnOpRegistar,
-              { backgroundColor: this.state.opRegistar === 'Funcionario' ? 'blue' : 'white' }
+              { backgroundColor: opRegistar === 'Funcionario' ? 'blue' : 'white' }
             ]}
-            onPress={() => { this.setState({ opRegistar: 'Funcionario' }) }}
+            onPress={() => { setOpRegistar({ opRegistar: 'Funcionario' }) }}
           >
             <Text>Funcionário</Text>
           </TouchableHighlight>
           
         </View>
 
-        {this.state.opRegistar === 'Aluno' ?
+        { opRegistar === 'Utilizador' ?
           <View>
             {/* Caixa de texto nome do aluno */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtNome => {
-                this.setState({ nomeAluno: txtNome }) 
+                setNomeUtilizador({ nomeUtilizador: txtNome }) 
               }}
-              value={this.state.nomeAluno}
+              value={nomeUtilizador}
             />
 
             {/* Caixa de texto data de nascimento do aluno */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtDataNascimento => {
-                this.setState({ dataNascimentoAluno: txtDataNascimento })
+                setDataNascimentoUtilizador({ dataNascimentoUtilizador: txtDataNascimento })
               }}
-              value={this.state.dataNascimentoAluno}
+            value={dataNascimentoUtilizador}
             />
 
             {/* Caixa de texto número do aluno */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtNum => {
-                this.setState({ numAluno: txtNum })
+                setNumUtilizador({ numUtilizador: txtNum })
               }}
-              value={this.state.numAluno}
+              value={numUtilizador}
             />
 
             {/* Caixa de texto email do aluno */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtEmail => {
-                this.setState({ emailAluno: txtEmail })
+                setEmailUtilizador({ emailUtilizador: txtEmail })
               }}
-              value={this.state.emailAluno}
+              value={emailUtilizador}
             />
 
             {/* Caixa de texto passe do aluno */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtPasse => {
-                this.setState({ passeAluno: txtPasse })
-                
+                setPasseUtilizador({ passeUtilizador: txtPasse })
               }}
-              value={this.state.passeAluno}
+              value={passeUtilizador}
             />
 
             {/* Botão registar aluno */}
             <TouchableHighlight
               style={{backgroundColor: 'green'}}
               onPress={ () => {
-                if (this.state.nomeAluno === '' || this.state.dataNascimentoAluno === '' || this.state.numAluno === '' || this.state.emailAluno === '')
+                if (nomeUtilizador === '' || dataNascimentoUtilizador === '' || numUtilizador === '' || emailUtilizador === '')
                   alert('Favor preencher todos os campos')
                 else {
-                  Aluno.nome = this.state.nomeAluno
-                  Aluno.dataNascimento = this.state.dataNascimentoAluno
-                  Aluno.numero = this.state.numAluno
-                  Aluno.email = this.state.emailAluno
-                  Aluno.passe = this.state.passeAluno
-                  
+                  alert('Gravado com sucesso!')
                 }
               }}
             >
@@ -124,59 +107,59 @@ export default class PaginaRegistar extends Component {
             <TextInput
               style={estilos.txt}
               onChangeText={txtNome => {
-                this.setState({ nomeFuncionario: txtNome }) 
+                setOpRegistar({ nomeFuncionario: txtNome }) 
               }}
-              value={this.state.nomeFuncionario}
+              value={nomeFuncionario}
             />
 
             {/* Caixa de texto data de nascimento do funcionário */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtDataNascimento => {
-                this.setState({ dataNascimentoFuncionario: txtDataNascimento })
+                setOpRegistar({ dataNascimentoFuncionario: txtDataNascimento })
               }}
-              value={this.state.dataNascimentoFuncionario}
+              value={dataNascimentoFuncionario}
             />
 
             {/* Caixa de texto número do funcionário */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtNum => {
-                this.setState({ numFuncionario: txtNum })
+                setOpRegistar({ numFuncionario: txtNum })
               }}
-              value={this.state.numFuncionario}
+              value={numFuncionario}
             />
 
             {/* Caixa de texto email do funcionário */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtEmail => {
-                this.setState({ emailFuncionario: txtEmail })
+                setOpRegistar({ emailFuncionario: txtEmail })
               }}
-              value={this.state.emailFuncionario}
+              value={emailFuncionario}
             />
             
             {/* Caixa de texto passe do aluno */}
             <TextInput
               style={estilos.txt}
               onChangeText={txtPasse => {
-                this.setState({ passeFuncionario: txtPasse })
+                setOpRegistar({ passeFuncionario: txtPasse })
               }}
-              value={this.state.passeFuncionario}
+              value={passeFuncionario}
             />
 
             {/* Botão registar funcionário */}
             <TouchableHighlight
               style={{backgroundColor: 'green'}}
               onPress={ () => {
-                if (this.state.nomeFuncionario === '' || this.state.dataNascimentoFuncionario === '' || this.state.numFuncionario === '' || this.state.emailFuncionario === '' || this.state.passeFuncionario === '')
+                if (nomeFuncionario === '' || dataNascimentoFuncionario === '' || numFuncionario === '' || emailFuncionario === '' || passeFuncionario === '')
                   alert('Favor preencher todos os campos')
                 else {
-                  Funcionario.nome = this.state.nomeFuncionario
-                  Funcionario.dataNascimento = this.state.dataNascimentoFuncionario
-                  Funcionario.numero = this.state.numFuncionario
-                  Funcionario.email = this.state.emailFuncionario
-                  Funcionario.passe = this.state.passeFuncionario
+                  Funcionario.nome = nomeFuncionario
+                  Funcionario.dataNascimento = dataNascimentoFuncionario
+                  Funcionario.numero = numFuncionario
+                  Funcionario.email = emailFuncionario
+                  Funcionario.passe = passeFuncionario
                 }
               }}
             >
@@ -187,7 +170,6 @@ export default class PaginaRegistar extends Component {
       </View>
     )
   }
-}
 
 const estilos = StyleSheet.create({
   registarConteiner: {
