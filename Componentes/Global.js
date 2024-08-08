@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { StyleSheet } from "react-native"
+import { collection, addDoc } from "firebase/firestore";
+import { bd } from "../firebase";
 import { estilos } from "./estilos"
 
 export default class Utilizador{
@@ -25,6 +26,13 @@ export function MudarAparenciaConteinerUtilizador() {
 
 export function MudarAparenciaTextoUtilizador() {
     return Utilizador.aparencia === 'claro' ? estilos.modoClaro : estilos.modoEscuro 
+}
+
+export function adicionarBd(nomeColecao, dado) {
+    const docRef = collection(bd, nomeColecao)
+    addDoc(docRef, {
+        dado
+    })
 }
 
 export const guardarLocal = (chave, valor) => {
