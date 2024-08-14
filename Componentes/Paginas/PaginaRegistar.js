@@ -1,14 +1,15 @@
 import React, { Component, useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
-import { bd } from "../../firebase";
+import { auth, bd } from "../../firebase";
 import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 export default function PaginaRegistar() {
   const [opRegistar, setOpRegistar] = useState('Utilizador')
   const [utilizador, setUtilizador] = useState({
     nome: '',
     dataNascimento: '',
-    numero: '',
+    numero: 0,
     email: '',
     passe: ''
   })
@@ -16,10 +17,29 @@ export default function PaginaRegistar() {
   const [funcionario, setFuncionario] = useState({
     nome: '',
     dataNascimento: '',
-    numero: '',
+    numero: utilizador.numero + 1,
     email: '',
     passe: ''
   })
+
+  const guardarRegisto = async (colecao, nome, dataNascimento, numero, email, passe) => {
+    try {
+      const utilizadorCredencial = await createUserWithEmailAndPassword(auth, email, passe)
+      const utilizador = utilizadorCredencial.user
+      await addDoc(collection(bd, colecao), {
+        uid: utilizador.uid,
+        nome: nome,
+        dataNascimento: dataNascimento,
+        numero: numero + 1,
+        email: email,
+      })
+      alert('Registado com sucesso!')
+    }
+    catch (erro) {
+      alert('Erro ao registar')
+      console.log(`Erro ao registar: ${erro}`)
+    }
+  }
   
   return (
     <View style={estilos.registarConteiner}> 
@@ -57,7 +77,7 @@ export default function PaginaRegistar() {
           <TextInput
             style={estilos.txt}
             onChangeText={txtNome => {
-              setUtilizador({ ...utilizador, nome: txtNome }) 
+              setUtilizador({ ...utilizador, nome: txtNome })
             }}
             value={utilizador.nome}
           />
@@ -69,15 +89,6 @@ export default function PaginaRegistar() {
               setUtilizador({ ...utilizador, dataNascimento: txtDataNascimento })
             }}
           value={utilizador.dataNascimento}
-          />
-
-          {/* Caixa de texto número do aluno */}
-          <TextInput
-            style={estilos.txt}
-            onChangeText={txtNum => {
-              setUtilizador({ ...utilizador, numero: txtNum })
-            }}
-            value={utilizador.numero}
           />
 
           {/* Caixa de texto email do aluno */}
@@ -101,20 +112,23 @@ export default function PaginaRegistar() {
           {/* Botão registar aluno */}
           <TouchableHighlight
             style={{backgroundColor: 'green'}}
-            onPress={ () => {
-              if (utilizador.nome === '' || utilizador.dataNascimento === '' || utilizador.numero === '' || utilizador.email === '' || utilizador.passe === '')
-                alert('Favor preencher todos os campos')
-              else {
-                const docRef = collection(bd, "utilizador")
-                addDoc(docRef, {
-                  nome: utilizador.nome,
-                  dataNascimento: utilizador.dataNascimento,
-                  numero: utilizador.numero,
-                  email: utilizador.email,
-                  passe: utilizador.passe
-                })
-                console.log(`Nome: ${utilizador.nome}, dataNascimento: ${utilizador.dataNascimento}, numero: ${utilizador.numero}, email: ${utilizador.email}, passe: ${utilizador.passe},`)
-                alert('Gravado com sucesso!')
+            onPress={() => {
+              if (
+                utilizador.nome === '' ||
+                utilizador.dataNascimento === '' ||
+                utilizador.email === '' ||
+                utilizador.passe === ''
+              ) {
+                alert('Favor preencher todos os campos');
+              } else {
+                guardarRegisto(
+                  'utilizador',
+                  utilizador.nome,
+                  utilizador.dataNascimento,
+                  utilizador.numero,
+                  utilizador.email,
+                  utilizador.passe
+                );
               }
             }}
           >
@@ -138,16 +152,7 @@ export default function PaginaRegistar() {
             onChangeText={txtDataNascimento => {
               setFuncionario({ ...funcionario, dataNascimento: txtDataNascimento })
             }}
-            value={dataNascimentoFuncionario}
-          />
-
-          {/* Caixa de texto número do funcionário */}
-          <TextInput
-            style={estilos.txt}
-            onChangeText={txtNum => {
-              setFuncionario({ ...funcionario, numero: txtNum })
-            }}
-            value={funcionario.numero}
+            value={funcionario.dataNascimento}
           />
 
           {/* Caixa de texto email do funcionário */}
@@ -172,10 +177,10 @@ export default function PaginaRegistar() {
           <TouchableHighlight
             style={{backgroundColor: 'green'}}
             onPress={ () => {
-              if (nomeFuncionario === '' || dataNascimentoFuncionario === '' || numFuncionario === '' || emailFuncionario === '' || passeFuncionario === '')
+              if (funcionario.nome === '' || funcionario.numero === '' || funcionario.dataNascimento === '' || funcionario.email === '' || funcionario.passe === '')
                 alert('Favor preencher todos os campos')
               else {
-                alert(``)
+                guardarRegisto('funcionario', funcionario.nome, funcionario.dataNascimento, funcionario.numero, funcionario.email, funcionario.passe)
               }
             }}
           >
@@ -198,6 +203,7 @@ const estilos = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     color: 'white',
+    marginTop: 15
   },
 
   btnOpRegistar: {

@@ -1,24 +1,29 @@
-import Checkbox from 'expo-checkbox'
 import React, {useEffect, useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context'
-import Utilizador, { Funcionario, guardarLocal, buscarLocal, apagarLocal, buscarTudoLocal } from "../Global"
+import Checkbox from 'expo-checkbox'
+import { auth } from "../../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { guardarLocal, buscarLocal } from "../Global"
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
-  const [codUtilizador, setCodUtilizador] = useState('')
-  const [passeUtilizador, setPasseUtilizador] = useState('')
-  const [guardarPasseUtilizador, setGuardarPasseUtilizador] = useState(true)
-  
-  const [codFuncionario, setCodFuncionario] = useState('')
-  const [passeFuncionario, setPasseFuncionario] = useState('')
-  const [guardarPasseFuncionario, setGuardarPasseFuncionario] = useState(true)
+  const [utilizador, setUtilizador] = useState({
+    email: '',
+    passe: '',
+    guardarPasse: true,
+  })
+  const [funcionario, setFuncionario] = useState({
+    email: '',
+    passe: '',
+    guardarPasse: true,
+  })
   const [mostrarPasse, setMostrarPasse] = useState(false)
 
   useEffect(() => {
     const carregarPasse = async () => {
       const passeGuardada = await buscarLocal('Passe')
-      passeGuardada ? [setPasseUtilizador(passeGuardada), navigation.navigate('PaginaInicialUtilizador')] : setPasseUtilizador('') 
+      passeGuardada ? [setUtilizador({...utilizador, passe: passeGuardada}), navigation.navigate('PaginaInicialUtilizador')] : setUtilizador({...utilizador, passe: ''}) 
     }
     carregarPasse()
   },[])
@@ -59,10 +64,12 @@ export default function PaginaLogin({navigation}) {
           {/* Caixa de texto Codigo utilizador */}
           <TextInput
             style={estilos.cx}
-            onChangeText={(texto) => {setCodUtilizador(texto)}}
+            onChangeText={texto => {
+              setUtilizador({...utilizador, email: texto})
+            }}
             placeholder="Código ou email"
             placeholderTextColor={"white"}
-            value={codUtilizador}
+            value={utilizador.email}
           />
           
           <View style={estilos.separadorTxt}></View>
@@ -70,35 +77,38 @@ export default function PaginaLogin({navigation}) {
           {/* Caixa de texto passe utilizador */}
           <TextInput            
             style={estilos.cx}
-            onChangeText={(texto) => {setPasseUtilizador(texto)}}
+            onChangeText={texto => {
+              setUtilizador({...utilizador, passe: texto})
+            }}
             placeholder="Palavra-Passe"
             placeholderTextColor={"white"}
             secureTextEntry={!mostrarPasse} 
-            value={passeUtilizador}
+            value={utilizador.passe}
           />
           
           <View style={estilos.separadorTxt}></View>
-
-          <TouchableHighlight
-            onPress={() => {console.log(guardarPasseUtilizador)}}
-          >
-            <Text style={{color: 'white'}}>Memorizar passe</Text>
-          </TouchableHighlight>
           
           <View style={estilos.conteinerCheckbox}> 
             {/* Conteiner Checkbox */} 
             <Checkbox // Checkbox guardar passe / memorizar passe utilizador
               style={estilos.chb}
-              value={guardarPasseUtilizador}
-              onValueChange={() => {setGuardarPasseUtilizador(prevGuardarPasse => !prevGuardarPasse)}}
-              color={guardarPasseUtilizador ? "black" : undefined}
+              value={utilizador.guardarPasse}
+              onValueChange={() => {
+                setUtilizador(prevUtilizador => ({
+                  ...prevUtilizador,
+                  guardarPasse: !prevUtilizador.guardarPasse
+                }))
+              }}
+              color={utilizador.guardarPasse ? "black" : undefined}
             />
             <Text style={{color: "white"}}>Memorizar passe</Text>
 
             <Checkbox // Checkbox mostrar passe
               style={estilos.chb}
               value={mostrarPasse}
-              onValueChange={() => {setMostrarPasse(prevMostrarPasse => !prevMostrarPasse, console.log(`Mostrar passe ${mostrarPasse}`))}}
+              onValueChange={() => {
+                setMostrarPasse(prevMostrarPasse => !prevMostrarPasse, console.log(`Mostrar passe ${mostrarPasse}`))
+              }}
               color={mostrarPasse ? "black" : undefined}
             />
             <Text style={{color: "white"}}>Mostrar passe</Text>
@@ -108,13 +118,19 @@ export default function PaginaLogin({navigation}) {
           <TouchableHighlight
             style={estilos.btnLogin}
             onPress={async () => {
-              if (codUtilizador === '' || passeUtilizador === '') {
-                Alert.alert('Favor preencher todos os campos')
+              if (utilizador.email === '' || utilizador.passe === '') {
+                alert('Favor preencher todos os campos')
               } else {
-                if (guardarPasseUtilizador) {
-                  guardarLocal('Passe', passeUtilizador)
+                if (utilizador.guardarPasse) {
+                  guardarLocal('Passe', utilizador.passe)
                 }
-                navigation.navigate('PaginaInicialUtilizador')
+                try {
+                  await signInWithEmailAndPassword(auth, utilizador.email, utilizador.passe)
+                  navigation.navigate('PaginaInicialUtilizador')
+                } catch (erro) {
+                  alert('Erro ao fazer login, verifique o email e palavra-passe e tente novamente!')
+                  console.log(erro)
+                }
               }
             }}
           >
@@ -126,10 +142,10 @@ export default function PaginaLogin({navigation}) {
           {/* Caixa de texto Codigo funcionário */}
           <TextInput
             style={estilos.cx}
-            onChangeText={(texto) => {setCodFuncionario(texto)}}
+            onChangeText={(texto) => {setFuncionario({...funcionario, email: texto})}}
             placeholder="Código ou email"
             placeholderTextColor={"white"}
-            value={codFuncionario}
+            value={funcionario.email}
           />
 
           <View style={estilos.separadorTxt}></View>
@@ -137,11 +153,11 @@ export default function PaginaLogin({navigation}) {
           {/* Caixa de texto Passe funcionário */}
           <TextInput
             style={estilos.cx}
-            onChangeText={(texto) => {setPasseFuncionario(texto)}}
+            onChangeText={(texto) => {setFuncionario({...funcionario, passe: texto})}}
             placeholder="Palavra-Passe"
             placeholderTextColor={"white"}
             secureTextEntry={!mostrarPasse}
-            value={passeFuncionario}
+            value={funcionario.passe}
           />
           
           <View style={estilos.separadorTxt}></View>
@@ -150,9 +166,14 @@ export default function PaginaLogin({navigation}) {
           <View style={estilos.conteinerCheckbox}>
             <Checkbox
               style={estilos.chb}
-              value={guardarPasseFuncionario}
-              onValueChange={() => setGuardarPasseFuncionario(prevGuardarPasse => !prevGuardarPasse, console.log())}
-              color={guardarPasseFuncionario ? "black" : undefined}
+              value={funcionario.guardarPasse}
+              onValueChange={() => {
+                setUtilizador(prevFuncionario => ({
+                  ...prevFuncionario,
+                  guardarPasse: !prevFuncionario.guardarPasse
+                }))
+              }}
+              color={funcionario.guardarPasse ? "black" : undefined}
             />
             <Text style={{color: "white"}}>Memorizar passe</Text>
 
@@ -168,11 +189,21 @@ export default function PaginaLogin({navigation}) {
           {/* Botão login funcionário */}
           <TouchableHighlight
             style={estilos.btnLogin}
-            onPress={() => {
-              if (codFuncionario === '' || passeFuncionario === '')
+            onPress={async () => {
+              if (funcionario.email === '' || funcionario.passe === '') {
                 alert('Favor preencher todos os campos')
-              else
-                navigation.navigate('PaginaInicialFuncionario')
+              } else {
+                if (funcionario.guardarPasse) {
+                  guardarLocal('Passe', funcionario.passe)
+                }
+                try {
+                  await signInWithEmailAndPassword(auth, funcionario.email, funcionario.passe)
+                  navigation.navigate('PaginaInicialFuncionario')
+                } catch (erro) {
+                  alert('Erro ao fazer login, verifique o email e palavra-passe e tente novamente!')
+                  console.log(erro)
+                }
+              }
             }}
           >
             <Text style={estilos.txtBtnLogin}>Login</Text>
