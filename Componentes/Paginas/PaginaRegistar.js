@@ -9,7 +9,6 @@ export default function PaginaRegistar() {
   const [utilizador, setUtilizador] = useState({
     nome: '',
     dataNascimento: '',
-    numero: 0,
     email: '',
     passe: ''
   })
@@ -17,7 +16,6 @@ export default function PaginaRegistar() {
   const [funcionario, setFuncionario] = useState({
     nome: '',
     dataNascimento: '',
-    numero: utilizador.numero + 1,
     email: '',
     passe: ''
   })
@@ -27,7 +25,7 @@ export default function PaginaRegistar() {
       const utilizadorCredencial = await createUserWithEmailAndPassword(auth, email, passe)
       const utilizador = utilizadorCredencial.user
       await addDoc(collection(bd, colecao), {
-        uid: utilizador.uid,
+        codigo: utilizador.uid,
         nome: nome,
         dataNascimento: dataNascimento,
         numero: numero + 1,

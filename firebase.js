@@ -15,7 +15,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-let auth;
+export const bd = getFirestore(app);
+
+/* export let auth
 try {
   auth = getAuth(app);
 } catch (error) {
@@ -26,7 +28,16 @@ try {
   } else {
     throw error;
   }
-}
+} */
+export let auth
 
-export const bd = getFirestore(app);
-export { auth };
+try {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+  });  
+} catch (error) {
+  if (error.code === 'auth/already-initialized') {
+    auth = getAuth
+  }
+  console.log(`Deu erro: ${error}`)
+}
