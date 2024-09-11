@@ -28,10 +28,13 @@ export default function FazerPedido(props){
     const guardarPedido = async () => {
         try {
             await addDoc(collection(bd, 'pedidos'), {
+                produto: props.produtoSelecionado.nome,
                 data_entrega: dataEntrega,
                 data_pedido: dataPedido,
                 hora_entrega: horaEntrega,
                 hora_pedido: horaPedido,
+                subtotal: subtotal,
+                quantidade: quantidadePedido
             })
             alert('Pedido guardado com sucesso!')
         }
@@ -64,6 +67,7 @@ export default function FazerPedido(props){
                         </Text>                            
                         <Text>Preço com IVA incluído</Text>
                         
+                        {/* Quantidade pedido */}
                         <Text>Quantidade</Text>
                         <View>
                             <TouchableHighlight // Botão diminuir quantidade pedido

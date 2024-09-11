@@ -1,22 +1,37 @@
-import React from "react"
-import { View, Text, StyleSheet, FlatList, TouchableHighlight } from "react-native";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useState, useEffect } from "react"
+import { View, StyleSheet, Text, FlatList } from "react-native";
+import { bd } from "../firebase";
 
-function Pedidos() {
-  return(
-    <CriarItem/>
-  )
-}
+export default function Pedidos() {
+  const [dadosPedidos, setDadosPedidos] = useState(null);
 
-function TabelaPedidos({ dados }){
-  const renderizarItem = ({ item }) => (
-    <View style={estilos.linha}>
-      <Text style={estilos.linhaTexto}>{item.pedido}</Text>
-      <Text style={estilos.linhaTexto}>{item.data}</Text>
-      <Text style={estilos.linhaTexto}>{item.hora}</Text>
-      <Text style={estilos.linhaTexto}>{item.estado}</Text>
-      <Text style={estilos.linhaTexto}>{item.valor}</Text>
-    </View>
-  )
+  useEffect(() => {
+    // Função para buscar os dados
+    const obterPedido = async () => {
+      try {
+        const docRef = await getDocs(collection(bd, 'pedidos'))
+
+        const dadosPedidos = docRef.docs.map(doc => ({
+          id: doc.id,
+          produto: doc.data().produto,
+          quantidade: doc.data().quantidade,
+          subtotal: doc.data().subtotal,
+          dataEntrega: doc.data().data_entrega,
+          dataPedido: doc.data().data_pedido,
+          horaEntrega: doc.data().hora_entrega,
+          horaPedido: doc.data().hora_pedido,
+        }))
+        setDadosPedidos(dadosPedidos)
+      } catch (erro) {
+        console.error('Erro ao obter documento: ', erro);
+      }
+    };
+
+    // Chamar a função
+    obterPedido();
+  },[])
+
   return(
     <View>
       <View style={estilos.linha}>
@@ -27,27 +42,25 @@ function TabelaPedidos({ dados }){
         <Text style={estilos.linhaTexto}>Valor</Text>
       </View>
       
+      {/* TO DO: O conteúdo do flatlist não aparece */}
       <FlatList
-        data={dados}
-        renderItem={renderizarItem}
-        keyExtractor={item => item.id.toString()}
+        data={dadosPedidos}
+        renderItem={({ item }) => (
+          <View style={estilos.linha}>
+            <Text style={estilos.linhaTexto}>{item.produto}</Text>
+            <Text style={estilos.linhaTexto}>{item.quantidade}</Text>
+            <Text style={estilos.linhaTexto}>{item.subtotal}</Text>
+            <Text style={estilos.linhaTexto}>{item.dataEntrega}</Text>
+            <Text style={estilos.linhaTexto}>{item.dataPedido}</Text>
+            <Text style={estilos.linhaTexto}>{item.horaEntrega}</Text>
+            <Text style={estilos.linhaTexto}>{item.horaPedido}</Text>
+          </View>
+        )}
+        keyExtractor={(item) => {item.id}}
       />
-    </View> 
-  )
-}
-  
-export function CriarItem(){ 
-  const dados =[
-    { id: 1, pedido: 'Sandes', data: '5/1/24', hora: '12:00', estado: 'Pronto para recolha', valor: '1.00€'}
-  ]
-
-  return(
-    <View>
-      <TabelaPedidos dados={dados}/>
     </View>
   )
 }
-
 
 const estilos = StyleSheet.create({
   linha:{

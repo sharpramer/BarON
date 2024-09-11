@@ -17,18 +17,6 @@ const app = initializeApp(firebaseConfig);
 
 export const bd = getFirestore(app);
 
-/* export let auth
-try {
-  auth = getAuth(app);
-} catch (error) {
-  if (error.code === 'auth/already-initialized') {
-    auth = initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage)
-    });
-  } else {
-    throw error;
-  }
-} */
 export let auth
 
 try {
