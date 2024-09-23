@@ -2,6 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { collection, addDoc } from "firebase/firestore";
 import { bd } from "../firebase";
 import { estilos } from "./estilos"
+import { PhoneAuthProvider, multiFactor, } from 'firebase/auth';
+import { useEffect } from "react";
 
 export default class Utilizador{
     static nome = ''
