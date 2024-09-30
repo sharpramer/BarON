@@ -1,8 +1,8 @@
 import React, { useState } from "react"
-import { View, TouchableHighlight, Modal, Text, TextInput, Alert } from "react-native"
+import { View, TouchableHighlight, Modal, Text, TextInput} from "react-native"
 import { collection, getDocs, query, updateDoc, where } from "firebase/firestore"
 import { auth, bd } from "../../../../firebase"
-import { reauthenticateWithCredential, sendEmailVerification, updateEmail, EmailAuthProvider } from "firebase/auth"
+import { reauthenticateWithCredential, updateEmail, EmailAuthProvider } from "firebase/auth"
 import { estilos } from "../../../estilos"
 
 export default function MenuAlterarEmail() {
