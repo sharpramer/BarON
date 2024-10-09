@@ -1,10 +1,10 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore"
 import React, { useState, useEffect } from "react"
-import { View, StyleSheet, Text, FlatList } from "react-native";
-import { bd } from "../firebase";
+import { View, StyleSheet, Text, FlatList } from "react-native"
+import { bd } from "../firebase"
 
 export default function Pedidos() {
-  const [dadosPedidos, setDadosPedidos] = useState(null);
+  const [dadosPedidos, setDadosPedidos] = useState(null)
 
   useEffect(() => {
     // Função para buscar os dados
@@ -24,12 +24,12 @@ export default function Pedidos() {
         }))
         setDadosPedidos(dadosPedidos)
       } catch (erro) {
-        console.error('Erro ao obter documento: ', erro);
+        console.error('Erro ao obter documento: ', erro)
       }
-    };
+    }
 
     // Chamar a função
-    obterPedido();
+    obterPedido()
   },[])
 
   return(

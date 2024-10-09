@@ -5,6 +5,7 @@ import PaginaLogin from "./Componentes/Paginas/PaginaLogin";
 import PaginaRegistar from './Componentes/Paginas/PaginaRegistar';
 import PaginaInicialUtilizador from "./Componentes/Paginas/Utilizador/PaginaInicialUtilizador";
 import PaginaInicialFuncionario from "./Componentes/Paginas/Funcionário/PaginaInicialFuncionario";
+import PaginaBoasVindas from './Componentes/Paginas/PaginaBoasVindas';
 
 const Navegador = createStackNavigator()
 
@@ -12,6 +13,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Navegador.Navigator screenOptions={{ headerShown: false }}>
+        <Navegador.Screen
+          name='PaginaBoasVindas'
+          component={ PaginaBoasVindas }
+        />
+
         <Navegador.Screen
           name='PaginaLogin'
           component={ PaginaLogin }

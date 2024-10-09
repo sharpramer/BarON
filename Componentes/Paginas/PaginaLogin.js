@@ -210,14 +210,6 @@ export default function PaginaLogin({navigation}) {
           </TouchableHighlight>
         </View>
       }
-      <View>
-        <TouchableHighlight
-          style={{backgroundColor: 'purple'}}
-          onPress={() => {navigation.navigate('PaginaRegistar')}}
-        >
-          <Text>Registar</Text>
-        </TouchableHighlight>
-      </View>
     </SafeAreaView>
   )
 }

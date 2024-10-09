@@ -16,10 +16,10 @@ export default function MenuAlterarEmail() {
     try {
       const utilizadorRef = collection(bd, 'utilizador')
       const linha = query(utilizadorRef, where('email', '==', email))
-      const snapshot = await getDocs(linha)
+      const pedidos = await getDocs(linha)
 
-      if (!snapshot.empty) {
-        snapshot.forEach(async (doc) => {
+      if (!pedidos.empty) {
+        pedidos.forEach(async (doc) => {
           const docRef = doc.ref
           await updateDoc(docRef, editarDados)
           alert("Email alterado com sucesso no Firestore!")
