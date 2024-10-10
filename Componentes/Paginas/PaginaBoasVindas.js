@@ -1,15 +1,29 @@
-import { React } from "react";
+import React, {useEffect} from "react"
 import { View, Text, TouchableHighlight, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { apagarLocal, buscarLocal } from "../Global"
 import { estilos } from "../estilos";
 
 export default function PaginaBoasVindas({navigation}) {
+    useEffect(() => {
+        const carregarPasse = async () => {
+          const passeGuardadaUtilizador = await buscarLocal('Passe')
+          passeGuardadaUtilizador ? [navigation.navigate('PaginaInicialUtilizador')] : undefined 
+        }
+        carregarPasse()
+      },[])
     return(
         <SafeAreaView style={estilosPaginaBoasVindas.conteiner}>
-            <Text>BEM-VINDO</Text>
+            {/* Imagem logo */}
             <Image
+                style={estilosPaginaBoasVindas.imgLogo}
                 source={require('../img/logo.png')}
             />
+
+            {/* Texto Título */}
+            <Text style={estilosPaginaBoasVindas.txtTitulo}>BEM-VINDO</Text>
+
+            {/* Conteiner botões de registar e login */}
             <View style={estilosPaginaBoasVindas.conteinerBtn}>
                 <TouchableHighlight
                     style={[estilos.btn, estilosPaginaBoasVindas.btn]}
@@ -17,7 +31,7 @@ export default function PaginaBoasVindas({navigation}) {
                         navigation.navigate('PaginaLogin')
                     }}
                 >
-                    <Text style={estilos.txtBtn}>Login</Text>
+                    <Text style={estilos.txtBtn}>Entrar</Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                     style={[estilos.btn, estilosPaginaBoasVindas.btn]}
@@ -37,6 +51,16 @@ const estilosPaginaBoasVindas = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-between' 
     },
+    
+    imgLogo:{
+        marginTop: 35,
+        marginBottom: -150,
+        alignSelf: 'center'
+    },
+
+    txtTitulo:{
+        alignSelf: 'center'
+    },
 
     conteinerBtn:{
         flexDirection: 'row',
@@ -46,11 +70,8 @@ const estilosPaginaBoasVindas = StyleSheet.create({
     },
 
     btn:{
-        width: 73,
-        height: 37,
+        width: 78,
+        height: 40,
     },
 
-    btns:{
-
-    },
 })

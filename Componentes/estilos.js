@@ -37,7 +37,8 @@ export const estilos = StyleSheet.create({
         width: 70, 
         backgroundColor: '#0DE2E9',
         padding: 7,
-        borderRadius: 9
+        borderRadius: 9,
+        justifyContent: 'center'
     },
 
     txtBtn:{
