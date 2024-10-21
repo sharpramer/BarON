@@ -3,6 +3,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { auth, bd } from "../../firebase";
 import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { estilos } from "../estilos";
 
 export default function PaginaRegistar() {
   const [opRegistar, setOpRegistar] = useState('Utilizador')
@@ -40,17 +41,17 @@ export default function PaginaRegistar() {
   }
   
   return (
-    <View style={estilos.registarConteiner}> 
-      <View style={estilos.opRegistarConteiner}>
+    <View style={estilosPaginaRegistar.conteinerPaginaRegistar}> 
+      <View style={estilosPaginaRegistar.opRegistarConteiner}>
         {/* Botão opção de registar aluno */}
         <TouchableHighlight
           style={[
-            estilos.btnOpRegistar, {
+            estilosPaginaRegistar.btnOpRegistar, {
               backgroundColor: opRegistar === 'Utilizador' ? 'blue' : 'white'
             }
           ]}
           onPress={() => {
-            setOpRegistar({ opRegistar: "Utilizador" })
+            setOpRegistar('Utilizador')
           }}
         >
           <Text>Utilizador</Text>
@@ -59,10 +60,13 @@ export default function PaginaRegistar() {
         {/* Botão opção de registar funcionário */}
         <TouchableHighlight
           style={[
-            estilos.btnOpRegistar,
-            { backgroundColor: opRegistar === 'Funcionario' ? 'blue' : 'white' }
+            estilosPaginaRegistar.btnOpRegistar, { 
+              backgroundColor: opRegistar === 'Funcionario' ? 'blue' : 'white' 
+            }
           ]}
-          onPress={() => { setOpRegistar({ opRegistar: 'Funcionario' }) }}
+          onPress={() => { 
+            setOpRegistar('Funcionario') 
+          }}
         >
           <Text>Funcionário</Text>
         </TouchableHighlight>
@@ -70,46 +74,63 @@ export default function PaginaRegistar() {
       </View>
 
       { opRegistar === 'Utilizador' ?
-        <View>
-          {/* Caixa de texto nome do aluno */}
-          <TextInput
-            style={estilos.txt}
-            onChangeText={txtNome => {
-              setUtilizador({ ...utilizador, nome: txtNome })
-            }}
-            value={utilizador.nome}
-          />
-
-          {/* Caixa de texto data de nascimento do aluno */}
-          <TextInput
-            style={estilos.txt}
-            onChangeText={txtDataNascimento => {
-              setUtilizador({ ...utilizador, dataNascimento: txtDataNascimento })
-            }}
-          value={utilizador.dataNascimento}
-          />
-
+        <View style={estilosPaginaRegistar.conteinerRegistar}>
           {/* Caixa de texto email do aluno */}
           <TextInput
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={txtEmail => {
               setUtilizador({ ...utilizador, email: txtEmail })
             }}
+            placeholder="Email"
+            placeholderTextColor={"black"}
             value={utilizador.email}
           />
 
+          <View style={estilos.separadorCx}></View>
+
           {/* Caixa de texto passe do aluno */}
           <TextInput
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={txtPasse => {
               setUtilizador({ ...utilizador, passe: txtPasse })
             }}
+            placeholder="Passe"
+            placeholderTextColor={"black"}
             value={utilizador.passe}
           />
 
+          <View style={estilos.separadorCx}></View>
+
+          {/* Caixa de texto nome do aluno */}
+          <TextInput
+            style={estilos.cx}
+            onChangeText={txtNome => {
+              setUtilizador({ ...utilizador, nome: txtNome })
+            }}
+            placeholder="Nome"
+            placeholderTextColor={"black"}
+            value={utilizador.nome}
+          />
+
+          <View style={estilos.separadorCx}></View>
+
+          {/* Caixa de texto data de nascimento do aluno */}
+          <TextInput
+            style={estilos.cx}
+            onChangeText={txtDataNascimento => {
+              setUtilizador({ ...utilizador, dataNascimento: txtDataNascimento })
+            }}
+            placeholder="Data nascimento"
+            placeholderTextColor={"black"}
+            value={utilizador.dataNascimento}
+          />
+
+
+          <View style={estilos.separadorCx}></View>
+
           {/* Botão registar aluno */}
           <TouchableHighlight
-            style={{backgroundColor: 'green'}}
+            style={estilos.btn}
             onPress={() => {
               if (
                 utilizador.nome === '' ||
@@ -134,46 +155,62 @@ export default function PaginaRegistar() {
           </TouchableHighlight>
         </View> :
 
-        <View>
-          {/* Caixa de texto nome do funcionário */}
-          <TextInput
-            style={estilos.txt}
-            onChangeText={txtNome => {
-              setFuncionario({ ...funcionario, nome: txtNome }) 
-            }}
-            value={funcionario.nome}
-          />
-
-          {/* Caixa de texto data de nascimento do funcionário */}
-          <TextInput
-            style={estilos.txt}
-            onChangeText={txtDataNascimento => {
-              setFuncionario({ ...funcionario, dataNascimento: txtDataNascimento })
-            }}
-            value={funcionario.dataNascimento}
-          />
-
-          {/* Caixa de texto email do funcionário */}
-          <TextInput
-            style={estilos.txt}
+        <View style={estilosPaginaRegistar.conteinerRegistar}>
+           {/* Caixa de texto email do funcionário */}
+           <TextInput
+            style={estilos.cx}
             onChangeText={txtEmail => {
               setFuncionario({ ...funcionario, email: txtEmail })
             }}
+            placeholder="Email"
+            placeholderTextColor={"black"}
             value={funcionario.email}
           />
+
+          <View style={estilos.separadorCx}></View>
           
           {/* Caixa de texto passe do funcionário */}
           <TextInput
-            style={estilos.txt}
+            style={estilos.cx}
             onChangeText={txtPasse => {
               setFuncionario({ ...funcionario, passe: txtPasse })
             }}
+            placeholder="Passe"
+            placeholderTextColor={"black"}
             value={funcionario.passe}
           />
 
+          <View style={estilos.separadorCx}></View>
+          
+          {/* Caixa de texto nome do funcionário */}
+          <TextInput
+            style={estilos.cx}
+            onChangeText={txtNome => {
+              setFuncionario({ ...funcionario, nome: txtNome }) 
+            }}
+            placeholder="Nome"
+            placeholderTextColor={"black"}
+            value={funcionario.nome}
+          />
+
+          <View style={estilos.separadorCx}></View>
+
+          {/* Caixa de texto data de nascimento do funcionário */}
+          <TextInput
+            style={estilos.cx}
+            onChangeText={txtDataNascimento => {
+              setFuncionario({ ...funcionario, dataNascimento: txtDataNascimento })
+            }}
+            placeholder="Data nascimento"
+            placeholderTextColor={"black"}
+            value={funcionario.dataNascimento}
+          />
+
+          <View style={estilos.separadorCx}></View>
+
           {/* Botão registar funcionário */}
           <TouchableHighlight
-            style={{backgroundColor: 'green'}}
+            style={estilos.btn}
             onPress={ () => {
               if (funcionario.nome === '' || funcionario.numero === '' || funcionario.dataNascimento === '' || funcionario.email === '' || funcionario.passe === '')
                 alert('Favor preencher todos os campos')
@@ -190,11 +227,10 @@ export default function PaginaRegistar() {
   )
 }
 
-const estilos = StyleSheet.create({
-  registarConteiner: {
+const estilosPaginaRegistar = StyleSheet.create({
+  conteinerPaginaRegistar: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'black',
   },
 
   opRegistarConteiner: {
@@ -211,9 +247,9 @@ const estilos = StyleSheet.create({
     padding: 10,
   },
 
-  txt: {
-    backgroundColor: 'red',
-    borderWidth: 1,
-    borderColor: 'green'
-  }
+  conteinerRegistar: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })

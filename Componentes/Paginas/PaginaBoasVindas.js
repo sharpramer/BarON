@@ -1,7 +1,7 @@
 import React, {useEffect} from "react"
 import { View, Text, TouchableHighlight, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { apagarLocal, buscarLocal } from "../Global"
+import { buscarLocal } from "../Global"
 import { estilos } from "../estilos";
 
 export default function PaginaBoasVindas({navigation}) {
@@ -11,7 +11,8 @@ export default function PaginaBoasVindas({navigation}) {
           passeGuardadaUtilizador ? [navigation.navigate('PaginaInicialUtilizador')] : undefined 
         }
         carregarPasse()
-      },[])
+    },[])
+    
     return(
         <SafeAreaView style={estilosPaginaBoasVindas.conteiner}>
             {/* Imagem logo */}
@@ -54,12 +55,16 @@ const estilosPaginaBoasVindas = StyleSheet.create({
     
     imgLogo:{
         marginTop: 35,
-        marginBottom: -150,
+        marginBottom: -300,
+        width: 150,
+        height: 150,
         alignSelf: 'center'
     },
 
     txtTitulo:{
-        alignSelf: 'center'
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        fontSize: 24
     },
 
     conteinerBtn:{
@@ -73,5 +78,4 @@ const estilosPaginaBoasVindas = StyleSheet.create({
         width: 78,
         height: 40,
     },
-
 })

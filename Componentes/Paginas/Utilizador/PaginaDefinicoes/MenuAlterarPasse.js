@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, TouchableHighlight, Modal, Text, TextInput } from "react-native";
-import { collection, getDocs, query, updateDoc, where } from "firebase/firestore"
-import { auth, bd } from "../../../../firebase"
+import { auth, } from "../../../../firebase"
 import { updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { estilos } from "../../../estilos"
 
@@ -10,28 +9,8 @@ export default function MenuAlterarPasse() {
   const [novaPalavraPasse, setNovaPalavraPasse] = useState('');
   const [passe, setPasse] = useState('');
   const [emailAtual, setEmailAtual] = useState('');
-  
-  const editarPasseFirestore = async (editarDados) => {
-    try {
-      const utilizadorRef = collection(bd, 'utilizador')
-      const linha = query(utilizadorRef, where('passe', '==', passe))
-      const snapshot = await getDocs(linha)
 
-      if (!snapshot.empty) {
-        snapshot.forEach(async (doc) => {
-          const docRef = doc.ref
-          await updateDoc(docRef, editarDados)
-          alert("Palavra-Passe alterada com sucesso no Firestore!")
-        })
-      } else {
-        alert('Nenhuma conta foi encontrada com esse email.')
-      }
-    } catch (erro) {
-      console.error(`Erro ao encontrar documento: ${erro}`)
-    }
-  }
-
-  // Função para reautenticar o usuário
+  // Função para reautenticar o utilizador
   const reautenciarUtilizador = async () => {
     try {
       const utilizador = auth.currentUser
@@ -50,14 +29,15 @@ export default function MenuAlterarPasse() {
     }
   }
 
-  // Função para editar email no Authentication
+  // Função para editar passe no Authentication
   const editarPasseAuth = async (novaPasse) => {
     try {
       const utilizador = auth.currentUser
       if (utilizador) {
-        // Atualiza o email no Firebase Authentication
+        // Atualiza o passe no Firebase Authentication
         await updatePassword(utilizador, novaPasse)
         console.log('Email atualizado com sucesso no Firebase Authentication')
+        alert('Email atualizado com sucesso no Firebase Authentication')
       } else {
         console.log('Utilizador não encontrado no Authentication')
       }
@@ -77,18 +57,15 @@ export default function MenuAlterarPasse() {
     }
   }
 
-  // Função para atualizar os dados
+  // Função para atualizar a passe no Authentication
   const atualizarDados = async () => {
     const isReAutenticado = await reautenciarUtilizador()
 
     if (isReAutenticado) {
-      const editarPasse = { passe: novaPalavraPasse }
-
-      // Atualizar no Firestore
-      await editarPasseFirestore(editarPasse)
-
-      // Atualizar no Firebase Authentication
       await editarPasseAuth(novaPalavraPasse)
+      emailAtual = ''
+      passe = ''
+      novaPalavraPasse = ''
     } else {
       alert('Erro ao atualizar. Tente novamente.')
     }

@@ -45,6 +45,11 @@ export const estilos = StyleSheet.create({
         textAlign: "center",
     },
 
+    cx:{
+        color: 'black',
+        textAlign: "center"
+    },
+
     separadorCx: {
         width: 120,
         marginBottom: 15,
