@@ -3,10 +3,10 @@ import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal, Saf
 import FazerPedido from "./FazerPedido";
 
 const produtosArray = [
-    { id: 1, imagem: require("./img/sumo-laranja.png"), preco: '1,00', nome: 'Sumo de laranja' },
-    { id: 2, imagem: require("./img/risoles.jpg"), preco: '1,20', nome: 'Risoles' },
-    { id: 3, imagem: require("./img/tosta-mista.png"), preco: '1,60', nome: 'Tosta mista' },
-    { id: 4, imagem: require("./img/coxinha.png"), preco: '2,00', nome: 'Coxinha' }
+    { id: 1, imagem: require("./img/sumo-laranja.png"), precoVenda: '1,00', precoCusto: '0,80', descricao: 'Sumo de laranja natural', nome: 'Sumo de laranja' },
+    { id: 2, imagem: require("./img/risoles.jpg"), precoVenda: '1,20',  precoCusto: '1,00', descricao: 'Risoles de carne de boi', nome: 'Risoles' },
+    { id: 3, imagem: require("./img/tosta-mista.png"), precoVenda: '1,60',  precoCusto: '1,20', descricao: 'Pão com queijo e fiambre na chapa', nome: 'Tosta mista' },
+    { id: 4, imagem: require("./img/coxinha.png"), precoVenda: '2,00',  precoCusto: '1,30', descricao: 'Coxinha com queijo', nome: 'Coxinha' }
 ];
 
 export default function Produtos() {
@@ -25,7 +25,7 @@ export default function Produtos() {
                         style={estilos.ImagemProduto}
                     />
                 </TouchableHighlight>
-                <Text style={estilos.txtPrecoProduto}>{item.preco}€</Text>
+                <Text style={estilos.txtPrecoProduto}>{item.precoVenda}€</Text>
                 <Text style={estilos.txtNomeProduto}>{item.nome}</Text>
             </View>
         )
