@@ -35,6 +35,10 @@ export default function FazerPedido(props){
                 hora_pedido: horaPedido,
             })
             
+            updateDoc(pedidoRef, {
+                cod_pedido: pedidoRef.id
+            })
+
             // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
             const itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
                 nome_curto: props.produtoSelecionado.nome,
