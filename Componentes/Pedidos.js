@@ -4,13 +4,14 @@ import { View, StyleSheet, Text, FlatList } from "react-native"
 import { bd } from "../firebase"
 import { SafeAreaView } from "react-native-safe-area-context"
 
-export default function Pedidos() {
-  const [dadosPedido, setDadosPedido] = useState(null)
+export default function Pedidos(props) {
+  const [dadosPedido, setDadosPedido] = useState([])
 
   useEffect(() => {
     // Função para buscar os dados
     const obterPedido = async () => {
       try {
+
         const pedidosRef = await getDocs(collection(bd, 'pedidos'))
 
         const dadosPedidos = await Promise.all(
@@ -24,7 +25,7 @@ export default function Pedidos() {
             // Filtrar itens_pedido onde situacao é igual a 'reservado'
             const itensPedidosLinha = query(
               collection(doc.ref, 'itens_pedido'),
-              where('situacao', '==', 'reservado')
+              where('situacao', '==', props.situacao)
             )
             const itensPedidosRef = await getDocs(itensPedidosLinha)
 
