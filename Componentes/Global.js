@@ -1,9 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { auth, bd } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
-import { bd } from "../firebase";
 import { estilos } from "./estilos"
-import { PhoneAuthProvider, multiFactor, } from 'firebase/auth';
-import { useEffect } from "react";
+
 
 export default class Utilizador{
     static nome = ''
@@ -72,5 +71,23 @@ export async function buscarTudoLocal(){
         return valor
     } catch (erro) {
         console.log(`Erro ao buscar: ${erro}`)
+    }
+}
+
+export const fazerLogout = async(navegacao) => {
+    try {
+      await auth.signOut();
+      await apagarLocal("Passe")
+      
+      alert('Saiu com sucesso');
+
+      // Reseta a navegação e redireciona para a tela de login
+      navegacao.reset({
+        index: 0, // Zera o histórico de navegação
+        routes: [{ name: 'PaginaLogin' }], // Redireciona para a tela de login
+      });
+    } catch (erro) {
+      console.error("Erro ao realizar logout:", erro.message);
+      alert(`Erro ao sair: ${erro.message}`);
     }
 }

@@ -15,14 +15,16 @@ export default function MenuAlterarEmail() {
   const editarEmailFirestore = async (editarDados) => {
     try {
       const utilizadorRef = collection(bd, 'utilizador')
-      const linha = query(utilizadorRef, where('email', '==', email))
-      const pedidos = await getDocs(linha)
+      const conta = getDocs(query(
+        utilizadorRef, 
+        where('email', '==', email)
+      ))
 
-      if (!pedidos.empty) {
-        pedidos.forEach(async (doc) => {
+      if (!conta.empty) {
+        conta.forEach(async (doc) => {
           const docRef = doc.ref
           await updateDoc(docRef, editarDados)
-          alert("Email alterado com sucesso no Firestore!")
+          alert("Email alterado com sucesso!")
         })
       } else {
         alert('Nenhuma conta foi encontrada com esse email.')
