@@ -1,14 +1,16 @@
-import React, {useEffect, useState} from "react"
-import { Modal, View, Text, TouchableHighlight, Image, TextInput, Alert } from "react-native"
+import React, {useState} from "react"
+import { Modal, View, Text, TouchableHighlight, Image, StyleSheet } from "react-native"
 import { estilos } from "./estilos"
 import { addDoc, collection, updateDoc } from "firebase/firestore"
 import { bd } from "../firebase"
-import { buscarFirestore } from "./Global"
 
 export default function FazerPedido(props){
     const [quantidadePedido, setQuantidadePedido] = useState(1)
-    const [dataEntrega, setDataEntrega] = useState('')
-    const [horaEntrega, setHoraEntrega] = useState('')
+    const [dataEntrega, setDataEntrega] = useState('gffh')
+    const [modalDataVisibilidade, setModalDataVisibilidade] = useState(false)
+    const [modalHoraVisibilidade, setModalHoraVisibilidade] = useState(false)
+    const [minutos, setMinutos] = useState(0)
+    const [hora, setHora] = useState(12)
 
     let subtotal
     
@@ -26,9 +28,42 @@ export default function FazerPedido(props){
         return numero.toFixed(2).replace('.', ',')
     }
 
+        // Função aumentar minutos
+    function aumentarMinutos() {
+        if (minutos >= 0 && minutos < 59){
+            setMinutos((minutoAnterior) => minutoAnterior + 1)
+            console.log(minutos)
+        }
+    }
+
+    // Função diminuir minutos
+    function diminuirMinutos() {
+        if (minutos > 0 && minutos <= 59){
+            setMinutos((minutoAnterior) => minutoAnterior - 1)
+            console.log(minutos)
+        }
+    }
+
+    // Função aumentar hora
+    function aumentarHora() {
+        if (hora >= 12 && hora < 15){
+            setHora((horaAnterior) => horaAnterior + 1)
+            console.log(hora)
+        }
+    }
+
+    // Função diminuir hora
+    function diminuirHora() {
+        if (hora > 12 && hora <= 15){
+            setHora((horaAnterior) => horaAnterior - 1)
+            console.log(hora)
+        }
+    }
+
     const guardarPedido = async (situacao) => {
         try {
-            const nomeUtilizador = buscarFirestore('utilizador', nome, '')
+
+            const horaEntrega = `${hora}:${minutos}` 
 
             // Adicionar o pedido na coleção 'pedidos' no firestore
             const pedidoRef = await addDoc(collection(bd, 'pedidos'), {
@@ -50,7 +85,6 @@ export default function FazerPedido(props){
                 preco_venda: props.produtoSelecionado.precoVenda,
                 descricao: props.produtoSelecionado.descricao,
                 situacao: situacao,
-                nome: nomeUtilizador
             })
 
             // Atualizar subcoleção itens_pedidos com o código do pedido
@@ -70,113 +104,222 @@ export default function FazerPedido(props){
     }
     
     return(
-        <Modal
-            visible={props.modalVisibilidade}
-            onRequestClose={() => props.setModalVisibilidade(false)}
-        >
-            <View style={estilos.conteudoModalConteiner}>
+        <View>
+            <Modal
+                visible={props.modalVisibilidade}
+                onRequestClose={() => props.setModalVisibilidade(false)}
+            >
+                <View style={estilos.conteudoModalConteiner}>
+                    <TouchableHighlight // Botão fechar modal
+                        onPress={() => props.setModalVisibilidade(false)}
+                        style={estilos.btnFecharModal}
+                        >
+                        <Text style={estilos.txtBtnFecharModal}>X</Text>
+                    </TouchableHighlight>
+                        { props.produtoSelecionado && (
+                        <View>
+                            <Image
+                                source={props.produtoSelecionado.imagem}
+                            />
+
+                            {/* Texto subtotal pedido */}
+                            <Text style={{alignSelf: "center"}}>{
+                                subtotal = formatarFloat(converterPrecoParaFloat(props.produtoSelecionado.precoVenda) * quantidadePedido)
+                            }€
+                            </Text>                            
+                            <Text>Preço com IVA incluído</Text>
+                            
+                            {/* Quantidade pedido */}
+                            <Text>Quantidade</Text>
+                            <View>
+                                {/* Botão diminuir quantidade pedido */}
+                                <TouchableHighlight
+                                    style={{backgroundColor: "black"}}
+                                    onPress={() => {
+                                        if (quantidadePedido > 1) {
+                                            setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade - 1)
+                                            console.log(quantidadePedido)
+                                        }
+                                    }}
+                                    >
+                                    <Text style={{color: "white", alignSelf:"center"}}>-</Text>
+                                </TouchableHighlight>
+
+                                {/* Texto quantidade pedido */}
+                                <Text style={{color: "black", alignSelf:"center"}}>{quantidadePedido}</Text>
+    
+                                {/* Botão aumentar quantidade pedido */}
+                                <TouchableHighlight 
+                                    style={{backgroundColor: "black"}}
+                                    onPress={() => {
+                                        setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade + 1)
+                                        console.log(quantidadePedido)
+                                    }}
+                                >
+                                    <Text style={{color:"white", alignSelf:"center"}}>+</Text>
+                                </TouchableHighlight>
+                            </View>
+
+                            {/* Conteiner entrega */}
+                            <View>
+                                {/* Botão data de entrega */}
+                                <TouchableHighlight
+                                    style={estilos.btn}
+                                    onPress={() => setModalDataVisibilidade(true)}
+                                >
+                                    <Text>Data entrega</Text>
+                                </TouchableHighlight>
+
+                                {/* Botão hora de entrega */}
+                                <TouchableHighlight
+                                    style={estilos.btn}
+                                    onPress={() => setModalHoraVisibilidade(true)}
+                                >
+                                    <Text>Hora entrega</Text>
+                                </TouchableHighlight>
+
+                            </View>
+
+                            {/* Conteiner para adicionar o pedido ao carrinho ou para reservar o pedido */}
+                            <View>
+                                <TouchableHighlight // Botão adicionar pedido ao carrinho
+                                    onPress={() => {
+                                        if (dataPedido === '' || dataEntrega === '' || dataPedido === '' || horaPedido === '') {
+                                            alert('Favor prencher todos os campos')
+                                        } else {
+                                            guardarPedido('carrinho')
+                                        }
+                                    }}
+                                >
+                                    <Text>Carrinho</Text>
+                                </TouchableHighlight>
+
+                                <TouchableHighlight // Botão reservar pedido
+                                    onPress={() => {
+                                        if (dataPedido === '' || dataEntrega === '' || dataPedido === '' || horaPedido === '') {
+                                            alert('Favor prencher todos os campos')
+                                        } else {
+                                            guardarPedido('reservado')
+                                        }
+                                    }}
+                                    >
+                                    <Text>Reservar</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    )}
+                </View>
+
+            </Modal>
+
+            {/* Modal data entrega */}
+            <Modal
+                style={{height: 80, overflow: 40}}
+                visible={modalDataVisibilidade}
+                onRequestClose={() => setModalDataVisibilidade(true)}
+            >
                 <TouchableHighlight // Botão fechar modal
-                    onPress={() => props.setModalVisibilidade(false)}
+                    onPress={() => setModalDataVisibilidade(false)}
                     style={estilos.btnFecharModal}
-                >
+                    >
                     <Text style={estilos.txtBtnFecharModal}>X</Text>
                 </TouchableHighlight>
-                    { props.produtoSelecionado && (
-                    <View>
-                        <Image
-                            source={props.produtoSelecionado.imagem}
-                        />
+                <Text>Bom dia</Text>
+            </Modal>
 
-                        {/* Texto subtotal pedido */}
-                        <Text style={{alignSelf: "center"}}>{
-                            subtotal = formatarFloat(converterPrecoParaFloat(props.produtoSelecionado.precoVenda) * quantidadePedido)
-                        }€
-                        </Text>                            
-                        <Text>Preço com IVA incluído</Text>
+            {/* Modal hora entrega */}
+            <Modal
+                style={{height: -150}}
+                visible={modalHoraVisibilidade}
+                transparent={true}
+                onRequestClose={() => setModalHoraVisibilidade(true)}
+            >
+                {/* Conteiner mudar hora entrega*/}
+                <View style={estilosFazerPedido.conteinerModal}>
+                    <View style={estilosFazerPedido.conteinerMudarHoraEntrega}>
+                        <View style={estilosFazerPedido.conteinerConteudoHoraEntrega}>
+                            <View>
+                                {/* Botão adicionar hora*/}
+                                <TouchableHighlight
+                                    onPress={aumentarHora}
+                                >
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                </TouchableHighlight>
+
+                                <Text>{hora}</Text>
+
+                                {/* Botão diminuir hora*/}
+                                <TouchableHighlight
+                                    onPress={diminuirHora}
+                                >
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                </TouchableHighlight>
+                            </View>
+                                
+                            <Text style={estilosFazerPedido.txtSeparador}>:</Text>
+
+                            <View>
+                                {/* Botão adicionar minutos*/}
+                                <TouchableHighlight
+                                    onPress={aumentarMinutos}
+                                >
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                </TouchableHighlight>
+
+                                <Text>{minutos}</Text>
+
+                                {/* Botão diminuir minutos*/}
+                                <TouchableHighlight
+                                    onPress={diminuirMinutos}
+                                >
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
                         
-                        {/* Quantidade pedido */}
-                        <Text>Quantidade</Text>
-                        <View>
-                            {/* Botão diminuir quantidade pedido */}
-                            <TouchableHighlight
-                                style={{backgroundColor: "black"}}
-                                onPress={() => {
-                                    if (quantidadePedido > 1) {
-                                        setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade - 1)
-                                        console.log(quantidadePedido)
-                                    }
-                                }}
-                            >
-                                <Text style={{color: "white", alignSelf:"center"}}>-</Text>
-                            </TouchableHighlight>
-
-                            {/* Texto quantidade pedido */}
-                            <Text style={{color: "black", alignSelf:"center"}}>{quantidadePedido}</Text>
- 
-                            {/* Botão aumentar quantidade pedido */}
-                            <TouchableHighlight 
-                                style={{backgroundColor: "black"}}
-                                onPress={() => {
-                                    setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade + 1)
-                                    console.log(quantidadePedido)
-                                }}
-                            >
-                                <Text style={{color:"white", alignSelf:"center"}}>+</Text>
-                            </TouchableHighlight>
-                        </View>
-
-                        {/* Conteiner entrega */}
-                        <View>
-
-                            {/* Caixa de texto data de entrega */}
-                            <TextInput
-                                style={{marginVertical: 15, borderColor: 'black', borderWidth: 2, textAlign: 'center'}}
-                                placeholder="Data entrega"
-                                placeholderTextColor={"black"}
-                                onChangeText={(txtDataEntrega) => {setDataEntrega(txtDataEntrega), console.log(txtDataEntrega)}}
-                                value={dataEntrega}
-                            />
-
-                            {/* Caixa de texto hora de entrega */}
-                            <TextInput
-                                style={{marginVertical: 15, borderColor: 'black', borderWidth: 2, textAlign: 'center'}}
-                                placeholder="Hora entrega"
-                                placeholderTextColor={"black"}
-                                onChangeText={(txtHoraEntrega) => {setHoraEntrega(txtHoraEntrega), console.log(txtHoraEntrega)}}
-                                value={horaEntrega}
-                            />
-
-                        </View>
-
-                        {/* Conteiner para adicionar o pedido ao carrinho ou para reservar o pedido */}
-                        <View>
-                            <TouchableHighlight // Botão adicionar pedido ao carrinho
-                                onPress={() => {
-                                    if (dataPedido === '' || dataEntrega === '' || dataPedido === '' || horaPedido === '') {
-                                        alert('Favor prencher todos os campos')
-                                    } else {
-                                        guardarPedido('carrinho')
-                                    }
-                                }}
-                            >
-                                <Text>Carrinho</Text>
-                            </TouchableHighlight>
-
-                            <TouchableHighlight // Botão reservar pedido
-                                onPress={() => {
-                                    if (dataPedido === '' || dataEntrega === '' || dataPedido === '' || horaPedido === '') {
-                                        alert('Favor prencher todos os campos')
-                                    } else {
-                                        guardarPedido('reservado')
-                                    }
-                                }}
-                            >
-                                <Text>Reservar</Text>
-                            </TouchableHighlight>
-                        </View>
+                        <TouchableHighlight // Botão fechar modal contador
+                            style={estilos.btn}
+                            onPress={() => setModalHoraVisibilidade(false)}
+                        >
+                            <Text style={estilos.txtBtn}>Fechar</Text>
+                        </TouchableHighlight>
                     </View>
-                )}
-            </View>
-        </Modal>
+                </View>
+            </Modal>
+        </View>
     )
 }
+
+const estilosFazerPedido = StyleSheet.create({
+    conteinerModal: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0,0,0,0.5)"
+    },
+
+    conteinerMudarHoraEntrega: {
+        width: '90%',
+        //flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: "center",
+        backgroundColor: 'white',
+        borderRadius: 8,
+        padding: 20,
+    },
+
+    conteinerConteudoHoraEntrega:{
+        flexDirection: 'row',
+    },
+
+    txtBotaoMudarHoraEntrega: {
+        marginTop: 0,
+        color: '#0DE2E9',
+        fontSize: 40,
+    },
+
+    txtSeparador:{
+        marginHorizontal: 15,
+        alignSelf: 'center',
+    },
+});
