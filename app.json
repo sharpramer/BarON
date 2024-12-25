@@ -2,6 +2,12 @@
   "expo": {
     "name": "DivinoBarra",
     "slug": "DivinoBarra",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "newArchEnabled": true,
+    "extra": {
+      "eas": {
+        "projectId": "9781a1e6-8011-4044-8003-df658b951097"
+      }
+    }
   }
 }

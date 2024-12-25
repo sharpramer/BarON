@@ -1,0 +1,34 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeApp } from "firebase/app";
+import { initializeAuth, getAuth, getReactNativePersistence, PhoneAuthProvider, multiFactor } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDX6PzWhx9ytaoUUD9NH-FEF6m1ocy04aU",
+  authDomain: "baron-6bb9f.firebaseapp.com",
+  projectId: "baron-6bb9f",
+  storageBucket: "baron-6bb9f.appspot.com",
+  messagingSenderId: "18610726120",
+  appId: "1:18610726120:web:9f7e7949af83afe7cd955d",
+  measurementId: "G-PN92N3W8BS"
+};
+
+const app = initializeApp(firebaseConfig);
+
+export const bd = getFirestore(app);
+
+
+try {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+  });  
+} catch (error) {
+  if (error.code === 'auth/already-initialized') {
+    auth = getAuth()
+  }
+  console.log(`Deu erro: ${error}`)
+}
+
+export const utilizadorAtual = auth.currentUser
+
+export let auth
