@@ -1,12 +1,13 @@
 import React, {useState} from "react"
 import { Modal, View, Text, TouchableHighlight, Image, StyleSheet } from "react-native"
+import { Calendar } from "react-native-calendars";
 import { estilos } from "./estilos"
 import { addDoc, collection, updateDoc } from "firebase/firestore"
 import { bd } from "../firebase"
 
 export default function FazerPedido(props){
     const [quantidadePedido, setQuantidadePedido] = useState(1)
-    const [dataEntrega, setDataEntrega] = useState('gffh')
+    const [dataEntrega, setDataEntrega] = useState({dia: '', mes: '', ano: ''})
     const [modalDataVisibilidade, setModalDataVisibilidade] = useState(false)
     const [modalHoraVisibilidade, setModalHoraVisibilidade] = useState(false)
     const [minutos, setMinutos] = useState(0)
@@ -17,7 +18,7 @@ export default function FazerPedido(props){
     const dataSistema = new Date()
     const dataPedido = `${dataSistema.getDate()}/${dataSistema.getMonth() + 1}/${dataSistema.getFullYear()}`
     const horaPedido = `${dataSistema.getHours()}:${dataSistema.getMinutes()}`
-
+    
     function converterPrecoParaFloat(preco) {
         // Substitui a vírgula por ponto
         const precoFormatado = preco.replace(',', '.')
@@ -62,8 +63,7 @@ export default function FazerPedido(props){
 
     const guardarPedido = async (situacao) => {
         try {
-
-            const horaEntrega = `${hora}:${minutos}` 
+            const horaEntrega = `${hora}:${minutos}`
 
             // Adicionar o pedido na coleção 'pedidos' no firestore
             const pedidoRef = await addDoc(collection(bd, 'pedidos'), {
@@ -89,18 +89,20 @@ export default function FazerPedido(props){
 
             // Atualizar subcoleção itens_pedidos com o código do pedido
             updateDoc(itensPedidoRef, {
-                cod_pedido: pedidoRef.id
+                cod_pedido: pedidoRef.id,
+                //cod_utilizador: codUtilizador.uid,
             })
 
-            if (situacao === 'reservado')
-                alert('Pedido reservado com sucesso!')
-            else if (situacao === 'carrinho')
-                alert('Pedido guardado no carrinho com sucesso!')
+            
         }
         catch (erro) {
             alert('Erro ao registar')
             console.log(`Erro ao registar: ${erro}`)
         }
+        if (situacao === 'reservado')
+            alert('Pedido reservado com sucesso!')
+        else if (situacao === 'carrinho')
+            alert('Pedido guardado no carrinho com sucesso!')
     }
     
     return(
@@ -221,15 +223,31 @@ export default function FazerPedido(props){
                 <TouchableHighlight // Botão fechar modal
                     onPress={() => setModalDataVisibilidade(false)}
                     style={estilos.btnFecharModal}
-                    >
+                >
                     <Text style={estilos.txtBtnFecharModal}>X</Text>
                 </TouchableHighlight>
-                <Text>Bom dia</Text>
+                
+                {/* Calendário mudar data entrega*/}
+                <Calendar
+                    minDate={new Date().toDateString()}
+                    onDayPress={data => {setDataEntrega({
+                        dia: data.day,
+                        mes: data.month,
+                        ano: data.year
+                    })
+
+                    }}
+                    theme={{
+                        selectedDayBackgroundColor: "#0DE2E9",
+                        selectedDayTextColor: 'white'
+                    }}
+                />
+
+                <Text>Dia: {dataEntrega.dia}, Mes: {dataEntrega.mes}, Ano: {dataEntrega.ano},</Text>
             </Modal>
 
             {/* Modal hora entrega */}
             <Modal
-                style={{height: -150}}
                 visible={modalHoraVisibilidade}
                 transparent={true}
                 onRequestClose={() => setModalHoraVisibilidade(true)}

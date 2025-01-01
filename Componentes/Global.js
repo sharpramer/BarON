@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { auth, bd } from "../firebase";
-import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from "firebase/firestore";
+import { auth, bd } from "../firebase"
+import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from "firebase/firestore"
 import { estilos } from "./estilos"
 
 
@@ -42,32 +42,20 @@ export const eliminarFirestore = async (nomeColecao, dado) => {
     }
 }
 
-export const buscarDocumentoFirestore = async (nomeColecao, campo, valor) => {
+export async function buscarValorFirestore(nomeColecao, campo, valor) {
     try {
-        const documento = await getDocs(query(
+        const linha = await getDocs(query(
             collection(bd, nomeColecao),
             where(campo, '==', valor)
         ))
 
-        return documento
-    } catch (erro) {
-        console.error('Erro ao buscar documento')
-        Alert('Erro ao bosucar documento')
-    }
-}
+        if (!linha.empty) {
+            const dados = linha.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+            return dados[0]
+        }
 
-export const buscarCampoFirestore = async (nomeColecao, campo, valor) => {
-    try {
-        const docRef = await getDocs(
-            collection(bd, 'utilizador'),
-            doc => {
-                nome: doc.data().nome
-            }
-        )
-
-        return resultado
     } catch (erro) {
-        console.error('Erro ao buscar documento')
+        console.error(`Erro ao buscar documento: ${erro}`)
         Alert('Erro ao bosucar documento')
     }
 }
@@ -112,18 +100,18 @@ export async function buscarTudoLocal(){
 
 export const fazerLogout = async(navegacao) => {
     try {
-      await auth.signOut();
+      await auth.signOut()
       await apagarLocal("Passe")
       
-      alert('Saiu com sucesso');
+      alert('Saiu com sucesso')
 
       // Reseta a navegação e redireciona para a tela de login
       navegacao.reset({
         index: 0, // Zera o histórico de navegação
         routes: [{ name: 'PaginaLogin' }], // Redireciona para a tela de login
-      });
+      })
     } catch (erro) {
-      console.error("Erro ao realizar logout:", erro.message);
-      alert(`Erro ao sair: ${erro.message}`);
+      console.error("Erro ao realizar logout:", erro.message)
+      alert(`Erro ao sair: ${erro.message}`)
     }
 }
