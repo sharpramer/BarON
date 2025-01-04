@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Checkbox from 'expo-checkbox'
 import { auth } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { guardarLocal, buscarLocal } from "../Global"
+import { guardarLocal, buscarLocal, buscarValorFirestore } from "../Global"
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
@@ -113,6 +113,15 @@ export default function PaginaLogin({navigation}) {
             />
             <Text style={{color: "white"}}>Mostrar passe</Text>
           </View>
+
+          <TouchableHighlight
+            onPress={() => {
+              const emailFirestore = buscarValorFirestore('utilizador', 'email', utilizador.email)
+              console.log(emailFirestore)
+            }}
+          >
+            <Text>Teste</Text>
+          </TouchableHighlight>
 
           {/* Botão login utilizador */}
           <TouchableHighlight
