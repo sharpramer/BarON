@@ -1,18 +1,19 @@
 import React, {useState} from "react"
 import { Modal, View, Text, TouchableHighlight, Image, StyleSheet } from "react-native"
 import { Calendar } from "react-native-calendars";
-import { estilos } from "./estilos"
+import { bd, auth } from "../firebase"
 import { addDoc, collection, updateDoc } from "firebase/firestore"
-import { bd } from "../firebase"
+import { buscarValorFirestore } from "./Global";
+import { estilos } from "./estilos"
 
 export default function FazerPedido(props){
     const [quantidadePedido, setQuantidadePedido] = useState(1)
-    const [dataEntrega, setDataEntrega] = useState({dia: '', mes: '', ano: ''})
+    const [dataEntrega, setDataEntrega] = useState('')
     const [modalDataVisibilidade, setModalDataVisibilidade] = useState(false)
     const [modalHoraVisibilidade, setModalHoraVisibilidade] = useState(false)
     const [minutos, setMinutos] = useState(0)
     const [hora, setHora] = useState(12)
-
+    
     let subtotal
     
     const dataSistema = new Date()
@@ -29,7 +30,7 @@ export default function FazerPedido(props){
         return numero.toFixed(2).replace('.', ',')
     }
 
-        // Função aumentar minutos
+    // Função aumentar minutos
     function aumentarMinutos() {
         if (minutos >= 0 && minutos < 59){
             setMinutos((minutoAnterior) => minutoAnterior + 1)
@@ -60,10 +61,20 @@ export default function FazerPedido(props){
             console.log(hora)
         }
     }
-
+    
     const guardarPedido = async (situacao) => {
         try {
             const horaEntrega = `${hora}:${minutos}`
+            
+            // Buscar código do utilizador
+            const utilizadorAtual = auth.currentUser;
+        
+            if (!utilizadorAtual) {
+            console.error("Utilizador não autenticado.");
+            }
+        
+            const codigoUtilizador = await buscarValorFirestore('utilizador', 'codigo', utilizadorAtual.uid);
+            console.log("Valor do Firestore:", codigoUtilizador.codigo);
 
             // Adicionar o pedido na coleção 'pedidos' no firestore
             const pedidoRef = await addDoc(collection(bd, 'pedidos'), {
@@ -80,6 +91,7 @@ export default function FazerPedido(props){
             // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
             const itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
                 nome_curto: props.produtoSelecionado.produto,
+                codigo_utilizador: codigoUtilizador.codigo, 
                 subtotal: subtotal,
                 quantidade: quantidadePedido,
                 preco_venda: props.produtoSelecionado.precoVenda,
@@ -90,14 +102,13 @@ export default function FazerPedido(props){
             // Atualizar subcoleção itens_pedidos com o código do pedido
             updateDoc(itensPedidoRef, {
                 cod_pedido: pedidoRef.id,
-                //cod_utilizador: codUtilizador.uid,
             })
 
             
         }
         catch (erro) {
-            alert('Erro ao registar')
-            console.log(`Erro ao registar: ${erro}`)
+            alert('Erro ao guardar pedido')
+            console.log(`Erro ao guardar pedido: ${erro}`)
         }
         if (situacao === 'reservado')
             alert('Pedido reservado com sucesso!')
@@ -230,20 +241,16 @@ export default function FazerPedido(props){
                 {/* Calendário mudar data entrega*/}
                 <Calendar
                     minDate={new Date().toDateString()}
-                    onDayPress={data => {setDataEntrega({
-                        dia: data.day,
-                        mes: data.month,
-                        ano: data.year
-                    })
-
+                    onDayPress={data => {
+                        let dataEntrega = `${data.day}/${data.month}/${data.year}`
+                        console.log(dataEntrega)
+                        setDataEntrega(dataEntrega)
                     }}
                     theme={{
                         selectedDayBackgroundColor: "#0DE2E9",
                         selectedDayTextColor: 'white'
                     }}
                 />
-
-                <Text>Dia: {dataEntrega.dia}, Mes: {dataEntrega.mes}, Ano: {dataEntrega.ano},</Text>
             </Modal>
 
             {/* Modal hora entrega */}

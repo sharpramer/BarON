@@ -1,7 +1,7 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
 import React, { useState, useEffect } from "react"
 import { View, StyleSheet, Text, FlatList, TouchableOpacity } from "react-native"
-import { bd } from "../firebase"
+import { auth, bd } from "../firebase"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { eliminarFirestore } from "./Global"
 
@@ -12,6 +12,7 @@ export default function Pedidos(props) {
     // Função para buscar os dados
     const obterPedido = async () => {
       try {
+        const utilizadorAtual = auth.currentUser
 
         const pedidosRef = await getDocs(collection(bd, 'pedidos'))
 
@@ -26,7 +27,8 @@ export default function Pedidos(props) {
             // Filtrar itens_pedido onde situacao é igual a 'reservado'
             const itensPedidosLinha = query(
               collection(doc.ref, 'itens_pedido'),
-              where('situacao', '==', props.situacao)
+              where('situacao', '==', props.situacao),
+              where('codigo_utilizador', '==', utilizadorAtual.uid),
             )
             const itensPedidosRef = await getDocs(itensPedidosLinha)
 

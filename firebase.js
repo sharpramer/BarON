@@ -21,14 +21,12 @@ export const bd = getFirestore(app);
 try {
   auth = initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage)
-  });  
+  })
 } catch (error) {
   if (error.code === 'auth/already-initialized') {
     auth = getAuth()
   }
   console.log(`Deu erro: ${error}`)
 }
-
-export const utilizadorAtual = auth.currentUser
 
 export let auth
