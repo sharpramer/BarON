@@ -1,22 +1,21 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
-import { initializeAuth, getAuth, getReactNativePersistence, PhoneAuthProvider, multiFactor } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDX6PzWhx9ytaoUUD9NH-FEF6m1ocy04aU",
-  authDomain: "baron-6bb9f.firebaseapp.com",
-  projectId: "baron-6bb9f",
-  storageBucket: "baron-6bb9f.appspot.com",
-  messagingSenderId: "18610726120",
-  appId: "1:18610726120:web:9f7e7949af83afe7cd955d",
-  measurementId: "G-PN92N3W8BS"
+  apiKey: "AIzaSyBc-PnDIcJ1Pd2IdNC2ESQLPEfd-VS9-6g",
+  authDomain: "divino-barra.firebaseapp.com",
+  projectId: "divino-barra",
+  storageBucket: "divino-barra.appspot.com",
+  messagingSenderId: "604976514096",
+  appId: "1:604976514096:web:9ecd64de092c46c6b219f5"
 };
 
-const app = initializeApp(firebaseConfig);
 
-export const bd = getFirestore(app);
+export const app = initializeApp(firebaseConfig);
 
+export const bd = getFirestore(app)
 
 try {
   auth = initializeAuth(app, {

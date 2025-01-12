@@ -13,8 +13,8 @@ export default function Pedidos(props) {
     const obterPedido = async () => {
       try {
         const utilizadorAtual = auth.currentUser
-
-        const pedidosRef = await getDocs(collection(bd, 'pedidos'))
+        
+        const pedidosRef = await getDocs(collection(bd, 'Pedidos'))
 
         const dadosPedidos = await Promise.all(
           pedidosRef.docs.map(async (doc) => {
@@ -78,7 +78,7 @@ export default function Pedidos(props) {
             {item.itensPedido.map((produto) => (
               <TouchableOpacity 
                 style={estilos.linha}
-                onPress={() => eliminarFirestore('pedidos', item.id)}
+                onPress={() => eliminarFirestore('Pedidos', item.id)}
                 key={produto.id}
               >
                 <Text style={estilos.linhaTexto}>{produto.nomeCurto}</Text>

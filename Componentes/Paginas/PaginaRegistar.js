@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { auth, bd } from "../../firebase";
 import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
@@ -36,7 +36,7 @@ export default function PaginaRegistar() {
     }
     catch (erro) {
       alert('Erro ao registar')
-      console.log(`Erro ao registar: ${erro}`)
+      console.error(`Erro ao registar: ${erro}`)
     }
   }
   
@@ -131,7 +131,7 @@ export default function PaginaRegistar() {
           {/* Botão registar aluno */}
           <TouchableHighlight
             style={estilos.btn}
-            onPress={() => {
+            onPress={async () => {
               if (
                 utilizador.nome === '' ||
                 utilizador.dataNascimento === '' ||
@@ -140,14 +140,19 @@ export default function PaginaRegistar() {
               ) {
                 alert('Favor preencher todos os campos');
               } else {
-                guardarRegisto(
-                  'utilizador',
-                  utilizador.nome,
-                  utilizador.dataNascimento,
-                  utilizador.numero,
-                  utilizador.email,
-                  utilizador.passe
-                );
+                try {
+                  guardarRegisto(
+                    'Utilizadores',
+                    utilizador.nome,
+                    utilizador.dataNascimento,
+                    utilizador.numero,
+                    utilizador.email,
+                    utilizador.passe
+                  )
+                  
+                } catch (erro) {
+                  console.error(`Erro ao registar utilizador:${erro}`);
+                }
               }
             }}
           >
@@ -212,10 +217,23 @@ export default function PaginaRegistar() {
           <TouchableHighlight
             style={estilos.btn}
             onPress={ () => {
-              if (funcionario.nome === '' || funcionario.numero === '' || funcionario.dataNascimento === '' || funcionario.email === '' || funcionario.passe === '')
+              if (
+                funcionario.nome === '' || 
+                funcionario.numero === '' || 
+                funcionario.dataNascimento === '' || 
+                funcionario.email === '' || 
+                funcionario.passe === ''
+              )
                 alert('Favor preencher todos os campos')
               else {
-                guardarRegisto('funcionario', funcionario.nome, funcionario.dataNascimento, funcionario.numero, funcionario.email, funcionario.passe)
+                guardarRegisto(
+                  'Funcionarios', 
+                  funcionario.nome, 
+                  funcionario.dataNascimento, 
+                  funcionario.numero, 
+                  funcionario.email, 
+                  funcionario.passe
+                )
               }
             }}
           >

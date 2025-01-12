@@ -56,7 +56,7 @@ export async function buscarValorFirestore(nomeColecao, campo, valor) {
 
     } catch (erro) {
         console.error(`Erro ao buscar documento: ${erro}`)
-        Alert('Erro ao bosucar documento')
+        Alert('Erro ao boscar documento')
     }
 }
 

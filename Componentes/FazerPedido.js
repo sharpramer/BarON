@@ -77,7 +77,7 @@ export default function FazerPedido(props){
             console.log("Valor do Firestore:", codigoUtilizador.codigo);
 
             // Adicionar o pedido na coleção 'pedidos' no firestore
-            const pedidoRef = await addDoc(collection(bd, 'pedidos'), {
+            const pedidoRef = await addDoc(collection(bd, 'Pedidos'), {
                 data_entrega: dataEntrega,
                 data_pedido: dataPedido,
                 hora_entrega: horaEntrega,
@@ -301,8 +301,9 @@ export default function FazerPedido(props){
                                 </TouchableHighlight>
                             </View>
                         </View>
-                        
-                        <TouchableHighlight // Botão fechar modal contador
+
+                        {/* Botão fechar modal contador */}
+                        <TouchableHighlight
                             style={estilos.btn}
                             onPress={() => setModalHoraVisibilidade(false)}
                         >

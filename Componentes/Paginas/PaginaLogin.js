@@ -2,9 +2,10 @@ import React, {useEffect, useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Checkbox from 'expo-checkbox'
-import { auth } from "../../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, bd } from "../../firebase"
+import { signInWithEmailAndPassword } from "firebase/auth"
 import { guardarLocal, buscarLocal, buscarValorFirestore } from "../Global"
+import { collection, getDocs, query, where } from "firebase/firestore"
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
@@ -27,6 +28,66 @@ export default function PaginaLogin({navigation}) {
     }
     carregarPasse()
   },[])
+
+  // Função para verificar se o email existe na coleção inserida
+
+  async function verificarEmail(colecao, email) {
+    try {
+      const linha = await getDocs(query(
+        collection(bd, colecao),
+        where('email', '==', email)
+      ))
+      if(!linha.empty){
+        console.log('Email encontrado no verificarEmail')
+        return true
+      }
+      else {
+        console.log('Email não encontrado')
+        return false
+      }
+    } catch (erro) {
+      console.error(`Erro ao encontrar email: ${erro}`)
+    }
+  }
+
+  async function fazerLogin(colecao, email, passe, guardarPasse, paginaInicial) {
+    if (email === '' || passe === '') {
+      alert('Favor preencher todos os campos')
+    }
+    
+    console.log('Verificando email...');
+    
+    try {
+      console.log('Try');
+      
+      const resultado = await verificarEmail(colecao, email)
+      console.log(`Resultado ${resultado}`)
+
+      if (resultado == true) {
+        console.log('Email encontrado');
+        
+        if (guardarPasse) {
+          console.log('Guardando a passe...');
+          guardarLocal('Passe', passe)
+          console.log('Guardada a passe');
+        }
+        try {
+          console.log('Fazendo login...');
+          
+          await signInWithEmailAndPassword(auth, email, passe)
+          navigation.navigate(paginaInicial)
+        } catch (erro) {
+          alert('Erro ao fazer login, verifique o email e senha e tente novamente!')
+          console.log(erro)
+        }
+      } else {
+        alert('Não foi possível encontrar uma conta com esse email. Verifique o email introduzido e tente novamente')
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login');
+      
+    }
+  }
 
   return(
     <SafeAreaView style={estilos.conteiner}>
@@ -61,13 +122,13 @@ export default function PaginaLogin({navigation}) {
       {/* Conteiner login utilizador */}
       { opLogin === 'Utilizador' ?
         <View style={estilos.loginConteiner}>
-          {/* Caixa de texto Codigo utilizador */}
+          {/* Caixa de texto email utilizador */}
           <TextInput
             style={estilos.cx}
             onChangeText={texto => {
               setUtilizador({...utilizador, email: texto})
             }}
-            placeholder="Código ou email"
+            placeholder="Email"
             placeholderTextColor={"white"}
             value={utilizador.email}
           />
@@ -115,9 +176,13 @@ export default function PaginaLogin({navigation}) {
           </View>
 
           <TouchableHighlight
-            onPress={() => {
-              const emailFirestore = buscarValorFirestore('utilizador', 'email', utilizador.email)
-              console.log(emailFirestore)
+            style={estilos.btnLogin}
+            onPress={async () => {
+              const email = await verificarEmail(
+                'Utilizadores', 
+                utilizador.email,
+              )
+              console.log(email)
             }}
           >
             <Text>Teste</Text>
@@ -127,20 +192,13 @@ export default function PaginaLogin({navigation}) {
           <TouchableHighlight
             style={estilos.btnLogin}
             onPress={async () => {
-              if (utilizador.email === '' || utilizador.passe === '') {
-                alert('Favor preencher todos os campos')
-              } else {
-                if (utilizador.guardarPasse) {
-                  guardarLocal('Passe', utilizador.passe)
-                }
-                try {
-                  await signInWithEmailAndPassword(auth, utilizador.email, utilizador.passe)
-                  navigation.navigate('PaginaInicialUtilizador')
-                } catch (erro) {
-                  alert('Erro ao fazer login, verifique o email e palavra-passe e tente novamente!')
-                  console.log(erro)
-                }
-              }
+              await fazerLogin(
+                'Utilizadores', 
+                utilizador.email,
+                utilizador.passe,
+                utilizador.guardarPasse,
+                'PaginaInicialUtilizador'
+              )
             }}
           >
             <Text style={estilos.txtBtnLogin}>Login</Text>
@@ -199,20 +257,13 @@ export default function PaginaLogin({navigation}) {
           <TouchableHighlight
             style={estilos.btnLogin}
             onPress={async () => {
-              if (funcionario.email === '' || funcionario.passe === '') {
-                alert('Favor preencher todos os campos')
-              } else {
-                if (funcionario.guardarPasse) {
-                  guardarLocal('Passe', funcionario.passe)
-                }
-                try {
-                  await signInWithEmailAndPassword(auth, funcionario.email, funcionario.passe)
-                  navigation.navigate('PaginaInicialFuncionario')
-                } catch (erro) {
-                  alert('Erro ao fazer login, verifique o email e palavra-passe e tente novamente!')
-                  console.log(erro)
-                }
-              }
+              await fazerLogin(
+                'Funcionarios', 
+                funcionario.email,
+                funcionario.passe,
+                funcionario.guardarPasse,
+                'PaginaInicialFuncionario'
+              )
             }}
           >
             <Text style={estilos.txtBtnLogin}>Login</Text>
