@@ -1,13 +1,55 @@
 import React, { useState } from "react"
 import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal, SafeAreaView } from "react-native"
-import FazerPedido from "./FazerPedido";
+import FazerPedido from "./FazerPedido"
 
 const produtosArray = [
-    { id: 1, imagem: require("./img/sumo-laranja.png"), precoVenda: '1,00', precoCusto: '0,80', descricao: 'Sumo de laranja natural', produto: 'Sumo de laranja' },
-    { id: 2, imagem: require("./img/risoles.jpg"), precoVenda: '1,20',  precoCusto: '1,00', descricao: 'Risoles de carne de boi', produto: 'Risoles' },
-    { id: 3, imagem: require("./img/tosta-mista.png"), precoVenda: '1,60',  precoCusto: '1,20', descricao: 'Pão com queijo e fiambre na chapa', produto: 'Tosta mista' },
-    { id: 4, imagem: require("./img/coxinha.png"), precoVenda: '2,00',  precoCusto: '1,30', descricao: 'Coxinha com queijo', produto: 'Coxinha' }
-];
+    { 
+        id: 1, 
+        imagem: require("./img/a-la-minuta-no-pao.jpeg"), 
+        precoVenda: '1,00', 
+        precoCusto: '0,80', 
+        descricao: 'Sumo de laranja natural', 
+        produto: 'A la minuta no pão' 
+    },
+
+    
+    { 
+        id: 2, 
+        imagem: require("./img/salada-italiana.png"), 
+        precoVenda: '1,20',  
+        precoCusto: '1,00', 
+        descricao: 'Salada italiana', 
+        produto: 'Salada italiana'
+    },
+    
+    { 
+        id: 3, 
+        imagem: require("./img/salada-japonesa.png"), 
+        precoVenda: '1,60',  
+        precoCusto: '1,20', 
+        descricao: 'Pão com queijo e fiambre na chapa', 
+        produto: 'Salada italiana' 
+    },
+    
+    { 
+        id: 4, 
+        imagem: require("./img/salada.png"), 
+        precoVenda: '2,00',  
+        precoCusto: '1,30', 
+        descricao: 'Salada', 
+        produto: 'Salada' 
+    },
+
+    { 
+        id: 5, 
+        imagem: require("./img/salada2.jpeg"), 
+        precoVenda: '1,00', 
+        precoCusto: '0,80', 
+        descricao: 'Sumo de laranja natural', 
+        produto: 'Salada 2' 
+    }
+
+]
 
 export default function Produtos() {
     const [modalVisibilidade, setModalVisibilidade] = useState(false)
@@ -25,7 +67,7 @@ export default function Produtos() {
                         style={estilos.ImagemProduto}
                     />
                 </TouchableHighlight>
-                <Text style={estilos.txtPrecoProduto}>{item.precoVenda}€</Text>
+                <Text style={estilos.txtPrecoProduto}>R$ {item.precoVenda}</Text>
                 <Text style={estilos.txtNomeProduto}>{item.produto}</Text>
             </View>
         )
@@ -44,7 +86,7 @@ export default function Produtos() {
 
             <FazerPedido modalVisibilidade={modalVisibilidade} produtoSelecionado={produtoSelecionado} setModalVisibilidade={setModalVisibilidade}/>
         </SafeAreaView>
-    );
+    )
 }
 
 const estilos = StyleSheet.create({

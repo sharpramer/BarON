@@ -3,6 +3,6 @@ import Pedidos from "../../Pedidos";
 
 export default function PaginaPedidos() {
     return(
-        <Pedidos situacao="reservado"/>
+        <Pedidos situacao="reservado" tipoConta={'utilizador'}/>
     )
 }

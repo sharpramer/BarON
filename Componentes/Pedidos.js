@@ -24,28 +24,56 @@ export default function Pedidos(props) {
               horaEntrega: doc.data().hora_entrega,
             }
 
-            // Filtrar itens_pedido onde situacao é igual a 'reservado'
-            const itensPedidosLinha = query(
-              collection(doc.ref, 'itens_pedido'),
-              where('situacao', '==', props.situacao),
-              where('codigo_utilizador', '==', utilizadorAtual.uid),
-            )
-            const itensPedidosRef = await getDocs(itensPedidosLinha)
-
-            // Mapeia apenas os itens que atendem ao filtro
-            const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
-              id: itemDoc.id,
-              nomeCurto: itemDoc.data().nome_curto,
-              subtotal: itemDoc.data().subtotal,
-              quantidade: itemDoc.data().quantidade,
-              precoVenda: itemDoc.data().preco_venda,
-            }))
-
-            // Apenas adiciona o pedido se houver itens com situacao 'reservado'
-            if (dadosItensPedios.length > 0) {
-              return { ...dadosPedido, itensPedido: dadosItensPedios }
+            /* Verifica se a conta logada é do tipo utilizador */
+            if (props.tipoConta === 'utilizador') {
+              // Mostra somente os pedidos onde a situação é igual a 'reservado' e os pedidos do utilizador igual
+              const itensPedidosLinha = query(
+                collection(doc.ref, 'itens_pedido'),
+                where('situacao', '==', props.situacao),
+                where('codigo_utilizador', '==', utilizadorAtual.uid),
+              )
+              const itensPedidosRef = await getDocs(itensPedidosLinha)
+  
+              // Mapeia apenas os itens que atendem ao filtro
+              const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
+                id: itemDoc.id,
+                nomeCurto: itemDoc.data().nome_curto,
+                subtotal: itemDoc.data().subtotal,
+                quantidade: itemDoc.data().quantidade,
+                precoVenda: itemDoc.data().preco_venda,
+              }))
+  
+              // Apenas adiciona o pedido se houver itens com situacao 'reservado'
+              if (dadosItensPedios.length > 0) {
+                return { ...dadosPedido, itensPedido: dadosItensPedios }
+              }
+              return null // Ignora pedidos sem itens reservados
+            } 
+            
+            /* Verifica se a conta logada é do tipo funcionário */
+            else {
+              // Mostra somente os pedidos onde a situação é igual a 'reservado'
+              const itensPedidosLinha = query(
+                collection(doc.ref, 'itens_pedido'),
+                where('situacao', '==', props.situacao),
+              )
+              const itensPedidosRef = await getDocs(itensPedidosLinha)
+  
+              // Mapeia apenas os itens que atendem ao filtro
+              const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
+                id: itemDoc.id,
+                nomeCurto: itemDoc.data().nome_curto,
+                subtotal: itemDoc.data().subtotal,
+                quantidade: itemDoc.data().quantidade,
+                precoVenda: itemDoc.data().preco_venda,
+              }))
+  
+              // Apenas adiciona o pedido se houver itens com situacao 'reservado'
+              if (dadosItensPedios.length > 0) {
+                return { ...dadosPedido, itensPedido: dadosItensPedios }
+              }
+              return null // Ignora pedidos sem itens reservados
             }
-            return null // Ignora pedidos sem itens reservados
           })
         )
 

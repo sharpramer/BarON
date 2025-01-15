@@ -73,7 +73,7 @@ export default function FazerPedido(props){
             console.error("Utilizador não autenticado.");
             }
         
-            const codigoUtilizador = await buscarValorFirestore('utilizador', 'codigo', utilizadorAtual.uid);
+            const codigoUtilizador = await buscarValorFirestore('Utilizadores', 'codigo', utilizadorAtual.uid);
             console.log("Valor do Firestore:", codigoUtilizador.codigo);
 
             // Adicionar o pedido na coleção 'pedidos' no firestore
@@ -104,16 +104,15 @@ export default function FazerPedido(props){
                 cod_pedido: pedidoRef.id,
             })
 
-            
+            if (situacao === 'reservado')
+                alert('Pedido reservado com sucesso!')
+            else if (situacao === 'carrinho')
+                alert('Pedido guardado no carrinho com sucesso!')
         }
         catch (erro) {
             alert('Erro ao guardar pedido')
             console.log(`Erro ao guardar pedido: ${erro}`)
         }
-        if (situacao === 'reservado')
-            alert('Pedido reservado com sucesso!')
-        else if (situacao === 'carrinho')
-            alert('Pedido guardado no carrinho com sucesso!')
     }
     
     return(
