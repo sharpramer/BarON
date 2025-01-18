@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { auth, bd } from "../../firebase";
 import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { estilos } from "../estilos";
 
 export default function PaginaRegistar() {
@@ -32,11 +32,22 @@ export default function PaginaRegistar() {
         numero: numero + 1,
         email: email,
       })
+
+      if(utilizador && !utilizador.emailVerified){
+        await sendEmailVerification(utilizador)
+        alert('Um email de verificação foi enviado para o seu email.')
+      }
       alert('Registado com sucesso!')
     }
     catch (erro) {
-      alert('Erro ao registar')
-      console.error(`Erro ao registar: ${erro}`)
+      if (erro.code === 'auth/email-already-in-use') {
+        alert('O e-mail já está em uso. Por favor, tente outro.');
+      } else if (erro.code === 'auth/weak-password') {
+        alert('A palavra-passe é muito fraca. Escolha uma mais segura.');
+      } else {
+        alert('Erro ao registar. Por favor, tente novamente.');
+      }
+      console.error(`Erro ao registar: ${erro.message}`);
     }
   }
   
@@ -127,6 +138,13 @@ export default function PaginaRegistar() {
 
 
           <View style={estilos.separadorCx}></View>
+
+          <TouchableHighlight
+            style={estilos.btn}
+            onPress={() => { enviarEmailVerificacao() }}
+          >
+            <Text>Teste</Text>
+          </TouchableHighlight>
 
           {/* Botão registar aluno */}
           <TouchableHighlight

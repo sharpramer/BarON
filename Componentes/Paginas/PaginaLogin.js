@@ -51,31 +51,40 @@ export default function PaginaLogin({navigation}) {
   }
 
   async function fazerLogin(colecao, email, passe, guardarPasse, paginaInicial) {
+    
+    // Validação dos campos
     if (email === '' || passe === '') {
       alert('Favor preencher todos os campos')
     }
     
-    console.log('Verificando email...');
+    console.log('Verificando email...')
     
     try {
-      console.log('Try');
+      console.log('Try')
       
       const resultado = await verificarEmail(colecao, email)
       console.log(`Resultado ${resultado}`)
 
       if (resultado == true) {
-        console.log('Email encontrado');
+        console.log('Email encontrado')
         
         if (guardarPasse) {
-          console.log('Guardando a passe...');
+          console.log('Guardando a passe...')
           guardarLocal('Passe', passe)
-          console.log('Guardada a passe');
+          console.log('Guardada a passe')
         }
+
+        // Fazer login
         try {
-          console.log('Fazendo login...');
+          const credencial = await signInWithEmailAndPassword(auth, email, passe)
           
-          await signInWithEmailAndPassword(auth, email, passe)
-          navigation.navigate(paginaInicial)
+          if (credencial.user.emailVerified) {
+            console.log('Fazendo login...')
+            navigation.navigate(paginaInicial)
+          } else {
+            alert('Seu e-mail ainda não foi verificado. Por favor, verifique sua caixa de entrada e spam.')
+          }
+
         } catch (erro) {
           alert('Erro ao fazer login, verifique o email e senha e tente novamente!')
           console.log(erro)
@@ -84,7 +93,7 @@ export default function PaginaLogin({navigation}) {
         alert('Não foi possível encontrar uma conta com esse email. Verifique o email introduzido e tente novamente')
       }
     } catch (error) {
-      console.error('Erro ao fazer login');
+      console.error('Erro ao fazer login')
       
     }
   }
