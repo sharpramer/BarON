@@ -13,7 +13,7 @@ export default function PaginaInicialUtilizador() {
       <Separador.Screen name="Carrinho" component={PaginaCarrinho} options={{ title: 'Carrinho' }} />
       <Separador.Screen name="Inicio" component={PaginaInicio} options={{ title: 'Início' }} />
       <Separador.Screen name="Pedidos" component={PaginaPedidos} options={{ title: 'Pedidos' }} />
-      <Separador.Screen name="Definicoes" component={PaginaDefinicoes} options={{ title: 'Definições' }} />
+      <Separador.Screen name="Definicoes" component={PaginaDefinicoes} options={{ title: 'Configurações' }} />
     </Separador.Navigator>
   )
 }

@@ -125,21 +125,21 @@ export default function FazerPedido(props){
                     <TouchableHighlight // Botão fechar modal
                         onPress={() => props.setModalVisibilidade(false)}
                         style={estilos.btnFecharModal}
-                        >
+                    >
                         <Text style={estilos.txtBtnFecharModal}>X</Text>
                     </TouchableHighlight>
                         { props.produtoSelecionado && (
                         <View>
                             <Image
+                                style={estilosFazerPedido.imagemProduto}
                                 source={props.produtoSelecionado.imagem}
                             />
 
                             {/* Texto subtotal pedido */}
-                            <Text style={{alignSelf: "center"}}>{
+                            <Text style={{alignSelf: "center"}}>R$ {
                                 subtotal = formatarFloat(converterPrecoParaFloat(props.produtoSelecionado.precoVenda) * quantidadePedido)
-                            }€
+                            }
                             </Text>                            
-                            <Text>Preço com IVA incluído</Text>
                             
                             {/* Quantidade pedido */}
                             <Text>Quantidade</Text>
@@ -267,7 +267,7 @@ export default function FazerPedido(props){
                                 <TouchableHighlight
                                     onPress={aumentarHora}
                                 >
-                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>+</Text>
                                 </TouchableHighlight>
 
                                 <Text>{hora}</Text>
@@ -276,7 +276,7 @@ export default function FazerPedido(props){
                                 <TouchableHighlight
                                     onPress={diminuirHora}
                                 >
-                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>-</Text>
                                 </TouchableHighlight>
                             </View>
                                 
@@ -287,7 +287,7 @@ export default function FazerPedido(props){
                                 <TouchableHighlight
                                     onPress={aumentarMinutos}
                                 >
-                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>+</Text>
                                 </TouchableHighlight>
 
                                 <Text>{minutos}</Text>
@@ -296,7 +296,7 @@ export default function FazerPedido(props){
                                 <TouchableHighlight
                                     onPress={diminuirMinutos}
                                 >
-                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>^</Text>
+                                    <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>-</Text>
                                 </TouchableHighlight>
                             </View>
                         </View>
@@ -325,7 +325,6 @@ const estilosFazerPedido = StyleSheet.create({
 
     conteinerMudarHoraEntrega: {
         width: '90%',
-        //flexDirection: 'row',
         justifyContent: 'center',
         alignItems: "center",
         backgroundColor: 'white',
@@ -335,6 +334,11 @@ const estilosFazerPedido = StyleSheet.create({
 
     conteinerConteudoHoraEntrega:{
         flexDirection: 'row',
+    },
+
+    imagemProduto:{
+        height: 250,
+        width: "auto"
     },
 
     txtBotaoMudarHoraEntrega: {

@@ -11,8 +11,6 @@ export default function PaginaDefinicoes() { // Página definições utilizador
 
       <MenuConta/>
 
-      <MenuAparencia/>
-      
       <MenuSobre/>
       
       <MenuSair/>

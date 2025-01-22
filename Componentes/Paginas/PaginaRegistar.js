@@ -37,17 +37,17 @@ export default function PaginaRegistar() {
         await sendEmailVerification(utilizador)
         alert('Um email de verificação foi enviado para o seu email.')
       }
-      alert('Registado com sucesso!')
+      alert('Registrado com sucesso!')
     }
     catch (erro) {
       if (erro.code === 'auth/email-already-in-use') {
         alert('O e-mail já está em uso. Por favor, tente outro.');
       } else if (erro.code === 'auth/weak-password') {
-        alert('A palavra-passe é muito fraca. Escolha uma mais segura.');
+        alert('A senha é muito fraca. Escolha uma mais segura.');
       } else {
-        alert('Erro ao registar. Por favor, tente novamente.');
+        alert('Erro ao registrar. Por favor, tente novamente.');
       }
-      console.error(`Erro ao registar: ${erro.message}`);
+      console.error(`Erro ao registrar: ${erro.message}`);
     }
   }
   
@@ -65,7 +65,7 @@ export default function PaginaRegistar() {
             setOpRegistar('Utilizador')
           }}
         >
-          <Text>Utilizador</Text>
+          <Text>Usuário</Text>
         </TouchableHighlight>
 
         {/* Botão opção de registar funcionário */}
@@ -105,8 +105,9 @@ export default function PaginaRegistar() {
             onChangeText={txtPasse => {
               setUtilizador({ ...utilizador, passe: txtPasse })
             }}
-            placeholder="Passe"
+            placeholder="Senha"
             placeholderTextColor={"black"}
+            secureTextEntry={true}
             value={utilizador.passe}
           />
 
@@ -169,12 +170,12 @@ export default function PaginaRegistar() {
                   )
                   
                 } catch (erro) {
-                  console.error(`Erro ao registar utilizador:${erro}`);
+                  console.error(`Erro ao registrar utilizador:${erro}`);
                 }
               }
             }}
           >
-            <Text>Registar</Text>
+            <Text>Registrar</Text>
           </TouchableHighlight>
         </View> :
 
@@ -198,7 +199,7 @@ export default function PaginaRegistar() {
             onChangeText={txtPasse => {
               setFuncionario({ ...funcionario, passe: txtPasse })
             }}
-            placeholder="Passe"
+            placeholder="Senha"
             placeholderTextColor={"black"}
             value={funcionario.passe}
           />
@@ -255,7 +256,7 @@ export default function PaginaRegistar() {
               }
             }}
           >
-            <Text>Registar</Text>
+            <Text>Registrar</Text>
           </TouchableHighlight>
         </View>
       }

@@ -113,7 +113,7 @@ export default function PaginaLogin({navigation}) {
             setOpLogin("Utilizador")
           }}
         >
-          <Text>Utilizador</Text>
+          <Text>Usuário</Text>
         </TouchableHighlight>
 
         {/* Botão opção de login funcionário */}
@@ -150,7 +150,7 @@ export default function PaginaLogin({navigation}) {
             onChangeText={texto => {
               setUtilizador({...utilizador, passe: texto})
             }}
-            placeholder="Palavra-Passe"
+            placeholder="Senha"
             placeholderTextColor={"white"}
             secureTextEntry={!mostrarPasse} 
             value={utilizador.passe}
@@ -171,7 +171,7 @@ export default function PaginaLogin({navigation}) {
               }}
               color={utilizador.guardarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Memorizar passe</Text>
+            <Text style={{color: "white"}}>Memorizar senha</Text>
 
             <Checkbox // Checkbox mostrar passe
               style={estilos.chb}
@@ -181,21 +181,8 @@ export default function PaginaLogin({navigation}) {
               }}
               color={mostrarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Mostrar passe</Text>
+            <Text style={{color: "white"}}>Mostrar senha</Text>
           </View>
-
-          <TouchableHighlight
-            style={estilos.btnLogin}
-            onPress={async () => {
-              const email = await verificarEmail(
-                'Utilizadores', 
-                utilizador.email,
-              )
-              console.log(email)
-            }}
-          >
-            <Text>Teste</Text>
-          </TouchableHighlight>
 
           {/* Botão login utilizador */}
           <TouchableHighlight
@@ -219,7 +206,7 @@ export default function PaginaLogin({navigation}) {
           <TextInput
             style={estilos.cx}
             onChangeText={(texto) => {setFuncionario({...funcionario, email: texto})}}
-            placeholder="Código ou email"
+            placeholder="Email"
             placeholderTextColor={"white"}
             value={funcionario.email}
           />
@@ -230,7 +217,7 @@ export default function PaginaLogin({navigation}) {
           <TextInput
             style={estilos.cx}
             onChangeText={(texto) => {setFuncionario({...funcionario, passe: texto})}}
-            placeholder="Palavra-Passe"
+            placeholder="Senha"
             placeholderTextColor={"white"}
             secureTextEntry={!mostrarPasse}
             value={funcionario.passe}
@@ -251,7 +238,7 @@ export default function PaginaLogin({navigation}) {
               }}
               color={funcionario.guardarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Memorizar passe</Text>
+            <Text style={{color: "white"}}>Memorizar senha</Text>
 
             <Checkbox
               style={estilos.chb}
@@ -259,7 +246,7 @@ export default function PaginaLogin({navigation}) {
               onValueChange={() => setMostrarPasse(prevMostrarPasse => !prevMostrarPasse)}
               color={mostrarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Mostrar passe</Text>
+            <Text style={{color: "white"}}>Mostrar senha</Text>
           </View>
 
           {/* Botão login funcionário */}

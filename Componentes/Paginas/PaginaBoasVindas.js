@@ -16,10 +16,10 @@ export default function PaginaBoasVindas({navigation}) {
     return(
         <SafeAreaView style={estilosPaginaBoasVindas.conteiner}>
             {/* Imagem logo */}
-            <Image
+            {/* <Image
                 style={estilosPaginaBoasVindas.imgLogo}
                 source={require('../img/logo.png')}
-            />
+            /> */}
 
             {/* Texto Título */}
             <Text style={estilosPaginaBoasVindas.txtTitulo}>BEM-VINDO</Text>
@@ -40,7 +40,7 @@ export default function PaginaBoasVindas({navigation}) {
                         navigation.navigate('PaginaRegistar')
                     }}
                 >
-                    <Text style={estilos.txtBtn}>Registar</Text>
+                    <Text style={estilos.txtBtn}>Registrar</Text>
                 </TouchableHighlight>
             </View>
         </SafeAreaView>

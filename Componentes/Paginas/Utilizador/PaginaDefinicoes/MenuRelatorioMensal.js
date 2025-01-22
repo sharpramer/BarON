@@ -71,12 +71,14 @@ export default function MenuRelatorioMensal() {
 const estilosRelatorioMensal = StyleSheet.create({
     linha:{
         flexDirection: 'row',
-    },
-  
-    linhaTexto:{
-      flexDirection: 'row',
-      borderWidth: 1,
-      borderColor: '#000',
-      padding: 5,
-    }
+      },
+    
+      linhaTexto:{
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#000',
+        padding: 5,
+        textAlign: 'center',
+        textAlignVertical: 'center'
+      }
 })

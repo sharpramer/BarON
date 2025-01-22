@@ -6,7 +6,7 @@ const produtosArray = [
     { 
         id: 1, 
         imagem: require("./img/a-la-minuta-no-pao.jpeg"), 
-        precoVenda: '1,00', 
+        precoVenda: '20,00', 
         precoCusto: '0,80', 
         descricao: 'Sumo de laranja natural', 
         produto: 'A la minuta no pão' 
@@ -16,8 +16,8 @@ const produtosArray = [
     { 
         id: 2, 
         imagem: require("./img/salada-italiana.png"), 
-        precoVenda: '1,20',  
-        precoCusto: '1,00', 
+        precoVenda: '30,00',  
+        precoCusto: '30,00', 
         descricao: 'Salada italiana', 
         produto: 'Salada italiana'
     },
@@ -25,28 +25,28 @@ const produtosArray = [
     { 
         id: 3, 
         imagem: require("./img/salada-japonesa.png"), 
-        precoVenda: '1,60',  
-        precoCusto: '1,20', 
+        precoVenda: '18,00',  
+        precoCusto: '18,00', 
         descricao: 'Pão com queijo e fiambre na chapa', 
-        produto: 'Salada italiana' 
+        produto: 'Salada japonesa' 
     },
     
     { 
         id: 4, 
         imagem: require("./img/salada.png"), 
-        precoVenda: '2,00',  
-        precoCusto: '1,30', 
+        precoVenda: '17,00',  
+        precoCusto: '17,00', 
         descricao: 'Salada', 
-        produto: 'Salada' 
+        produto: 'Salada Mineira'
     },
 
     { 
         id: 5, 
         imagem: require("./img/salada2.jpeg"), 
-        precoVenda: '1,00', 
-        precoCusto: '0,80', 
+        precoVenda: '15,00', 
+        precoCusto: '15,00', 
         descricao: 'Sumo de laranja natural', 
-        produto: 'Salada 2' 
+        produto: 'Salada Vegana' 
     }
 
 ]
