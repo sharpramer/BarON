@@ -137,15 +137,7 @@ export default function PaginaRegistar() {
             value={utilizador.dataNascimento}
           />
 
-
           <View style={estilos.separadorCx}></View>
-
-          <TouchableHighlight
-            style={estilos.btn}
-            onPress={() => { enviarEmailVerificacao() }}
-          >
-            <Text>Teste</Text>
-          </TouchableHighlight>
 
           {/* Botão registar aluno */}
           <TouchableHighlight

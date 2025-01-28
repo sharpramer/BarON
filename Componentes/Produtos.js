@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, Modal, SafeAreaView } from "react-native"
-import FazerPedido from "./FazerPedido"
+import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, SafeAreaView } from "react-native"
+import FazerPedido from "./FazerPedido/FazerPedido.js"
 
 const produtosArray = [
     { 
