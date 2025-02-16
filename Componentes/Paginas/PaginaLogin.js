@@ -51,52 +51,37 @@ export default function PaginaLogin({navigation}) {
   }
 
   async function fazerLogin(colecao, email, passe, guardarPasse, paginaInicial) {
-    
-    // Validação dos campos
     if (email === '' || passe === '') {
-      alert('Favor preencher todos os campos')
+      alert('Favor preencher todos os campos');
+      return;
     }
-    
-    console.log('Verificando email...')
-    
+  
     try {
-      console.log('Try')
-      
-      const resultado = await verificarEmail(colecao, email)
-      console.log(`Resultado ${resultado}`)
-
-      if (resultado == true) {
-        console.log('Email encontrado')
-        
+      // Fazer login no Firebase Auth
+      const credencial = await signInWithEmailAndPassword(auth, email, passe);
+  
+      if (credencial.user.emailVerified) {
         if (guardarPasse) {
-          console.log('Guardando a passe...')
-          guardarLocal('Passe', passe)
-          console.log('Guardada a passe')
+          guardarLocal('Passe', passe);  // Memorizar passe
         }
-
-        // Fazer login
-        try {
-          const credencial = await signInWithEmailAndPassword(auth, email, passe)
-          
-          if (credencial.user.emailVerified) {
-            console.log('Fazendo login...')
-            navigation.navigate(paginaInicial)
-          } else {
-            alert('Seu e-mail ainda não foi verificado. Por favor, verifique sua caixa de entrada e spam.')
-          }
-
-        } catch (erro) {
-          alert('Erro ao fazer login, verifique o email e senha e tente novamente!')
-          console.log(erro)
+  
+        // Verifica se o email existe na coleção
+        const emailExiste = await verificarEmail(colecao, email);
+  
+        if (emailExiste) {
+          console.log('Email verificado e login bem-sucedido');
+          navigation.navigate(paginaInicial);  // Navegar para a página inicial
+        } else {
+          alert('Conta não encontrada. Verifique seu email e tente novamente.');
         }
       } else {
-        alert('Não foi possível encontrar uma conta com esse email. Verifique o email introduzido e tente novamente')
+        alert('Por favor, verifique seu email antes de fazer login.');
       }
-    } catch (error) {
-      console.error('Erro ao fazer login')
-      
+    } catch (erro) {
+      console.error('Erro ao fazer login:', erro);
+      alert('Erro ao fazer login. Verifique suas credenciais e tente novamente.');
     }
-  }
+  }  
 
   return(
     <SafeAreaView style={estilos.conteiner}>

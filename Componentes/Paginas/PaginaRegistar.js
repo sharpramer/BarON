@@ -29,7 +29,6 @@ export default function PaginaRegistar() {
         codigo: utilizador.uid,
         nome: nome,
         dataNascimento: dataNascimento,
-        numero: numero + 1,
         email: email,
       })
 

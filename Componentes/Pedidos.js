@@ -1,6 +1,6 @@
 import { collection, getDocs, query, where } from "firebase/firestore"
 import React, { useState, useEffect } from "react"
-import { View, StyleSheet, Text, FlatList, TouchableOpacity } from "react-native"
+import { View, StyleSheet, Text, FlatList, TouchableOpacity, Image } from "react-native"
 import { auth, bd } from "../firebase"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { eliminarFirestore } from "./Global"
@@ -32,6 +32,7 @@ export default function Pedidos(props) {
                 where('situacao', '==', props.situacao),
                 where('codigo_utilizador', '==', utilizadorAtual.uid),
               )
+              
               const itensPedidosRef = await getDocs(itensPedidosLinha)
   
               // Mapeia apenas os itens que atendem ao filtro
@@ -89,32 +90,34 @@ export default function Pedidos(props) {
 
   return(
     <SafeAreaView>
-      <View style={estilos.linha}>
-        <Text style={estilos.linhaTexto}>Produto</Text>
-        <Text style={estilos.linhaTexto}>Data</Text>
-        <Text style={estilos.linhaTexto}>Hora</Text>
-        <Text style={estilos.linhaTexto}>Quantidade</Text>
-        <Text style={estilos.linhaTexto}>Valor</Text>
-        <Text style={estilos.linhaTexto}>Subtotal</Text>
-      </View>
-      
       {/* Linha tabela */}
       <FlatList
         data={dadosPedido}
         renderItem={({ item }) => (
-          <View>
+          <View style={estilos.conteinerPedido}>
             {item.itensPedido.map((produto) => (
               <TouchableOpacity 
-                style={estilos.linha}
+                style={estilos.conteinerConteudo} // Novo estilo geral do card
                 onPress={() => eliminarFirestore('Pedidos', item.id)}
                 key={produto.id}
               >
-                <Text style={estilos.linhaTexto}>{produto.nomeCurto}</Text>
-                <Text style={estilos.linhaTexto}>{item.dataEntrega}</Text>
-                <Text style={estilos.linhaTexto}>{item.horaEntrega}</Text>
-                <Text style={estilos.linhaTexto}>{produto.quantidade}</Text>
-                <Text style={estilos.linhaTexto}>{produto.precoVenda}</Text>
-                <Text style={estilos.linhaTexto}>{produto.subtotal}</Text>
+                <Image
+                  style={estilos.imagemProduto}
+                  source={require('./img/salada.png')}
+                />
+                <View style={estilos.infoConteiner}>
+                  {/* Nome do produto */}
+                  <Text style={estilos.nomeProduto}>{produto.nomeCurto}</Text>
+
+                  {/* Data e hora */}
+                  <Text style={estilos.detalhes}>
+                    Entrega: {item.dataEntrega} às {item.horaEntrega}
+                  </Text>
+
+                  {/* Quantidade e preço */}
+                  <Text style={estilos.detalhes}>Quantidade: {produto.quantidade}</Text>
+                  <Text style={estilos.detalhes}>Total: R$ {produto.subtotal}</Text>
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -126,16 +129,40 @@ export default function Pedidos(props) {
 }
 
 const estilos = StyleSheet.create({
-  linha:{
-    flexDirection: 'row',
+  conteinerPedido:{
+    flex: 1,
+    margin: 8,
+    flexDirection: 'column'
   },
 
-  linhaTexto:{
+  conteinerConteudo:{
+    flexDirection: 'row',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#f9f9f9',
+  },
+
+  imagemProduto: {
+    width: 80,
+    height: 80,
+    borderRadius: 10, // Bordas arredondadas para a imagem
+    marginRight: 10,
+  },
+
+  infoConteiner:{
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 5,
-    textAlign: 'center',
-    textAlignVertical: 'center'
-  }
+    justifyContent: 'space-between',
+  },
+
+  nomeProduto:{
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
+
+  detalhes:{
+    fontSize: 14,
+    color: '#636262',
+  },
 })
