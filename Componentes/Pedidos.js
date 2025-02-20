@@ -7,6 +7,7 @@ import { eliminarFirestore } from "./Global"
 
 export default function Pedidos(props) {
   const [dadosPedido, setDadosPedido] = useState([])
+  const [sdjkhfjks, setsdjkhfjks] = useState([])
 
   useEffect(() => {
     // Função para buscar os dados
@@ -146,7 +147,7 @@ const estilos = StyleSheet.create({
   imagemProduto: {
     width: 80,
     height: 80,
-    borderRadius: 10, // Bordas arredondadas para a imagem
+    borderRadius: 10,
     marginRight: 10,
   },
 

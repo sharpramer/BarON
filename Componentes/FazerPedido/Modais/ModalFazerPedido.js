@@ -64,16 +64,14 @@ export default function ModalFazerPedido(props) {
             
             const utilizadorAtual = auth.currentUser
             
-            if (!utilizadorAtual) {
-                console.error("Utilizador não autenticado.")
-            }
-
-            // Buscar código do utilizador
-            const codigoUtilizador = await buscarValorFirestore('Utilizadores', 'codigo', utilizadorAtual.uid)
-            console.log("Valor do Firestore:", codigoUtilizador.codigo)
+            if (!utilizadorAtual) 
+                console.error("Usuário não autenticado.")
+            else 
+                console.log("Usuário autenticado:", auth.currentUser?.uid);
 
             // Adicionar o pedido na coleção 'pedidos' no firestore
             const pedidoRef = await addDoc(collection(bd, 'Pedidos'), {
+                codigo_utilizador: utilizadorAtual.uid, 
                 data_entrega: props.dataEntrega,
                 data_pedido: props.dataPedido,
                 hora_entrega: props.horaEntrega,
@@ -84,52 +82,29 @@ export default function ModalFazerPedido(props) {
                 cod_pedido: pedidoRef.id
             })
 
-            if (troco === 'É necessário troco' && metodoPagamento === 'Dinheiro') {
-                // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
-                let itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
-                    nome_curto: props.produtoSelecionado.produto,
-                    codigo_utilizador: codigoUtilizador.codigo, 
-                    subtotal: subtotal,
-                    quantidade: quantidadePedido,
-                    preco_venda: props.produtoSelecionado.precoVenda,
-                    descricao: props.produtoSelecionado.descricao,
-                    situacao: situacao,
-                    observacoes: observacoes,
-                    metodoPagamento: metodoPagamento,
-                    localEntrega: localEntrega,
-                    troco: troco,
-                })
+            // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
+            let itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
+                nome_curto: props.produtoSelecionado.produto,
+                codigo_utilizador: utilizadorAtual.uid, 
+                subtotal: subtotal,
+                quantidade: quantidadePedido,
+                preco_venda: props.produtoSelecionado.precoVenda,
+                descricao: props.produtoSelecionado.descricao,
+                situacao: situacao,
+                observacoes: observacoes,
+                metodoPagamento: metodoPagamento,
+                localEntrega: localEntrega,
+                troco: troco,
+            })
 
-                // Atualizar subcoleção itens_pedidos com o código do pedido
-                updateDoc(itensPedidoRef, {
-                    cod_pedido: pedidoRef.id,
-                })
-            } else {
-
-                // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
-                let itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
-                    codigo_utilizador: codigoUtilizador.codigo,
-                    nome_curto: props.produtoSelecionado.produto,
-                    subtotal: subtotal,
-                    quantidade: quantidadePedido,
-                    preco_venda: props.produtoSelecionado.precoVenda,
-                    descricao: props.produtoSelecionado.descricao,
-                    situacao: situacao,
-                    observacoes: observacoes,
-                    metodoPagamento: metodoPagamento,
-                    localEntrega: localEntrega,
-                })
+            // Atualizar subcoleção itens_pedidos com o código do pedido
+            updateDoc(itensPedidoRef, {
+                cod_pedido: pedidoRef.id,
+            })
+            
+            situacao === 'reservado' ? 
+                alert('Pedido reservado com sucesso!') : 
                 
-                // Atualizar subcoleção itens_pedidos com o código do pedido
-                updateDoc(itensPedidoRef, {
-                    cod_pedido: pedidoRef.id,
-                })
-            }
-
-
-            if (situacao === 'reservado')
-                alert('Pedido reservado com sucesso!')
-            else if (situacao === 'carrinho')
                 alert('Pedido guardado no carrinho com sucesso!')
         }
         catch (erro) {
