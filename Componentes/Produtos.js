@@ -57,18 +57,24 @@ export default function Produtos() {
     
     const renderItem = ({ item }) => {
         return (
-            <View key={item.id} style={estilos.conteudoConteiner}>
-                <TouchableHighlight onPress={() => {
-                    setProdutoSelecionado(item)
-                    setModalVisibilidade(true)
-                }}>
-                    <Image 
-                        source={item.imagem} 
-                        style={estilos.ImagemProduto}
-                    />
+            <View key={item.id} style={estilosProdutos.conteudoConteiner}>
+                <TouchableHighlight 
+                    style={estilosProdutos.btnConteiner}
+                    onPress={() => {
+                        setProdutoSelecionado(item)
+                        setModalVisibilidade(true)
+                    }}
+                >
+                    <View>
+                        <Image 
+                            source={item.imagem} 
+                            style={estilosProdutos.ImagemProduto}
+                        />
+
+                        <Text style={estilosProdutos.txtNomeProduto}>{item.produto}</Text>
+                        <Text style={estilosProdutos.txtPrecoProduto}>R$ {item.precoVenda}</Text>
+                    </View>
                 </TouchableHighlight>
-                <Text style={estilos.txtPrecoProduto}>R$ {item.precoVenda}</Text>
-                <Text style={estilos.txtNomeProduto}>{item.produto}</Text>
             </View>
         )
     }
@@ -77,7 +83,7 @@ export default function Produtos() {
         <SafeAreaView>
             {/* Lista dos produtos */}
             <FlatList
-                style={estilos.produtosTabela}
+                style={estilosProdutos.produtosTabela}
                 data={produtosArray}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
@@ -89,49 +95,44 @@ export default function Produtos() {
     )
 }
 
-const estilos = StyleSheet.create({
-    produtosTabela: {
-        marginTop: 40,
-    },
-
-    ImagemProduto: {
-        width: 130,
-        height: 130,
-        marginTop: 20 
-    },
-
+const estilosProdutos = StyleSheet.create({
     conteudoConteiner: {
         flex: 1,
         margin: 5,
-        justifyContent: "center",
-        alignItems: "center",
+        //justifyContent: "center",
+        //alignItems: "center",
+    },
+
+    btnConteiner:{
+        backgroundColor: 'white',
+        padding: 15,
+        borderRadius: 25,
+        alignSelf: 'flex-start'
     },
         
-    conteudoModalConteiner: {
-        backgroundColor: 'white',
-        width: '100%',
-        height: '100%',
-    },
-            
-    btnFecharModal: {
-        width: 30,
-        height: 30,
-        alignSelf: "flex-end",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: '#e80e0e',
-        borderRadius: 5,
+    ImagemProduto: {
+        width: 130,
+        height: 130,
+        marginTop: 10,
+        borderRadius: 18
     },
 
-    txtBtnFecharModal: {
-        color: 'black',
-    },
-
-    txtPrecoProduto: {
-        margin: 2,
-        marginTop: 5,
-        color: "red",
+    txtNomeProduto: {
+        fontSize: 15,
+        marginTop: 8,
+        marginVertical: 5,
+        color: "black",
         fontWeight: 'bold',
-        fontSize: 15
+    },
+    
+    txtPrecoProduto: {
+        color: "black",
+        fontWeight: 500,
+        fontSize: 14
+    },
+
+    produtosTabela: {
+        marginTop: 40,
+        marginHorizontal: 19,
     },
 })
