@@ -57,7 +57,10 @@ export default function Produtos() {
     
     const renderItem = ({ item }) => {
         return (
-            <View key={item.id} style={estilosProdutos.conteudoConteiner}>
+            <View 
+                key={item.id} 
+                style={estilosProdutos.conteudoConteiner}
+            >
                 <TouchableHighlight 
                     style={estilosProdutos.btnConteiner}
                     onPress={() => {
@@ -90,7 +93,11 @@ export default function Produtos() {
                 numColumns={2}
             />
 
-            <FazerPedido modalVisibilidade={modalVisibilidade} produtoSelecionado={produtoSelecionado} setModalVisibilidade={setModalVisibilidade}/>
+            <FazerPedido 
+                modalVisibilidade={modalVisibilidade} 
+                produtoSelecionado={produtoSelecionado} 
+                setModalVisibilidade={setModalVisibilidade}
+            />
         </SafeAreaView>
     )
 }

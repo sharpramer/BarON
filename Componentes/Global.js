@@ -36,7 +36,8 @@ export function adicionarBd(nomeColecao, dado) {
 
 export const eliminarFirestore = async (nomeColecao, dado) => {
     try {
-        await deleteDoc(doc(bd, nomeColecao, dado))        
+        await deleteDoc(doc(bd, nomeColecao, dado))
+        alert('Eliminado com sucesso')      
     } catch (erro) {
         console.error('Erro ao eliminar documento')
     }

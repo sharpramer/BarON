@@ -1,21 +1,19 @@
-import { collection, getDocs, query, where } from "firebase/firestore"
-import React, { useState, useEffect } from "react"
-import { View, StyleSheet, Text, FlatList, TouchableOpacity, Image } from "react-native"
-import { auth, bd } from "../firebase"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { eliminarFirestore } from "./Global"
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, TouchableHighlight, FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { auth, bd } from "../firebase";
+import { eliminarFirestore } from "./Global";
 
 export default function Pedidos(props) {
-  const [dadosPedido, setDadosPedido] = useState([])
-  const [sdjkhfjks, setsdjkhfjks] = useState([])
+  const [dadosPedido, setDadosPedido] = useState([]);
+  const [opcoesPedidoVisibilidade, setopcoesPedidoVisibilidade] = useState({});
 
   useEffect(() => {
-    // Função para buscar os dados
     const obterPedido = async () => {
       try {
-        const utilizadorAtual = auth.currentUser
-        
-        const pedidosRef = await getDocs(collection(bd, 'Pedidos'))
+        const utilizadorAtual = auth.currentUser;
+        const pedidosRef = await getDocs(collection(bd, 'Pedidos'));
 
         const dadosPedidos = await Promise.all(
           pedidosRef.docs.map(async (doc) => {
@@ -23,103 +21,108 @@ export default function Pedidos(props) {
               id: doc.id,
               dataEntrega: doc.data().data_entrega,
               horaEntrega: doc.data().hora_entrega,
-            }
+            };
 
-            /* Verifica se a conta logada é do tipo utilizador */
             if (props.tipoConta === 'utilizador') {
-              // Mostra somente os pedidos onde a situação é igual a 'reservado' e os pedidos do utilizador igual
               const itensPedidosLinha = query(
                 collection(doc.ref, 'itens_pedido'),
                 where('situacao', '==', props.situacao),
-                where('codigo_utilizador', '==', utilizadorAtual.uid),
-              )
+                where('codigo_utilizador', '==', utilizadorAtual.uid)
+              );
               
-              const itensPedidosRef = await getDocs(itensPedidosLinha)
+              const itensPedidosRef = await getDocs(itensPedidosLinha);
   
-              // Mapeia apenas os itens que atendem ao filtro
               const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
                 id: itemDoc.id,
                 nomeCurto: itemDoc.data().nome_curto,
                 subtotal: itemDoc.data().subtotal,
                 quantidade: itemDoc.data().quantidade,
                 precoVenda: itemDoc.data().preco_venda,
-              }))
+              }));
   
-              // Apenas adiciona o pedido se houver itens com situacao 'reservado'
               if (dadosItensPedios.length > 0) {
-                return { ...dadosPedido, itensPedido: dadosItensPedios }
+                return { ...dadosPedido, itensPedido: dadosItensPedios };
               }
-              return null // Ignora pedidos sem itens reservados
-            } 
-            
-            /* Verifica se a conta logada é do tipo funcionário */
-            else {
-              // Mostra somente os pedidos onde a situação é igual a 'reservado'
+              return null;
+            } else {
               const itensPedidosLinha = query(
                 collection(doc.ref, 'itens_pedido'),
-                where('situacao', '==', props.situacao),
-              )
-              const itensPedidosRef = await getDocs(itensPedidosLinha)
+                where('situacao', '==', props.situacao)
+              );
+              const itensPedidosRef = await getDocs(itensPedidosLinha);
   
-              // Mapeia apenas os itens que atendem ao filtro
               const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
                 id: itemDoc.id,
                 nomeCurto: itemDoc.data().nome_curto,
                 subtotal: itemDoc.data().subtotal,
                 quantidade: itemDoc.data().quantidade,
                 precoVenda: itemDoc.data().preco_venda,
-              }))
+              }));
   
-              // Apenas adiciona o pedido se houver itens com situacao 'reservado'
               if (dadosItensPedios.length > 0) {
-                return { ...dadosPedido, itensPedido: dadosItensPedios }
+                return { ...dadosPedido, itensPedido: dadosItensPedios };
               }
-              return null // Ignora pedidos sem itens reservados
+              return null;
             }
           })
-        )
+        );
 
-        // Filtra qualquer entrada nula (onde não havia itens 'reservado')
-        setDadosPedido(dadosPedidos.filter(pedido => pedido !== null))
+        setDadosPedido(dadosPedidos.filter(pedido => pedido !== null));
       } catch (erro) {
-        console.error('Erro ao obter documento: ', erro)
+        console.error('Erro ao obter documento: ', erro);
       }
-    }
+    };
 
-    obterPedido()
-  }, [])
+    obterPedido();
+  }, []);
+
+  const alternarVisibilidadeOpcaoPedido = produtoId => {
+    setopcoesPedidoVisibilidade(prevState => ({
+      ...prevState,
+      [produtoId]: !prevState[produtoId]
+    }));
+  };
 
   return(
     <SafeAreaView>
-      {/* Linha tabela */}
       <FlatList
         data={dadosPedido}
         renderItem={({ item }) => (
           <View style={estilos.conteinerPedido}>
             {item.itensPedido.map((produto) => (
-              <TouchableOpacity 
-                style={estilos.conteinerConteudo} // Novo estilo geral do card
-                onPress={() => eliminarFirestore('Pedidos', item.id)}
-                key={produto.id}
-              >
-                <Image
-                  style={estilos.imagemProduto}
-                  source={require('./img/salada.png')}
-                />
-                <View style={estilos.infoConteiner}>
-                  {/* Nome do produto */}
-                  <Text style={estilos.nomeProduto}>{produto.nomeCurto}</Text>
+              <View key={produto.id}>
+                <TouchableOpacity 
+                  style={estilos.conteinerConteudo}
+                  onPress={() => alternarVisibilidadeOpcaoPedido(produto.id)}
+                >
+                  <Image
+                    style={estilos.imagemProduto}
+                    source={require('./img/salada.png')}
+                  />
 
-                  {/* Data e hora */}
-                  <Text style={estilos.detalhes}>
-                    Entrega: {item.dataEntrega} às {item.horaEntrega}
-                  </Text>
+                  <View style={estilos.infoConteiner}>
+                    <Text style={estilos.nomeProduto}>{produto.nomeCurto}</Text>
+                    <Text style={estilos.detalhes}>
+                      Entrega: {item.dataEntrega} às {item.horaEntrega}
+                    </Text>
+                    <Text style={estilos.detalhes}>Quantidade: {produto.quantidade}</Text>
+                    <Text style={estilos.detalhes}>Total: R$ {produto.subtotal}</Text>
+                  </View>
+                </TouchableOpacity>
 
-                  {/* Quantidade e preço */}
-                  <Text style={estilos.detalhes}>Quantidade: {produto.quantidade}</Text>
-                  <Text style={estilos.detalhes}>Total: R$ {produto.subtotal}</Text>
-                </View>
-              </TouchableOpacity>
+                { opcoesPedidoVisibilidade[produto.id] && ( 
+                  <View style={estilos.opcoesConteiner}>
+                    <TouchableHighlight
+                      style={estilos.botaoEliminar}
+                      onPress={() => {
+                        eliminarFirestore('Pedidos', item.id)
+                      }}
+                    >
+                      <Text style={estilos.textoBotaoEliminar}>Eliminar</Text>
+                    </TouchableHighlight>
+                  </View>
+                )}
+              </View>
             ))}
           </View>
         )}
@@ -166,4 +169,22 @@ const estilos = StyleSheet.create({
     fontSize: 14,
     color: '#636262',
   },
+
+  opcoesConteiner:{
+    marginTop: 10,
+    alignItems: "center",
+    width: 'auto'
+  },
+
+  botaoEliminar:{
+    backgroundColor: '#ff4d4d',
+    paddingVertical: 10,
+    paddingHorizontal: 150,
+    borderRadius: 8,
+  },
+
+  textoBotaoEliminar:{
+    fontSize: 16,
+    fontWeight: 'bold'
+  }
 })
