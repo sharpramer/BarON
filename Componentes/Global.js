@@ -21,13 +21,6 @@ export class Funcionario{
     static passe = ''
 }
 
-export function MudarAparenciaConteinerUtilizador() {
-    return Utilizador.aparencia === 'claro' ? estilos.conteinerModoClaro : estilos.conteinerModoEscuro 
-}
-
-export function MudarAparenciaTextoUtilizador() {
-    return Utilizador.aparencia === 'claro' ? estilos.modoClaro : estilos.modoEscuro 
-}
 
 export function adicionarBd(nomeColecao, dado) {
     const docRef = collection(bd, nomeColecao)

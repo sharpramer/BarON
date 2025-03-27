@@ -27,18 +27,24 @@ export default function FazerPedido(props){
 
     // Função aumentar minutos
     function aumentarMinutos() {
-        if (minutos >= 0 && minutos < 59){
-            setMinutos((minutoAnterior) => minutoAnterior + 1)
-            console.log(minutos)
-        }
+        setMinutos( prevMinutos => {
+            const novoMinuto = (prevMinutos + 1) % 60
+            if (novoMinuto === 0) {
+                aumentarHora()
+            }
+            return novoMinuto
+        })
     }
 
     // Função diminuir minutos
     function diminuirMinutos() {
-        if (minutos > 0 && minutos <= 59){
-            setMinutos((minutoAnterior) => minutoAnterior - 1)
-            console.log(minutos)
-        }
+        setMinutos( prevMinutos => {
+            const novoMinuto = (prevMinutos - 1 + 60) % 60
+            if (novoMinuto === 59) {
+                diminuirHora()
+            }
+            return novoMinuto
+        })
     }
 
     // Função aumentar hora
@@ -56,6 +62,8 @@ export default function FazerPedido(props){
             console.log(hora)
         }
     }
+
+    const horaEntregaFormatada = `${hora}:${String(minutos).padStart(2, "0")}`
     
     return(
         <View>
@@ -66,7 +74,7 @@ export default function FazerPedido(props){
                 dataPedido={dataPedido}
                 formatarFloat={formatarFloat}
                 horaPedido={horaPedido}
-                horaEntrega={`${hora}:${minutos}`}
+                horaEntrega={horaEntregaFormatada}
                 modalVisibilidade={props.modalVisibilidade}
                 produtoSelecionado={props.produtoSelecionado} 
                 setModalDataVisibilidade={setModalDataVisibilidade}
@@ -94,6 +102,7 @@ export default function FazerPedido(props){
                         let dataEntrega = `${data.day}/${data.month}/${data.year}`
                         console.log(dataEntrega)
                         setDataEntrega(dataEntrega)
+                        setModalDataVisibilidade(false)
                     }}
                     theme={{
                         selectedDayBackgroundColor: "#0DE2E9",
@@ -140,7 +149,7 @@ export default function FazerPedido(props){
                                     <Text style={estilosFazerPedido.txtBotaoMudarHoraEntrega}>+</Text>
                                 </TouchableHighlight>
 
-                                <Text>{minutos}</Text>
+                                <Text>{String(minutos).padStart(2, "0")}</Text>
 
                                 {/* Botão diminuir minutos*/}
                                 <TouchableHighlight

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, TouchableHighlight, FlatList, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { auth, bd } from "../firebase";
-import { eliminarFirestore } from "./Global";
+import React, { useState, useEffect } from 'react'
+import { View, Text, Image, TouchableOpacity, TouchableHighlight, FlatList, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { collection, getDocs, query, where } from "firebase/firestore"
+import { auth, bd } from "../firebase"
+import { eliminarFirestore } from "./Global"
 
 export default function Pedidos(props) {
-  const [dadosPedido, setDadosPedido] = useState([]);
-  const [opcoesPedidoVisibilidade, setopcoesPedidoVisibilidade] = useState({});
+  const [dadosPedido, setDadosPedido] = useState([])
+  const [opcoesPedidoVisibilidade, setOpcoesPedidoVisibilidade] = useState({})
 
   useEffect(() => {
     const obterPedido = async () => {
       try {
-        const utilizadorAtual = auth.currentUser;
-        const pedidosRef = await getDocs(collection(bd, 'Pedidos'));
+        const utilizadorAtual = auth.currentUser
+        const pedidosRef = await getDocs(collection(bd, 'Pedidos'))
 
         const dadosPedidos = await Promise.all(
           pedidosRef.docs.map(async (doc) => {
@@ -21,16 +21,17 @@ export default function Pedidos(props) {
               id: doc.id,
               dataEntrega: doc.data().data_entrega,
               horaEntrega: doc.data().hora_entrega,
-            };
+              nomeUtilizador: doc.data().nome_utilizador
+            }
 
             if (props.tipoConta === 'utilizador') {
               const itensPedidosLinha = query(
                 collection(doc.ref, 'itens_pedido'),
                 where('situacao', '==', props.situacao),
                 where('codigo_utilizador', '==', utilizadorAtual.uid)
-              );
+              )
               
-              const itensPedidosRef = await getDocs(itensPedidosLinha);
+              const itensPedidosRef = await getDocs(itensPedidosLinha)
   
               const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
                 id: itemDoc.id,
@@ -38,18 +39,21 @@ export default function Pedidos(props) {
                 subtotal: itemDoc.data().subtotal,
                 quantidade: itemDoc.data().quantidade,
                 precoVenda: itemDoc.data().preco_venda,
-              }));
+                troco: itemDoc.data().troco,
+                localEntrega: itemDoc.data().localEntrega,
+                telefone: itemDoc.data().telefone
+              }))
   
               if (dadosItensPedios.length > 0) {
-                return { ...dadosPedido, itensPedido: dadosItensPedios };
+                return { ...dadosPedido, itensPedido: dadosItensPedios }
               }
-              return null;
+              return null
             } else {
               const itensPedidosLinha = query(
                 collection(doc.ref, 'itens_pedido'),
                 where('situacao', '==', props.situacao)
-              );
-              const itensPedidosRef = await getDocs(itensPedidosLinha);
+              )
+              const itensPedidosRef = await getDocs(itensPedidosLinha)
   
               const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
                 id: itemDoc.id,
@@ -57,31 +61,34 @@ export default function Pedidos(props) {
                 subtotal: itemDoc.data().subtotal,
                 quantidade: itemDoc.data().quantidade,
                 precoVenda: itemDoc.data().preco_venda,
-              }));
+                troco: itemDoc.data().troco,
+                localEntrega: itemDoc.data().localEntrega,
+                telefone: itemDoc.data().telefone
+              }))
   
               if (dadosItensPedios.length > 0) {
-                return { ...dadosPedido, itensPedido: dadosItensPedios };
+                return { ...dadosPedido, itensPedido: dadosItensPedios }
               }
-              return null;
+              return null
             }
           })
-        );
+        )
 
-        setDadosPedido(dadosPedidos.filter(pedido => pedido !== null));
+        setDadosPedido(dadosPedidos.filter(pedido => pedido !== null))
       } catch (erro) {
-        console.error('Erro ao obter documento: ', erro);
+        console.error('Erro ao obter documento: ', erro)
       }
-    };
+    }
 
-    obterPedido();
-  }, []);
+    obterPedido()
+  }, [])
 
   const alternarVisibilidadeOpcaoPedido = produtoId => {
-    setopcoesPedidoVisibilidade(prevState => ({
+    setOpcoesPedidoVisibilidade(prevState => ({
       ...prevState,
       [produtoId]: !prevState[produtoId]
-    }));
-  };
+    }))
+  }
 
   return(
     <SafeAreaView>
@@ -89,11 +96,11 @@ export default function Pedidos(props) {
         data={dadosPedido}
         renderItem={({ item }) => (
           <View style={estilos.conteinerPedido}>
-            {item.itensPedido.map((produto) => (
-              <View key={produto.id}>
+            {item.itensPedido.map((itens_pedido) => (
+              <View key={itens_pedido.id}>
                 <TouchableOpacity 
                   style={estilos.conteinerConteudo}
-                  onPress={() => alternarVisibilidadeOpcaoPedido(produto.id)}
+                  onPress={() => alternarVisibilidadeOpcaoPedido(itens_pedido.id)}
                 >
                   <Image
                     style={estilos.imagemProduto}
@@ -101,21 +108,31 @@ export default function Pedidos(props) {
                   />
 
                   <View style={estilos.infoConteiner}>
-                    <Text style={estilos.nomeProduto}>{produto.nomeCurto}</Text>
+                    <Text style={estilos.nomeProduto}>{itens_pedido.nomeCurto}</Text>
+                    
+                    <Text style={estilos.nomeUtilizador}>Nome: {item.nomeUtilizador}</Text>
+                    
                     <Text style={estilos.detalhes}>
                       Entrega: {item.dataEntrega} às {item.horaEntrega}
                     </Text>
-                    <Text style={estilos.detalhes}>Quantidade: {produto.quantidade}</Text>
-                    <Text style={estilos.detalhes}>Total: R$ {produto.subtotal}</Text>
+                    <Text style={estilos.detalhes}>
+                      No local: {itens_pedido.localEntrega}
+                    </Text>
+                    
+                    <Text style={estilos.detalhes}>Quantidade: {itens_pedido.quantidade}</Text>
+                    <Text style={estilos.detalhes}>Total: R$ {itens_pedido.subtotal}</Text>
+                    <Text style={estilos.detalhes}>Troco: {itens_pedido.troco}</Text>
                   </View>
                 </TouchableOpacity>
 
-                { opcoesPedidoVisibilidade[produto.id] && ( 
+                { opcoesPedidoVisibilidade[itens_pedido.id] && ( 
                   <View style={estilos.opcoesConteiner}>
+                    {/* Botão eliminar pedido */}
                     <TouchableHighlight
                       style={estilos.botaoEliminar}
                       onPress={() => {
                         eliminarFirestore('Pedidos', item.id)
+                        eliminarFirestore('itens_pedido', item.id)
                       }}
                     >
                       <Text style={estilos.textoBotaoEliminar}>Eliminar</Text>
@@ -162,6 +179,12 @@ const estilos = StyleSheet.create({
   nomeProduto:{
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 3,
+  },
+
+  nomeProduto:{
+    fontSize: 14,
+    fontWeight: 'black',
     marginBottom: 3,
   },
 

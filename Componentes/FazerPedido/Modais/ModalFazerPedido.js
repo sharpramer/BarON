@@ -3,17 +3,18 @@ import { StyleSheet, Modal, View, TouchableHighlight,TextInput, Text, Image, Ale
 import { estilosFazerPedido } from "../FazerPedido"
 import { estilos } from "../../estilos"
 import { auth, bd } from "../../../firebase"
-import { buscarValorFirestore } from "../../Global"
-import { addDoc, collection, updateDoc } from "firebase/firestore"
+import { addDoc, collection, getDocs, query, updateDoc, where } from "firebase/firestore"
 
 export default function ModalFazerPedido(props) {
     const [ modalMetodoPagamento, setModalMetodoPagamento ] = useState(false) 
     const [ metodoPagamento, setMetodoPagamento ] = useState('Dinheiro') 
-    const [ localEntrega, setLocalEntrega ] = useState('')
+    const [ localEntrega, setLocalEntrega ] = useState('Divino Fogão')
     const [ caixaTextoLocalEntregaVisibilidade, setCaixaTextoLocalEntregaVisibilidade ] = useState(false)
     const [ quantidadePedido, setQuantidadePedido ] = useState(1)
     const [ observacoes, setObservacoes ] = useState('')
     const [ troco, setTroco ] = useState('Não é necessário troco')
+    const [ telefone, setTelefone ] = useState('')
+    
     
     let subtotal
 
@@ -59,53 +60,104 @@ export default function ModalFazerPedido(props) {
         )
     }
 
+    const buscarNomeUtilizador = async () => {
+        try {
+            const utilizadorAtual = auth.currentUser
+            if (!utilizadorAtual) {
+              console.log("Nenhum utilizador autenticado.")
+              return
+            }
+        
+            const linha = query(
+                collection(
+                    bd, 
+                    "Utilizadores"
+                ), 
+                where(
+                    "codigo",
+                    "==",
+                    utilizadorAtual.uid
+                )
+            )
+        
+            const linhaSnapshot = await getDocs(linha)
+            
+            if (!linhaSnapshot.empty) {
+                const documentoEncontrado = linhaSnapshot.docs[0]
+                const nomeUtilizadorBuscado = documentoEncontrado.data().nome
+                console.log(`Nome utilizador buscado: ${nomeUtilizadorBuscado}`)
+                
+                return nomeUtilizadorBuscado 
+            } else {
+              console.log("Nenhum utilizador encontrado.")
+              return null
+            }
+
+        } catch (erro) {
+            console.error("Erro ao buscar utilizador:", erro)
+            return null
+        }
+    }
+
     const guardarPedido = async (situacao) => {
         try {
-            
             const utilizadorAtual = auth.currentUser
             
             if (!utilizadorAtual) 
                 console.error("Usuário não autenticado.")
-            else 
-                console.log("Usuário autenticado:", auth.currentUser?.uid);
 
-            // Adicionar o pedido na coleção 'pedidos' no firestore
-            const pedidoRef = await addDoc(collection(bd, 'Pedidos'), {
-                codigo_utilizador: utilizadorAtual.uid, 
-                data_entrega: props.dataEntrega,
-                data_pedido: props.dataPedido,
-                hora_entrega: props.horaEntrega,
-                hora_pedido: props.horaPedido,
-            })
-            
-            updateDoc(pedidoRef, {
-                cod_pedido: pedidoRef.id
-            })
-
-            // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
-            let itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
-                nome_curto: props.produtoSelecionado.produto,
-                codigo_utilizador: utilizadorAtual.uid, 
-                subtotal: subtotal,
-                quantidade: quantidadePedido,
-                preco_venda: props.produtoSelecionado.precoVenda,
-                descricao: props.produtoSelecionado.descricao,
-                situacao: situacao,
-                observacoes: observacoes,
-                metodoPagamento: metodoPagamento,
-                localEntrega: localEntrega,
-                troco: troco,
-            })
-
-            // Atualizar subcoleção itens_pedidos com o código do pedido
-            updateDoc(itensPedidoRef, {
-                cod_pedido: pedidoRef.id,
-            })
-            
-            situacao === 'reservado' ? 
-                alert('Pedido reservado com sucesso!') : 
+            else if (utilizadorAtual && props.dataEntrega != ''){
                 
-                alert('Pedido guardado no carrinho com sucesso!')
+                console.log("Usuário autenticado:", auth.currentUser?.uid)
+
+                const nomeUtilizador = await buscarNomeUtilizador()
+                
+                console.log(nomeUtilizador)
+                
+
+                // Adicionar o pedido na coleção 'pedidos' no firestore
+                const pedidoRef = await addDoc(collection(bd, 'Pedidos'), {
+                    codigo_utilizador: utilizadorAtual.uid, 
+                    nome_utilizador: nomeUtilizador,
+                    data_entrega: props.dataEntrega,
+                    data_pedido: props.dataPedido,
+                    hora_entrega: props.horaEntrega,
+                    hora_pedido: props.horaPedido,
+                })
+                
+                updateDoc(pedidoRef, {
+                    cod_pedido: pedidoRef.id
+                })
+
+                // Adicionar a subcoleção 'itens_pedidos' dentro da coleção 'pedidos' no firestore
+                let itensPedidoRef = await addDoc(collection(pedidoRef, 'itens_pedido'), {
+                    nome_curto: props.produtoSelecionado.produto,
+                    codigo_utilizador: utilizadorAtual.uid, 
+                    subtotal: subtotal,
+                    quantidade: quantidadePedido,
+                    preco_venda: props.produtoSelecionado.precoVenda,
+                    descricao: props.produtoSelecionado.descricao,
+                    situacao: situacao,
+                    observacoes: observacoes,
+                    metodoPagamento: metodoPagamento,
+                    localEntrega: localEntrega,
+                    troco: troco,
+                    telefone: telefone
+                })
+
+                // Atualizar subcoleção itens_pedidos com o código do pedido
+                updateDoc(itensPedidoRef, {
+                    cod_pedido: pedidoRef.id,
+                })
+                
+                situacao === 'reservado' ? alert(
+                    'Pedido reservado com sucesso!'
+                ) : alert(
+                    'Pedido guardado no carrinho com sucesso!'
+                )
+            } else if (props.dataEntrega === '') {
+                Alert.alert('Aviso', 'Por favor insira a data de entrega!')
+            }
         }
         catch (erro) {
             alert('Erro ao guardar pedido')
@@ -193,9 +245,20 @@ export default function ModalFazerPedido(props) {
                                 </TouchableHighlight>
 
                                 {/* Texto observações pedido */}
-                                <Text style={estilosModalFazerPedido.txtObservacoes}>Observações</Text>
+                                <Text style={estilosModalFazerPedido.txtObservacoes}>Contato</Text>
                                 
                                 {/* Caixa de texto observações do pedido */}
+                                <TextInput
+                                    style={estilosModalFazerPedido.cx}
+                                    placeholder="Insira aqui seu número com DDD"
+                                    onChangeText={textoTelefone => {
+                                        setTelefone(textoTelefone)
+                                        console.log(telefone)
+                                    }}
+                                />
+
+                                <Text style={estilosModalFazerPedido.txtObservacoes}>Observações</Text>
+
                                 <TextInput
                                     style={estilosModalFazerPedido.cx}
                                     placeholder="Caso queira mudar algo no pedido, informe aqui"
