@@ -216,7 +216,7 @@ export default function PaginaLogin({navigation}) {
               style={estilos.chb}
               value={funcionario.guardarPasse}
               onValueChange={() => {
-                setUtilizador(prevFuncionario => ({
+                setFuncionario(prevFuncionario => ({
                   ...prevFuncionario,
                   guardarPasse: !prevFuncionario.guardarPasse
                 }))

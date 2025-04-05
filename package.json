@@ -11,7 +11,6 @@
   "dependencies": {
     "@firebase/firestore": "^4.7.5",
     "@react-native-async-storage/async-storage": "1.23.1",
-    "@react-native-community/checkbox": "^0.5.17",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/stack": "^6.4.1",
@@ -19,7 +18,7 @@
     "expo-checkbox": "~4.0.1",
     "expo-splash-screen": "^0.29.22",
     "expo-status-bar": "~2.0.1",
-    "firebase": "^10.14.1",
+    "firebase": "^11.6.0",
     "react": "^18.3.1",
     "react-native": "^0.76.7",
     "react-native-calendars": "^1.1307.0",

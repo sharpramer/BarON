@@ -11,6 +11,15 @@ export const estilos = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    
+    conteinerCheckbox:{
+        flexDirection:"row",
+    },
+
+    chb:{
+        marginRight: 8,
+        marginLeft: 14
+    },
 
     txtCabecalhoTitulo: {
         fontSize: 10,

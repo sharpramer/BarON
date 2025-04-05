@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { auth, bd } from "../../firebase";
-import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { View, TextInput, TouchableHighlight, StyleSheet, Text, TouchableOpacity, Modal } from "react-native";
+import ModalTermosUtilizacao from "../Termos/TermosUtilizacao/ModalTermosUtilizacao";
+import ModalPoliticaPrivacidade from "../Termos/PolitivaPrivacidade/ModalPoliticaPrivacidade";
 import { estilos } from "../estilos";
 
 export default function PaginaRegistar() {
@@ -11,44 +10,26 @@ export default function PaginaRegistar() {
     nome: '',
     dataNascimento: '',
     email: '',
-    passe: ''
+    passe: '',
+    isTermosAceitos: false
   })
 
   const [funcionario, setFuncionario] = useState({
     nome: '',
     dataNascimento: '',
     email: '',
-    passe: ''
+    passe: '',
+    isTermosAceitos: false
   })
 
-  const guardarRegisto = async (colecao, nome, dataNascimento, numero, email, passe) => {
-    try {
-      const utilizadorCredencial = await createUserWithEmailAndPassword(auth, email, passe)
-      const utilizador = utilizadorCredencial.user
-      await addDoc(collection(bd, colecao), {
-        codigo: utilizador.uid,
-        nome: nome,
-        dataNascimento: dataNascimento,
-        email: email,
-      })
-
-      if(utilizador && !utilizador.emailVerified){
-        await sendEmailVerification(utilizador)
-        alert('Um email de verificação foi enviado para o seu email.')
-      }
-      alert('Registrado com sucesso!')
-    }
-    catch (erro) {
-      if (erro.code === 'auth/email-already-in-use') {
-        alert('O e-mail já está em uso. Por favor, tente outro.');
-      } else if (erro.code === 'auth/weak-password') {
-        alert('A senha é muito fraca. Escolha uma mais segura.');
-      } else {
-        alert('Erro ao registrar. Por favor, tente novamente.');
-      }
-      console.error(`Erro ao registrar: ${erro.message}`);
-    }
-  }
+  const [modalTermosUtilizacao, setModalTermosUtilizacao] = useState({
+    tipoConta: undefined,
+    visibilidade: false
+  })
+  const [modalPoliticaPrivacidade, setModalPoliticaPrivacidade] = useState({
+    tipoConta: undefined,
+    visibilidade: false
+  })
   
   return (
     <View style={estilosPaginaRegistar.conteinerPaginaRegistar}> 
@@ -150,19 +131,14 @@ export default function PaginaRegistar() {
               ) {
                 alert('Favor preencher todos os campos');
               } else {
-                try {
-                  guardarRegisto(
-                    'Utilizadores',
-                    utilizador.nome,
-                    utilizador.dataNascimento,
-                    utilizador.numero,
-                    utilizador.email,
-                    utilizador.passe
-                  )
-                  
-                } catch (erro) {
-                  console.error(`Erro ao registrar utilizador:${erro}`);
-                }
+                setModalPoliticaPrivacidade({
+                  tipoConta: 'utilizador',
+                  visibilidade: true
+                })
+                setModalTermosUtilizacao({
+                  tipoConta: 'utilizador',
+                  visibilidade: true
+                })
               }
             }}
           >
@@ -223,34 +199,52 @@ export default function PaginaRegistar() {
 
           <View style={estilos.separadorCx}></View>
 
+
           {/* Botão registar funcionário */}
           <TouchableHighlight
             style={estilos.btn}
             onPress={ () => {
               if (
                 funcionario.nome === '' || 
-                funcionario.numero === '' || 
                 funcionario.dataNascimento === '' || 
                 funcionario.email === '' || 
                 funcionario.passe === ''
               )
-                alert('Favor preencher todos os campos')
+              alert('Favor preencher todos os campos')
               else {
-                guardarRegisto(
-                  'Funcionarios', 
-                  funcionario.nome, 
-                  funcionario.dataNascimento, 
-                  funcionario.numero, 
-                  funcionario.email, 
-                  funcionario.passe
-                )
+                setModalPoliticaPrivacidade({
+                  tipoConta: 'funcionario',
+                  visibilidade: true
+                })
+                setModalTermosUtilizacao({
+                  tipoConta: 'funcionario',
+                  visibilidade: true
+                })
               }
             }}
-          >
+            >
             <Text>Registrar</Text>
           </TouchableHighlight>
         </View>
       }
+
+
+      {/* Modal Termos de Utilização */}
+      <ModalTermosUtilizacao
+        modalTermosUtilizacao={modalTermosUtilizacao}
+        setModalTermosUtilizacao={setModalTermosUtilizacao}
+        utilizador={utilizador}
+        setUtilizador={setUtilizador}
+        funcionario={funcionario}
+        setFuncionario={setFuncionario}
+      />
+
+      {/* Modal Politica Privacidade */}
+      <ModalPoliticaPrivacidade
+        modalPoliticaPrivacidade={modalPoliticaPrivacidade}
+        setModalPoliticaPrivacidade={setModalPoliticaPrivacidade}
+      />
+
     </View>
   )
 }
