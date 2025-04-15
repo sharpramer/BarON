@@ -90,9 +90,9 @@ export default function FazerPedido(props){
             >
                 <TouchableHighlight // Botão fechar modal
                     onPress={() => setModalDataVisibilidade(false)}
-                    style={estilos.btnFecharModal}
+                    style={estilos.btnFechar}
                 >
-                    <Text style={estilos.txtBtnFecharModal}>X</Text>
+                    <Text>X</Text>
                 </TouchableHighlight>
                 
                 {/* Calendário mudar data entrega*/}
@@ -108,6 +108,7 @@ export default function FazerPedido(props){
                         selectedDayBackgroundColor: "#0DE2E9",
                         selectedDayTextColor: 'white'
                     }}
+                    hideArrows={true}
                 />
             </Modal>
 

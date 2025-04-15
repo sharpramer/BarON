@@ -26,7 +26,7 @@ export default function MenuEditar() {
       >
           {/* Botão fechar modal menu editar */}
           <TouchableHighlight
-            style={estilos.btnFecharModal}
+            style={estilos.btnFechar}
             onPress={() => {
               setModalEditarVisibilidade(false);
             }}

@@ -175,7 +175,7 @@ export default function ModalFazerPedido(props) {
                     {/* Botão fechar modal */}
                     <TouchableHighlight 
                         onPress={() => props.setModalVisibilidade(false)}
-                        style={estilos.btnFecharModal}
+                        style={estilos.btnFechar}
                     >
                         <Text style={estilos.txtBtnFecharModal}>X</Text>
                     </TouchableHighlight>
@@ -278,16 +278,8 @@ export default function ModalFazerPedido(props) {
 
                             {/* Conteiner para adicionar o pedido ao carrinho ou para reservar o pedido */}
                             <View>
-                                <TouchableHighlight // Botão adicionar pedido ao carrinho
-                                    style={{marginVertical: 10}}
-                                    onPress={() => {
-                                        guardarPedido('carrinho')
-                                    }}
-                                >
-                                    <Text>Carrinho</Text>
-                                </TouchableHighlight>
-
-                                <TouchableHighlight // Botão reservar pedido
+                                {/* Botão reservar pedido */}
+                                <TouchableHighlight 
                                     onPress={() => {
                                         guardarPedido('reservado')
                                     }}
@@ -305,9 +297,10 @@ export default function ModalFazerPedido(props) {
                 visible={modalMetodoPagamento}
                 onRequestClose={() => setModalMetodoPagamento(false)}               
             >
+                {/* Botão fechar modal método pagamento */}
                 <TouchableHighlight 
-                        onPress={() => setModalMetodoPagamento(false)}
-                        style={estilos.btnFecharModal}
+                    onPress={() => setModalMetodoPagamento(false)}
+                    style={estilos.btnFechar}
                 >
                     <Text style={estilos.txtBtnFecharModal}>X</Text>
                </TouchableHighlight>
@@ -352,6 +345,7 @@ export default function ModalFazerPedido(props) {
                 />
 
                 <TouchableHighlight
+                    style={estilos.btnFechar}
                     onPress={() => { setCaixaTextoLocalEntregaVisibilidade(false) }}
                 >
                     <Text>Fechar</Text>

@@ -3,6 +3,7 @@ import { View, Text, TouchableHighlight, StyleSheet, Image } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { buscarLocal } from "../Global"
 import { estilos } from "../estilos";
+import MenuEliminar from "./Utilizador/PaginaDefinicoes/MenuEliminar";
 
 export default function PaginaBoasVindas({navigation}) {
     useEffect(() => {
@@ -15,11 +16,6 @@ export default function PaginaBoasVindas({navigation}) {
     
     return(
         <SafeAreaView style={estilosPaginaBoasVindas.conteiner}>
-            {/* Imagem logo */}
-            {/* <Image
-                style={estilosPaginaBoasVindas.imgLogo}
-                source={require('../img/logo.png')}
-            /> */}
 
             {/* Texto Título */}
             <Text style={estilosPaginaBoasVindas.txtTitulo}>BEM-VINDO</Text>

@@ -53,7 +53,7 @@ export default function MenuRelatorioMensal() {
             >
                 {/* Botão fechar modal menu relatório mensal */}
                 <TouchableHighlight
-                    style={estilos.btnFecharModal}
+                    style={estilos.btnFechar}
                     onPress={() => {
                         setModalRelatorioMensalVisibilidade(false);
                     }}

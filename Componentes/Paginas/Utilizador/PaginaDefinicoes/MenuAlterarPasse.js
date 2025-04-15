@@ -40,7 +40,7 @@ export default function MenuAlterarPasse() {
         alert('Email atualizado com sucesso no Firebase Authentication')
       } else {
         console.log('Utilizador não encontrado no Authentication')
-      }
+      } 
     } catch (erro) {
       console.error(`Erro ao atualizar email no Firebase Authentication: ${erro}`)
       
@@ -75,7 +75,6 @@ export default function MenuAlterarPasse() {
     <View>
         {/* Botão alterar passe */}
         <TouchableHighlight
-          style={estilos.btnFecharModal}
           onPress={() => { setModalAlterarPasseVisibilidade(true) }}
         >
           <Text>Alterar passe</Text>
@@ -87,7 +86,7 @@ export default function MenuAlterarPasse() {
         >
           {/* Botão fechar modal menu alterar passe */}
           <TouchableHighlight
-            style={estilos.btnFecharModal}
+            style={estilos.btnFechar}
             onPress={() => {
               setModalAlterarPasseVisibilidade(false);
             }}

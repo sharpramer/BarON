@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Image, TouchableOpacity, TouchableHighlight, FlatList, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { collection, getDocs, query, where } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore"
 import { auth, bd } from "../firebase"
-import { eliminarFirestore } from "./Global"
 
 export default function Pedidos(props) {
   const [dadosPedido, setDadosPedido] = useState([])
@@ -90,6 +89,20 @@ export default function Pedidos(props) {
     }))
   }
 
+  const eliminarPedido = async pedidoId => {
+    try {
+      const itensSnapshot = await getDocs(collection(bd, `Pedidos/${pedidoId}/itens_pedido`))
+      const promises = itensSnapshot.docs.map(doc => deleteDoc(doc.ref))
+      await Promise.all(promises)
+
+      await deleteDoc(doc(bd, 'Pedidos', pedidoId))
+      console.log('Eliminado com sucesso!')
+      alert('Eliminado com sucesso!')
+    } catch (erro) {
+      console.error("Erro ao eliminar pedido com itens: ", erro)
+    }
+  }
+
   return(
     <SafeAreaView>
       <FlatList
@@ -131,8 +144,7 @@ export default function Pedidos(props) {
                     <TouchableHighlight
                       style={estilos.botaoEliminar}
                       onPress={() => {
-                        eliminarFirestore('Pedidos', item.id)
-                        eliminarFirestore('itens_pedido', item.id)
+                        eliminarPedido(item.id)
                       }}
                     >
                       <Text style={estilos.textoBotaoEliminar}>Eliminar</Text>

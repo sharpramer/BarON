@@ -26,7 +26,7 @@ export function MenuConta() {
       >
         {/* Botão fechar modal */}
         <TouchableHighlight
-          style={estilos.btnFecharModal}
+          style={estilos.btnFechar}
           onPress={() => {
             setModalContaVisibilidade(false)
           }}

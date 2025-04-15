@@ -66,9 +66,9 @@ export default function PoliticaPrivacidade() {
         <Text style={estilosPoliticaPrivacidade.paragrafo}>
           Se você tiver dúvidas ou preocupações sobre esta Política de Privacidade, entre em contato conosco por meio dos seguintes canais:
         </Text>
-        <Text style={estilosPoliticaPrivacidade.paragrafo}>- [Insira o e-mail ou canal de atendimento]</Text>
+        <Text style={estilosPoliticaPrivacidade.paragrafo}>- Email: divinobarrasul@gmail.com</Text>
 
-        <Text style={estilosPoliticaPrivacidade.paragrafo}>Última atualização: [Data da última atualização]</Text>
+        <Text style={estilosPoliticaPrivacidade.paragrafo}>Última atualização: 07/04/2025</Text>
       </View>
     </ScrollView>
   )

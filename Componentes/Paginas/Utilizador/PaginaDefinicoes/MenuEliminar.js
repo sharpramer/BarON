@@ -8,17 +8,20 @@ import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore
 
 export default function MenuEliminar() {
     const [modalEliminarVisibilidade, setModalEliminarVisibilidade] = useState(false)
-    const [emailUtilizador, setEmailUtilizador] = useState('')
-    const [passeUtilizador, setPasseUtilizador] = useState('')
+    const [email, setEmailUtilizador] = useState('')
+    const [passe, setPasseUtilizador] = useState('')
     
     const navegacao = useNavigation()
 
+    
     const eliminarContaFirestore = async () => {
         try {
+            console.log(`Nome recebido ${email}`);
+
             const linha = await getDocs(
                 query(
-                    collection(bd, 'utilizador'), 
-                    where('email', '==', emailUtilizador)
+                    collection(bd, 'Utilizadores'), 
+                    where('email', '==', email)
                 )
             )
 
@@ -56,9 +59,9 @@ export default function MenuEliminar() {
 
     const eliminarConta = async () => {
         try {
-            await eliminarContaAuthentication()  
-            
             await eliminarContaFirestore()
+            
+            await eliminarContaAuthentication()  
             
             await fazerLogout(navegacao)
 
@@ -71,7 +74,7 @@ export default function MenuEliminar() {
     
     return (
         <View>
-            {/* Botão menu Editar */}
+            {/* Botão menu Eliminar */}
             <TouchableHighlight
                 onPress={() => {
                     setModalEliminarVisibilidade(true)
@@ -84,9 +87,9 @@ export default function MenuEliminar() {
                 visible={modalEliminarVisibilidade}
                 onRequestClose={setModalEliminarVisibilidade}
             >
-                {/* Botão fechar modal menu Editar */}
+                {/* Botão fechar modal menu Eliminar */}
                 <TouchableHighlight
-                    style={estilos.btnFecharModal}
+                    style={estilos.btnFechar}
                     onPress={() => {
                         setModalEliminarVisibilidade(false)
                     }}
@@ -95,13 +98,15 @@ export default function MenuEliminar() {
                 </TouchableHighlight>
 
                 <View style={estilos.conteiner}>
+
+
                     {/* Caixa de texto email utilizador */}
                     <TextInput
                         style={estilos.cx}
-                        onChangeText={(texto) => setEmailUtilizador(texto)}
+                        onChangeText={(texto) => setEmailUtilizador(texto.trim().toLowerCase())}
                         placeholder="Email"
                         placeholderTextColor={"black"}
-                        value={emailUtilizador}
+                        value={email}
                     />
                     <View style={estilos.separadorCx}></View>
 
@@ -110,7 +115,7 @@ export default function MenuEliminar() {
                         onChangeText={(texto) => setPasseUtilizador(texto)}
                         placeholder="Palavra-Passe"
                         placeholderTextColor={"black"}
-                        value={passeUtilizador}
+                        value={passe}
                     />
                     <View style={estilos.separadorCx}></View>
 
@@ -118,7 +123,7 @@ export default function MenuEliminar() {
                     <TouchableHighlight
                         style={estilos.btn}
                         onPress={() => { 
-                            if(emailUtilizador == '' || passeUtilizador == '')
+                            if(email == '' || passe == '')
                                 alert('Favor prencher todos os campos!')
                             else
                                 eliminarConta()

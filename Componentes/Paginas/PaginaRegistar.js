@@ -121,7 +121,7 @@ export default function PaginaRegistar() {
 
           {/* Botão registar aluno */}
           <TouchableHighlight
-            style={estilos.btn}
+            style={[estilos.btn, {width: 80}]}
             onPress={async () => {
               if (
                 utilizador.nome === '' ||
@@ -142,7 +142,7 @@ export default function PaginaRegistar() {
               }
             }}
           >
-            <Text>Registrar</Text>
+            <Text style={estilos.txtBtn}>Registrar</Text>
           </TouchableHighlight>
         </View> :
 
@@ -202,7 +202,7 @@ export default function PaginaRegistar() {
 
           {/* Botão registar funcionário */}
           <TouchableHighlight
-            style={estilos.btn}
+            style={[estilos.btn, {width: 80}]}
             onPress={ () => {
               if (
                 funcionario.nome === '' || 
@@ -223,7 +223,7 @@ export default function PaginaRegistar() {
               }
             }}
             >
-            <Text>Registrar</Text>
+            <Text style={estilos.txtBtn}>Registrar</Text>
           </TouchableHighlight>
         </View>
       }
