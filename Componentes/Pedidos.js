@@ -1,86 +1,94 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Image, TouchableOpacity, TouchableHighlight, FlatList, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { collection, deleteDoc, doc, getDocs, query, where } from "firebase/firestore"
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore" 
 import { auth, bd } from "../firebase"
 
 export default function Pedidos(props) {
   const [dadosPedido, setDadosPedido] = useState([])
   const [opcoesPedidoVisibilidade, setOpcoesPedidoVisibilidade] = useState({})
+  const [recarregar, setRecarregar] = useState(false)
 
   useEffect(() => {
-    const obterPedido = async () => {
-      try {
-        const utilizadorAtual = auth.currentUser
-        const pedidosRef = await getDocs(collection(bd, 'Pedidos'))
-
-        const dadosPedidos = await Promise.all(
-          pedidosRef.docs.map(async (doc) => {
-            const dadosPedido = {
-              id: doc.id,
-              dataEntrega: doc.data().data_entrega,
-              horaEntrega: doc.data().hora_entrega,
-              nomeUtilizador: doc.data().nome_utilizador
-            }
-
-            if (props.tipoConta === 'utilizador') {
-              const itensPedidosLinha = query(
-                collection(doc.ref, 'itens_pedido'),
-                where('situacao', '==', props.situacao),
-                where('codigo_utilizador', '==', utilizadorAtual.uid)
-              )
-              
-              const itensPedidosRef = await getDocs(itensPedidosLinha)
-  
-              const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
-                id: itemDoc.id,
-                nomeCurto: itemDoc.data().nome_curto,
-                subtotal: itemDoc.data().subtotal,
-                quantidade: itemDoc.data().quantidade,
-                precoVenda: itemDoc.data().preco_venda,
-                troco: itemDoc.data().troco,
-                localEntrega: itemDoc.data().localEntrega,
-                telefone: itemDoc.data().telefone
-              }))
-  
-              if (dadosItensPedios.length > 0) {
-                return { ...dadosPedido, itensPedido: dadosItensPedios }
-              }
-              return null
-            } else {
-              const itensPedidosLinha = query(
-                collection(doc.ref, 'itens_pedido'),
-                where('situacao', '==', props.situacao)
-              )
-              const itensPedidosRef = await getDocs(itensPedidosLinha)
-  
-              const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
-                id: itemDoc.id,
-                nomeCurto: itemDoc.data().nome_curto,
-                subtotal: itemDoc.data().subtotal,
-                quantidade: itemDoc.data().quantidade,
-                precoVenda: itemDoc.data().preco_venda,
-                troco: itemDoc.data().troco,
-                localEntrega: itemDoc.data().localEntrega,
-                telefone: itemDoc.data().telefone
-              }))
-  
-              if (dadosItensPedios.length > 0) {
-                return { ...dadosPedido, itensPedido: dadosItensPedios }
-              }
-              return null
-            }
-          })
-        )
-
-        setDadosPedido(dadosPedidos.filter(pedido => pedido !== null))
-      } catch (erro) {
-        console.error('Erro ao obter documento: ', erro)
-      }
-    }
-
     obterPedido()
   }, [])
+
+  const aoAtualizar = async () => {
+    setRecarregar(true)
+    await obterPedido()
+    setRecarregar(false)
+  }
+  
+  const obterPedido = async () => {
+    try {
+      const utilizadorAtual = auth.currentUser
+      const pedidosRef = await getDocs(collection(bd, 'Pedidos'))
+
+      const dadosPedidos = await Promise.all(
+        pedidosRef.docs.map(async (doc) => {
+          const dadosPedido = {
+            id: doc.id,
+            dataEntrega: doc.data().data_entrega,
+            horaEntrega: doc.data().hora_entrega,
+            nomeUtilizador: doc.data().nome_utilizador
+          }
+
+          if (props.tipoConta === 'utilizador') {
+            const itensPedidosLinha = query(
+              collection(doc.ref, 'itens_pedido'),
+              where('situacao', '==', props.situacao),
+              where('codigo_utilizador', '==', utilizadorAtual.uid)
+            )
+            
+            const itensPedidosRef = await getDocs(itensPedidosLinha)
+
+            const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
+              id: itemDoc.id,
+              nomeCurto: itemDoc.data().nome_curto,
+              subtotal: itemDoc.data().subtotal,
+              quantidade: itemDoc.data().quantidade,
+              precoVenda: itemDoc.data().preco_venda,
+              troco: itemDoc.data().troco,
+              localEntrega: itemDoc.data().localEntrega,
+              telefone: itemDoc.data().telefone
+            }))
+
+            if (dadosItensPedios.length > 0) {
+              return { ...dadosPedido, itensPedido: dadosItensPedios }
+            }
+            return null
+          } else {
+            const itensPedidosLinha = query(
+              collection(doc.ref, 'itens_pedido'),
+              where('situacao', '==', props.situacao)
+            )
+            const itensPedidosRef = await getDocs(itensPedidosLinha)
+
+            const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
+              id: itemDoc.id,
+              nomeCurto: itemDoc.data().nome_curto,
+              subtotal: itemDoc.data().subtotal,
+              quantidade: itemDoc.data().quantidade,
+              precoVenda: itemDoc.data().preco_venda,
+              troco: itemDoc.data().troco,
+              localEntrega: itemDoc.data().localEntrega,
+              telefone: itemDoc.data().telefone
+            }))
+
+            if (dadosItensPedios.length > 0) {
+              return { ...dadosPedido, itensPedido: dadosItensPedios }
+            }
+            return null
+          }
+        })
+      )
+
+      setDadosPedido(dadosPedidos.filter(pedido => pedido !== null))
+    } catch (erro) {
+      console.error('Erro ao obter documento: ', erro)
+    }
+  }
+
 
   const alternarVisibilidadeOpcaoPedido = produtoId => {
     setOpcoesPedidoVisibilidade(prevState => ({
@@ -107,6 +115,8 @@ export default function Pedidos(props) {
     <SafeAreaView>
       <FlatList
         data={dadosPedido}
+        refreshing={recarregar}
+        onRefresh={aoAtualizar}
         renderItem={({ item }) => (
           <View style={estilos.conteinerPedido}>
             {item.itensPedido.map((itens_pedido) => (
@@ -115,10 +125,6 @@ export default function Pedidos(props) {
                   style={estilos.conteinerConteudo}
                   onPress={() => alternarVisibilidadeOpcaoPedido(itens_pedido.id)}
                 >
-                  <Image
-                    style={estilos.imagemProduto}
-                    source={require('./img/salada.png')}
-                  />
 
                   <View style={estilos.infoConteiner}>
                     <Text style={estilos.nomeProduto}>{itens_pedido.nomeCurto}</Text>
@@ -140,6 +146,29 @@ export default function Pedidos(props) {
 
                 { opcoesPedidoVisibilidade[itens_pedido.id] && ( 
                   <View style={estilos.opcoesConteiner}>
+                    { props.tipoConta === 'funcionario' ? 
+                    /* Botão finalizar pedido */
+                    <TouchableHighlight
+                      style={estilos.botaoFinalizar}
+                      onPress={async() => {
+                        try {
+                          const docRef = doc(bd, 'Pedidos', item.id, 'itens_pedido', itens_pedido.id)
+                          
+                          await updateDoc(docRef, {
+                            situacao: 'finalizado'
+                          })
+                          
+                          alert('Finalizado com sucesso')
+                        } catch (erro) {
+                          console.error(`Erro ao finalizar pedido ${erro}`);
+                        }
+                      }}
+                    >
+                      <Text style={estilos.textoBotaoFinalizar}>Finalizar</Text>  
+                    </TouchableHighlight>
+                      : undefined
+                    }
+
                     {/* Botão eliminar pedido */}
                     <TouchableHighlight
                       style={estilos.botaoEliminar}
@@ -149,6 +178,7 @@ export default function Pedidos(props) {
                     >
                       <Text style={estilos.textoBotaoEliminar}>Eliminar</Text>
                     </TouchableHighlight>
+
                   </View>
                 )}
               </View>
@@ -221,5 +251,18 @@ const estilos = StyleSheet.create({
   textoBotaoEliminar:{
     fontSize: 16,
     fontWeight: 'bold'
-  }
+  },
+
+  botaoFinalizar:{
+    backgroundColor: 'lightgreen',
+    paddingVertical: 10,
+    paddingHorizontal: 150,
+    borderRadius: 8,
+    marginBottom: 10
+  },
+
+  textoBotaoFinalizar:{
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
 })

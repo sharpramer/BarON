@@ -15,16 +15,6 @@ export default function FazerPedido(props){
     const dataPedido = `${dataSistema.getDate()}/${dataSistema.getMonth() + 1}/${dataSistema.getFullYear()}`
     const horaPedido = `${dataSistema.getHours()}:${dataSistema.getMinutes()}`
     
-    function converterPrecoParaFloat(preco) {
-        // Substitui a vírgula por ponto
-        const precoFormatado = preco.replace(',', '.')
-        return parseFloat(precoFormatado)
-    }
-    
-    function formatarFloat(numero) {
-        return numero.toFixed(2).replace('.', ',')
-    }
-
     // Função aumentar minutos
     function aumentarMinutos() {
         setMinutos( prevMinutos => {
@@ -69,10 +59,8 @@ export default function FazerPedido(props){
         <View>
             {/* Componente ModalFazerPedido */}
             <ModalFazerPedido
-                converterPrecoParaFloat={converterPrecoParaFloat}
                 dataEntrega={dataEntrega}
                 dataPedido={dataPedido}
-                formatarFloat={formatarFloat}
                 horaPedido={horaPedido}
                 horaEntrega={horaEntregaFormatada}
                 modalVisibilidade={props.modalVisibilidade}

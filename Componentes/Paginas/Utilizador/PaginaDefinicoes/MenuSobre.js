@@ -3,6 +3,7 @@ import { View, Text, TouchableHighlight, Modal } from "react-native";
 import { estilos } from "../../../estilos";
 import MenuTermosUtilizacao from "./MenuTermosUtilizacao";
 import MenuPoliticaPrivacidade from "./MenuPoliticaPrivacidade";
+import { estilosMenus } from "./estilos/estilosMenus";
 
 export function MenuSobre() {
   const [modalSobreVisibilidade, setModalSobreVisibilidade] = useState(false);
@@ -11,6 +12,7 @@ export function MenuSobre() {
     <View>
       {/* Botão menu definições Sobre */}
       <TouchableHighlight
+        style={estilosMenus.tituloMenu}
         onPress={() => {
           setModalSobreVisibilidade(true);
         }}

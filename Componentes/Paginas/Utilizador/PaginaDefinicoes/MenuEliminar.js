@@ -5,6 +5,7 @@ import { estilos } from "../../../estilos"
 import { auth, bd } from "../../../../firebase"
 import { useNavigation } from "@react-navigation/native"
 import { collection, deleteDoc, getDocs, query, where } from "firebase/firestore"
+import { estilosMenus } from "./estilos/estilosMenus"
 
 export default function MenuEliminar() {
     const [modalEliminarVisibilidade, setModalEliminarVisibilidade] = useState(false)
@@ -76,6 +77,7 @@ export default function MenuEliminar() {
         <View>
             {/* Botão menu Eliminar */}
             <TouchableHighlight
+                style={estilosMenus.tituloMenu}
                 onPress={() => {
                     setModalEliminarVisibilidade(true)
                 }}

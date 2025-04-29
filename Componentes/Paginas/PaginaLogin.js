@@ -19,7 +19,16 @@ export default function PaginaLogin({navigation}) {
     passe: '',
     guardarPasse: true,
   })
+  
   const [mostrarPasse, setMostrarPasse] = useState(false)
+
+  const emailsPermitidos = [
+    "enzoceleghini.work@gmail.com",
+    "athosfrota.saoleo@gmail.com",
+    "suelencruz.saoleo@gmail.com",
+    "rogerioceleghini@gmail.com",
+    "rogerioceleghini@outlook.com",
+  ]
 
   useEffect(() => {
     const carregarPasse = async () => {
@@ -52,34 +61,34 @@ export default function PaginaLogin({navigation}) {
 
   async function fazerLogin(colecao, email, passe, guardarPasse, paginaInicial) {
     if (email === '' || passe === '') {
-      alert('Favor preencher todos os campos');
-      return;
+      alert('Favor preencher todos os campos')
+      return
     }
   
     try {
       // Fazer login no Firebase Auth
-      const credencial = await signInWithEmailAndPassword(auth, email, passe);
+      const credencial = await signInWithEmailAndPassword(auth, email, passe)
   
       if (credencial.user.emailVerified) {
         if (guardarPasse) {
-          guardarLocal('Passe', passe);  // Memorizar passe
+          guardarLocal('Passe', passe)  // Memorizar passe
         }
   
         // Verifica se o email existe na coleção
-        const emailExiste = await verificarEmail(colecao, email);
+        const emailExiste = await verificarEmail(colecao, email)
   
         if (emailExiste) {
-          console.log('Email verificado e login bem-sucedido');
-          navigation.navigate(paginaInicial);  // Navegar para a página inicial
+          console.log('Email verificado e login bem-sucedido')
+          navigation.navigate(paginaInicial)  // Navegar para a página inicial
         } else {
-          alert('Conta não encontrada. Verifique seu email e tente novamente.');
+          alert('Conta não encontrada. Verifique seu email e tente novamente.')
         }
       } else {
-        alert('Por favor, verifique seu email antes de fazer login.');
+        alert('Por favor, verifique seu email antes de fazer login.')
       }
     } catch (erro) {
-      console.error('Erro ao fazer login:', erro);
-      alert('Erro ao fazer login. Verifique suas credenciais e tente novamente.');
+      console.error('Erro ao fazer login:', erro)
+      alert('Erro ao fazer login. Verifique suas credenciais e tente novamente.')
     }
   }  
 
@@ -169,21 +178,42 @@ export default function PaginaLogin({navigation}) {
             <Text style={{color: "white"}}>Mostrar senha</Text>
           </View>
 
-          {/* Botão login utilizador */}
-          <TouchableHighlight
-            style={estilos.btnLogin}
-            onPress={async () => {
-              await fazerLogin(
-                'Utilizadores', 
-                utilizador.email,
-                utilizador.passe,
-                utilizador.guardarPasse,
-                'PaginaInicialUtilizador'
-              )
-            }}
-          >
-            <Text style={estilos.txtBtnLogin}>Login</Text>
-          </TouchableHighlight>
+          <View style={estilos.conteinerBotoes}>
+            {/* Botão login funcionário */}
+            <TouchableHighlight
+              style={[estilos.btnLogin, {marginHorizontal: 20}]}
+              onPress={async () => {
+                if (!emailsPermitidos.includes(funcionario.email.toLocaleLowerCase())) {
+                  alert("Você não tem permissão para fazer login como funcionário. Tente novamente mais tarde")
+                } else {
+                  await fazerLogin(
+                    'Funcionarios', 
+                    funcionario.email,
+                    funcionario.passe,
+                    funcionario.guardarPasse,
+                    'PaginaInicialFuncionario'
+                  )
+                }
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Login</Text>
+            </TouchableHighlight>
+            {/* Botão login utilizador */}
+            <TouchableHighlight
+              style={estilos.btnLogin}
+              onPress={async () => {
+                await fazerLogin(
+                  'Utilizadores', 
+                  utilizador.email,
+                  utilizador.passe,
+                  utilizador.guardarPasse,
+                  'PaginaInicialUtilizador'
+                )
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Login</Text>
+            </TouchableHighlight>
+          </View> :
         </View> :
 
         <View style={estilos.loginConteiner}>
@@ -234,21 +264,38 @@ export default function PaginaLogin({navigation}) {
             <Text style={{color: "white"}}>Mostrar senha</Text>
           </View>
 
-          {/* Botão login funcionário */}
-          <TouchableHighlight
-            style={estilos.btnLogin}
-            onPress={async () => {
-              await fazerLogin(
-                'Funcionarios', 
-                funcionario.email,
-                funcionario.passe,
-                funcionario.guardarPasse,
-                'PaginaInicialFuncionario'
-              )
-            }}
-          >
-            <Text style={estilos.txtBtnLogin}>Login</Text>
-          </TouchableHighlight>
+          <View style={estilos.conteinerBotoes}>
+            {/* Botão login funcionário */}
+            <TouchableHighlight
+              style={[estilos.btnLogin, {marginHorizontal: 20}]}
+              onPress={async () => {
+                if (!emailsPermitidos.includes(funcionario.email.toLocaleLowerCase())) {
+                  alert("Você não tem permissão para fazer login como funcionário. Tente novamente mais tarde")
+                } else {
+                  await fazerLogin(
+                    'Funcionarios', 
+                    funcionario.email,
+                    funcionario.passe,
+                    funcionario.guardarPasse,
+                    'PaginaInicialFuncionario'
+                  )
+                }
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Login</Text>
+            </TouchableHighlight>
+    
+            <TouchableHighlight
+              style={[estilos.btnLogin, {marginHorizontal: 20}]}
+              onPress={() => {
+                alert('Caso necessite de algum suporte, contacte-nos pelo email: divinobarrasul@gmail.com')
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Ajuda</Text>
+            </TouchableHighlight>
+  
+          </View>
+
         </View>
       }
     </SafeAreaView>
@@ -315,5 +362,10 @@ const estilos = StyleSheet.create({
   txtBtnLogin:{
     textAlign: "center",
   },
+
+  conteinerBotoes:{
+    flexDirection: 'row', 
+    alignItems: 'center'
+  }
 
 })  

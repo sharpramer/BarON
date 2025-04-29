@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { StyleSheet, Modal, View, TouchableHighlight,TextInput, Text, Image, Alert, } from "react-native"
 import { estilosFazerPedido } from "../FazerPedido"
 import { estilos } from "../../estilos"
@@ -8,34 +8,21 @@ import { addDoc, collection, getDocs, query, updateDoc, where } from "firebase/f
 export default function ModalFazerPedido(props) {
     const [ modalMetodoPagamento, setModalMetodoPagamento ] = useState(false) 
     const [ metodoPagamento, setMetodoPagamento ] = useState('Dinheiro') 
-    const [ localEntrega, setLocalEntrega ] = useState('Divino Fogão')
-    const [ caixaTextoLocalEntregaVisibilidade, setCaixaTextoLocalEntregaVisibilidade ] = useState(false)
     const [ quantidadePedido, setQuantidadePedido ] = useState(1)
     const [ observacoes, setObservacoes ] = useState('')
     const [ troco, setTroco ] = useState('Não é necessário troco')
-    const [ telefone, setTelefone ] = useState('')
     
-    
+    useEffect(() => {
+        if (props.produtoSelecionado) {
+          if (!props.produtoSelecionado.precoDescontado) {
+            const precoOriginal = parseFloat(props.produtoSelecionado.precoVenda.replace(',', '.'))
+            props.produtoSelecionado.precoDescontado = precoOriginal * 0.8
+          }
+        }
+      }, [props.produtoSelecionado])
+      
     let subtotal
-
-    function definirCaixaTextoLocalEntregaVisibilidade() {
-        Alert.alert(
-            "Local entrega",
-            "Gostaria da entrega na loja do Divino Fogão?",
-            [
-                { 
-                    text: "Sim", 
-                    onPress: () => {setCaixaTextoLocalEntregaVisibilidade(false), console.log("Local de entrega Divino Fogão")} 
-                },
-                
-                {
-                    text: "Não", 
-                    onPress: () => {setCaixaTextoLocalEntregaVisibilidade(true), console.log("Outro local de entrega")} 
-                },
-            ]
-        )
-    }
-
+    
     function definirTroco() {
         Alert.alert(
             "Troco",
@@ -110,6 +97,9 @@ export default function ModalFazerPedido(props) {
                 
                 console.log("Usuário autenticado:", auth.currentUser?.uid)
 
+                console.log(`Imagem: ${props.produtoSelecionado.imagemCaminho}`);
+                
+
                 const nomeUtilizador = await buscarNomeUtilizador()
                 
                 console.log(nomeUtilizador)
@@ -140,9 +130,8 @@ export default function ModalFazerPedido(props) {
                     situacao: situacao,
                     observacoes: observacoes,
                     metodoPagamento: metodoPagamento,
-                    localEntrega: localEntrega,
                     troco: troco,
-                    telefone: telefone
+                    imagem: props.produtoSelecionado.imagemCaminho
                 })
 
                 // Atualizar subcoleção itens_pedidos com o código do pedido
@@ -187,76 +176,66 @@ export default function ModalFazerPedido(props) {
                             />
 
                             {/* Texto subtotal pedido */}
-                            <Text style={{alignSelf: "center"}}>R$ {
-                                subtotal = props.formatarFloat(
-                                    props.converterPrecoParaFloat(props.produtoSelecionado.precoVenda) * quantidadePedido
-                                )
+                            <Text style={{alignSelf: "center", marginBottom: 15}}>R$ {
+                                subtotal = (parseFloat(props.produtoSelecionado.precoDescontado.replace(',', '.')) * quantidadePedido).toFixed(2).replace('.', ',')
                             }
                             </Text>                            
                             
-                            {/* Quantidade pedido */}
-                            <Text>Quantidade</Text>
-                            
-                            <View>
+                            {/* Conteiner quantidade */}
+                            <View style={estilosModalFazerPedido.conteinerQuantidade}>
+                                {/* Texto quantidade */}
+                                <Text style={{ marginRight: 10, fontSize: 16 }}>Quantidade: </Text>
+
                                 {/* Botão diminuir quantidade pedido */}
                                 <TouchableHighlight
-                                    style={{backgroundColor: "black"}}
+                                    style={[estilosModalFazerPedido.btnQuantidade, { marginRight: 10 }]}
                                     onPress={() => {
                                         if (quantidadePedido > 1) {
-                                            setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade - 1)
-                                            console.log(quantidadePedido)
+                                            setQuantidadePedido(prevQuantidade => prevQuantidade - 1);
                                         }
                                     }}
                                 >
-                                    <Text style={{color: "white", alignSelf:"center"}}>-</Text>
+                                    <Text style={{ color: "white", fontSize: 20, textAlign: "center" }}>-</Text>
                                 </TouchableHighlight>
 
                                 {/* Texto quantidade pedido */}
-                                <Text style={{color: "black", alignSelf:"center"}}>{quantidadePedido}</Text>
+                                <Text style={{ marginHorizontal: 10, fontSize: 18 }}>
+                                    {quantidadePedido}
+                                </Text>
 
                                 {/* Botão aumentar quantidade pedido */}
-                                <TouchableHighlight 
-                                    style={{backgroundColor: "black"}}
+                                <TouchableHighlight
+                                    style={[estilosModalFazerPedido.btnQuantidade, { marginLeft: 10 }]}
                                     onPress={() => {
-                                        setQuantidadePedido(prevQuantidade => prevQuantidade = prevQuantidade + 1)
-                                        console.log(quantidadePedido)
+                                        setQuantidadePedido(prevQuantidade => prevQuantidade + 1);
                                     }}
                                 >
-                                    <Text style={{color:"white", alignSelf:"center"}}>+</Text>
+                                    <Text style={{ color: "white", fontSize: 20, textAlign: "center" }}>+</Text>
                                 </TouchableHighlight>
                             </View>
 
+
                             {/* Conteiner entrega */}
                             <View>
-                                {/* Botão data de entrega */}
-                                <TouchableHighlight
-                                    style={estilos.btn}
-                                    onPress={() => props.setModalDataVisibilidade(true)}
-                                >
-                                    <Text>Data entrega</Text>
-                                </TouchableHighlight>
+                                <View style={{flexDirection: 'row', marginHorizontal: 5, marginBottom: 15}}> 
+                                    {/* Botão data de entrega */}
+                                    <TouchableHighlight
+                                        style={[estilos.btn, {marginHorizontal: 7}]}
+                                        onPress={() => props.setModalDataVisibilidade(true)}
+                                    >
+                                        <Text>Data entrega</Text>
+                                    </TouchableHighlight>
 
-                                {/* Botão hora de entrega */}
-                                <TouchableHighlight
-                                    style={estilos.btn}
-                                    onPress={() => props.setModalHoraVisibilidade(true)}
-                                >
-                                    <Text>Hora entrega</Text>
-                                </TouchableHighlight>
+                                    {/* Botão hora de entrega */}
+                                    <TouchableHighlight
+                                        style={[estilos.btn, {marginHorizontal: 7}]}
+                                        onPress={() => props.setModalHoraVisibilidade(true)}
+                                        >
+                                        <Text>Hora entrega</Text>
+                                    </TouchableHighlight>
+                                </View>
 
                                 {/* Texto observações pedido */}
-                                <Text style={estilosModalFazerPedido.txtObservacoes}>Contato</Text>
-                                
-                                {/* Caixa de texto observações do pedido */}
-                                <TextInput
-                                    style={estilosModalFazerPedido.cx}
-                                    placeholder="Insira aqui seu número com DDD"
-                                    onChangeText={textoTelefone => {
-                                        setTelefone(textoTelefone)
-                                        console.log(telefone)
-                                    }}
-                                />
-
                                 <Text style={estilosModalFazerPedido.txtObservacoes}>Observações</Text>
 
                                 <TextInput
@@ -273,7 +252,7 @@ export default function ModalFazerPedido(props) {
                             <TouchableHighlight
                                 onPress={() => {setModalMetodoPagamento(true)}}
                             >
-                                <Text>Método de pagamento: {metodoPagamento}</Text>
+                                <Text style={{marginVertical: 10}}>Método de pagamento: {metodoPagamento}</Text>
                             </TouchableHighlight>
 
                             {/* Conteiner para adicionar o pedido ao carrinho ou para reservar o pedido */}
@@ -309,7 +288,7 @@ export default function ModalFazerPedido(props) {
                 <TouchableHighlight
                     onPress={() => {
                         setMetodoPagamento('Cartão')
-                        definirCaixaTextoLocalEntregaVisibilidade()
+                        setModalMetodoPagamento(false)
                     }}
                 >
                     <Text>Cartão</Text>
@@ -319,37 +298,13 @@ export default function ModalFazerPedido(props) {
                 <TouchableHighlight
                     onPress={() => {
                         setMetodoPagamento('Dinheiro')
+                        setModalMetodoPagamento(false)
                         definirTroco()
-                        definirCaixaTextoLocalEntregaVisibilidade()
                     }}
                 >
                     <Text>Dinheiro</Text>
                 </TouchableHighlight>
                 
-            </Modal>
-
-            {/* Modal Caixa texto local entrega */}
-            <Modal
-                visible={caixaTextoLocalEntregaVisibilidade}
-                onRequestClose={() => {setCaixaTextoLocalEntregaVisibilidade(false)}}
-            >
-                <TextInput
-                    style={estilosModalFazerPedido.cx}
-                    onChangeText={textoLocalEntrega => {
-                        setLocalEntrega(textoLocalEntrega)
-                        setModalMetodoPagamento(false)
-                        console.log(textoLocalEntrega)
-                    }}
-                    value={localEntrega}
-                    placeholder="Digite aqui o local da entrega"
-                />
-
-                <TouchableHighlight
-                    style={estilos.btnFechar}
-                    onPress={() => { setCaixaTextoLocalEntregaVisibilidade(false) }}
-                >
-                    <Text>Fechar</Text>
-                </TouchableHighlight>
             </Modal>
         </View>
     )
@@ -366,4 +321,20 @@ export const estilosModalFazerPedido = StyleSheet.create({
         borderWidth: 2,
     },
 
+    conteinerQuantidade: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    
+    conteudoConteinerQuantidade: {
+        marginRight: 7, // Deixa sem margem aqui
+    },    
+
+    btnQuantidade:{
+        justifyContent:"center",
+        backgroundColor: "black",
+        borderRadius: 90,
+        width: 25,
+        height: 27
+    }
 })

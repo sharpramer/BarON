@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MenuConta } from "./MenuConta";
-import { MenuAparencia } from "./MenuAparencia";
 import { MenuSobre } from "./MenuSobre";
 import { MenuSair } from "./MenuSair";
+import { MenuSuporte } from "./MenuSuporte";
 
 export default function PaginaDefinicoes() { // Página definições utilizador
   return (
@@ -12,6 +12,8 @@ export default function PaginaDefinicoes() { // Página definições utilizador
       <MenuConta/>
 
       <MenuSobre/>
+
+      <MenuSuporte/>
       
       <MenuSair/>
       

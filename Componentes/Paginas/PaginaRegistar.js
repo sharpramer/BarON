@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, TouchableHighlight, StyleSheet, Text, TouchableOpacity, Modal } from "react-native";
 import ModalTermosUtilizacao from "../Termos/TermosUtilizacao/ModalTermosUtilizacao";
-import ModalPoliticaPrivacidade from "../Termos/PolitivaPrivacidade/ModalPoliticaPrivacidade";
+import ModalPoliticaPrivacidade from "../Termos/PoliticaPrivacidade/ModalPoliticaPrivacidade";
 import { estilos } from "../estilos";
 
 export default function PaginaRegistar() {
@@ -168,6 +168,7 @@ export default function PaginaRegistar() {
             }}
             placeholder="Senha"
             placeholderTextColor={"black"}
+            secureTextEntry={true}
             value={funcionario.passe}
           />
 

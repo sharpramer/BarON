@@ -2,6 +2,7 @@ import { Text, Modal, TouchableHighlight, View } from "react-native";
 import TermosUtilizacao from "../../../Termos/TermosUtilizacao/TermosUtilizacao";
 import { useState } from "react";
 import { estilos } from "../../../estilos";
+import { estilosMenus } from "./estilos/estilosMenus";
 
 export default function MenuTermosUtilizacao() {
     const [modalVisibilidade, setModalVisibilidade] = useState(false)
@@ -9,6 +10,7 @@ export default function MenuTermosUtilizacao() {
     return(
         <View>
             <TouchableHighlight
+                style={estilosMenus.tituloMenu}
                 onPress={() => {setModalVisibilidade(true)}}
             >
                 <Text>Termos de Utilizacao</Text>

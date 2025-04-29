@@ -1,61 +1,77 @@
 import React, { useState } from "react"
 import { View, Text, TouchableHighlight, Image, FlatList, StyleSheet, SafeAreaView } from "react-native"
 import FazerPedido from "./FazerPedido/FazerPedido.js"
+import { TouchableWithoutFeedback } from "react-native"
 
 const produtosArray = [
+
     { 
         id: 1, 
-        imagem: require("./img/a-la-minuta-no-pao.jpeg"), 
-        precoVenda: '20,00', 
-        precoCusto: '0,80', 
-        descricao: 'Sumo de laranja natural', 
-        produto: 'A la minuta no pão' 
-    },
-
-    
-    { 
-        id: 2, 
         imagem: require("./img/salada-italiana.png"), 
-        precoVenda: '30,00',  
+        precoVenda: '29,00',  
         precoCusto: '30,00', 
-        descricao: 'Salada italiana', 
+        descricao: 'Alface crespa, alface roxa, Rúcula, Manjericão, Berinjela em compota (caponata), Mussarela de búfala, Tomate grape, Pepperoni fatiado', 
         produto: 'Salada italiana'
     },
     
-    { 
-        id: 3, 
-        imagem: require("./img/salada-japonesa.png"), 
-        precoVenda: '18,00',  
-        precoCusto: '18,00', 
-        descricao: 'Pão com queijo e fiambre na chapa', 
-        produto: 'Salada japonesa' 
-    },
     
     { 
-        id: 4, 
+        id: 2, 
         imagem: require("./img/salada.png"), 
-        precoVenda: '17,00',  
+        precoVenda: '31,00',  
         precoCusto: '17,00', 
-        descricao: 'Salada', 
+        descricao: 'Alface americana, alface crespa, couve, carne seca, queijo minas, cebolinha, tomate e alho crocante',
         produto: 'Salada Mineira'
     },
 
     { 
-        id: 5, 
+        id: 3, 
         imagem: require("./img/salada2.jpeg"), 
-        precoVenda: '15,00', 
+        precoVenda: '28,00', 
         precoCusto: '15,00', 
-        descricao: 'Sumo de laranja natural', 
+        descricao: 'Alface crespa, americana, Cenoura ralada crua, Camarão cozido, Cream cheese, Kani, Gergelim salpicado, Cebolinha picada.', 
         produto: 'Salada Vegana' 
-    }
+    },
 
+    { 
+        id: 4, 
+        imagem: require("./img/bife-a-cavalo.png"), 
+        precoVenda: '36,90',
+        precoCusto: '15,00', 
+        descricao: 'Arroz, feijão, bife de gado, ovo, e batata frita.', 
+        produto: 'Bife a cavalo' 
+    },
+
+    { 
+        id: 5, 
+        imagem: require("./img/frango-grelhado.png"), 
+        precoVenda: '35,90', 
+        precoCusto: '15,00', 
+        descricao: 'Arroz, feijão, frango grelhado e batata frita.',
+        produto: 'Frango grelhado' 
+    },
+
+    { 
+        id: 6, 
+        imagem: require("./img/parmegiana-carne.png"), 
+        precoVenda: '38,90', 
+        precoCusto: '15,00', 
+        descricao: 'Arroz, bife de gado, queijo, molho e batata frita.', 
+        produto: 'Parmegiana de carne' 
+    },
 ]
+
+function formatarFloat(numero) {
+    return numero.toFixed(2).replace('.', ',')
+}
+
 
 export default function Produtos() {
     const [modalVisibilidade, setModalVisibilidade] = useState(false)
     const [produtoSelecionado, setProdutoSelecionado] = useState(null)
     
     const renderItem = ({ item }) => {
+
         return (
             <View 
                 key={item.id} 
@@ -64,18 +80,36 @@ export default function Produtos() {
                 <TouchableHighlight 
                     style={estilosProdutos.btnConteiner}
                     onPress={() => {
-                        setProdutoSelecionado(item)
+                        const precoOriginal = parseFloat(item.precoVenda.replace(',', '.'));
+                        const precoDescontado = formatarFloat(precoOriginal * 0.8);
+
+                        setProdutoSelecionado({
+                            ...item,
+                            precoDescontado: precoDescontado
+                        })
                         setModalVisibilidade(true)
                     }}
                 >
                     <View>
-                        <Image 
-                            source={item.imagem} 
-                            style={estilosProdutos.ImagemProduto}
-                        />
+                        <View>
+                            <TouchableWithoutFeedback
+                                onPress={() => {alert(item.descricao)}}
+                            >
+                                <Image
+                                    source={require('./img/info.png')}
+                                />
+                            </TouchableWithoutFeedback>
+                            <Image 
+                                source={item.imagem} 
+                                style={estilosProdutos.ImagemProduto}
+                            />
+                        </View>
 
                         <Text style={estilosProdutos.txtNomeProduto}>{item.produto}</Text>
                         <Text style={estilosProdutos.txtPrecoProduto}>R$ {item.precoVenda}</Text>
+                        <Text style={estilosProdutos.txtPrecoProdutoDescontado}>
+                            R$ {formatarFloat(parseFloat(item.precoVenda.replace(',', '.')) * 0.8)}
+                        </Text>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -106,8 +140,6 @@ const estilosProdutos = StyleSheet.create({
     conteudoConteiner: {
         flex: 1,
         margin: 5,
-        //justifyContent: "center",
-        //alignItems: "center",
     },
 
     btnConteiner:{
@@ -133,9 +165,16 @@ const estilosProdutos = StyleSheet.create({
     },
     
     txtPrecoProduto: {
+        color: "gray",
+        textDecorationLine: 'line-through',
+        fontWeight: 350,
+        fontSize: 13
+    },
+
+    txtPrecoProdutoDescontado: {
         color: "black",
         fontWeight: 500,
-        fontSize: 14
+        fontSize: 15
     },
 
     produtosTabela: {

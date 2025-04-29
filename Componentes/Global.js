@@ -54,6 +54,23 @@ export async function buscarValorFirestore(nomeColecao, campo, valor) {
     }
 }
 
+export async function buscarDocumentoFirestore(nomeColecao,) {
+    try {
+        const linha = await getDocs(
+            collection(bd, nomeColecao),
+        )
+
+        if (!linha.empty) {
+            const dados = linha.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+            return dados[0]
+        }
+
+    } catch (erro) {
+        console.error(`Erro ao buscar documento: ${erro}`)
+        Alert('Erro ao boscar documento')
+    }
+}
+
 export const guardarLocal = (chave, valor) => {
     try {
         AsyncStorage.setItem(chave,valor)

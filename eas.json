@@ -1,21 +1,37 @@
 {
-    "build": {
-      "preview": {
-        "android": {
-          "buildType": "apk"
-        }
+  "build": {
+    "production": {
+      "env": {
+        "ANDROID_KOTLIN_VERSION": "1.9.24"
+      }
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
       },
-      "preview2": {
-        "android": {
-          "gradleCommand": ":app:assembleRelease"
-        }
+      "env": {
+        "ANDROID_KOTLIN_VERSION": "1.9.24"
+      }
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
       },
-      "preview3": {
-        "developmentClient": true
-      },
-      "preview4": {
-        "distribution": "internal"
-      },
-      "production": {}
+      "env": {
+        "ANDROID_KOTLIN_VERSION": "1.9.24"
+      }
+    },
+    "preview3": {
+      "developmentClient": true,
+      "env": {
+        "ANDROID_KOTLIN_VERSION": "1.9.24"
+      }
+    },
+    "preview4": {
+      "distribution": "internal",
+      "env": {
+        "ANDROID_KOTLIN_VERSION": "1.9.24"
+      }
     }
-}  
+  }
+}

@@ -6,6 +6,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { app, auth, bd } from "../../../firebase";
 import { createUserWithEmailAndPassword, sendEmailVerification, getAuth } from "firebase/auth";
 import { estilos } from "../../estilos";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ModalTermosUtilizacao(props) {
     const [isTermosAceitos, setIsTermosAceitos] = useState(false)
@@ -58,6 +59,7 @@ export default function ModalTermosUtilizacao(props) {
       }
 
     return(
+      <SafeAreaView>
         <Modal
             visible={props.modalTermosUtilizacao.visibilidade}
             onRequestClose={() => {props.setModalTermosUtilizacao(prevModalTermosUtilizacao => ({
@@ -87,11 +89,11 @@ export default function ModalTermosUtilizacao(props) {
                 if (isTermosAceitos){ 
                   if (props.modalTermosUtilizacao.tipoConta === 'utilizador') {
                     guardarRegisto(
-                        'Utilizadores',
-                        props.utilizador.nome,
-                        props.utilizador.dataNascimento,
-                        props.utilizador.email,
-                        props.utilizador.passe,
+                      'Utilizadores',
+                      props.utilizador.nome,
+                      props.utilizador.dataNascimento,
+                      props.utilizador.email,
+                      props.utilizador.passe,
                     )
                   } 
                   else {
@@ -104,17 +106,18 @@ export default function ModalTermosUtilizacao(props) {
                     )
                   }
                 }
-
+                
                 else {
                   alert(
-                      'Favor aceitar os termos!'
+                    'Favor aceitar os termos!'
                   )
                 }
               }}
-            >
+              >
               <Text>Registrar</Text>
             </TouchableHighlight>
 
         </Modal>
+      </SafeAreaView>
     )
 }

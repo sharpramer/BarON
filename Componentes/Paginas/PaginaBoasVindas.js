@@ -16,7 +16,6 @@ export default function PaginaBoasVindas({navigation}) {
     
     return(
         <SafeAreaView style={estilosPaginaBoasVindas.conteiner}>
-
             {/* Texto Título */}
             <Text style={estilosPaginaBoasVindas.txtTitulo}>BEM-VINDO</Text>
 
@@ -39,6 +38,10 @@ export default function PaginaBoasVindas({navigation}) {
                     <Text style={estilos.txtBtn}>Registrar</Text>
                 </TouchableHighlight>
             </View>
+
+            {/* Texto Versão fixado no rodapé */}
+            <Text style={estilosPaginaBoasVindas.txtVersao}>BETA v1.0.1</Text>
+
         </SafeAreaView>
     )
 }
@@ -46,32 +49,36 @@ export default function PaginaBoasVindas({navigation}) {
 const estilosPaginaBoasVindas = StyleSheet.create({
     conteiner:{
         flex: 1,
-        justifyContent: 'space-between' 
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     
-    imgLogo:{
-        marginTop: 35,
-        marginBottom: -300,
-        width: 150,
-        height: 150,
-        alignSelf: 'center'
-    },
-
     txtTitulo:{
-        alignSelf: 'center',
+        marginTop: 60,
         fontWeight: 'bold',
-        fontSize: 24
+        fontSize: 24,
+        textAlign: 'center',
     },
 
     conteinerBtn:{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 48,
-        marginHorizontal: 24,
+        marginBottom: 80,
+        width: '60%',
     },
 
     btn:{
-        width: 78,
+        width: 100,
         height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-})
+
+    txtVersao:{
+        position: 'absolute',
+        bottom: 16,
+        alignSelf: 'center',
+        color: 'gray',
+        fontSize: 12,
+    },
+});

@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { View, TouchableHighlight, Modal, Text, StyleSheet, FlatList } from "react-native";
 import { estilos } from "../../../estilos"
+import { estilosMenus } from "./estilos/estilosMenus"
 
 function TabelaRelatorioMensal({ dados }) {
     const renderizarItem = ({ item }) => (
@@ -39,6 +40,7 @@ export default function MenuRelatorioMensal() {
         <View>
             {/* Botão menu relatório mensal */}
             <TouchableHighlight
+                style={estilosMenus.tituloMenu}
                 onPress={() => {
                     setModalRelatorioMensalVisibilidade(true);
                 }}
