@@ -10,7 +10,12 @@ export default function Pedidos(props) {
   const [recarregar, setRecarregar] = useState(false)
 
   useEffect(() => {
-    obterPedido()
+    const intervalo = setInterval(() => {
+      obterPedido()
+    }, 1000) 
+
+    return () => clearInterval(intervalo)
+    
   }, [])
 
   const aoAtualizar = async () => {
@@ -158,6 +163,7 @@ export default function Pedidos(props) {
                             situacao: 'finalizado'
                           })
                           
+                          obterPedido()
                           alert('Finalizado com sucesso')
                         } catch (erro) {
                           console.error(`Erro ao finalizar pedido ${erro}`);

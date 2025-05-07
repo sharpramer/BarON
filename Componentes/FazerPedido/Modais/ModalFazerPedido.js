@@ -11,6 +11,7 @@ export default function ModalFazerPedido(props) {
     const [ quantidadePedido, setQuantidadePedido ] = useState(1)
     const [ observacoes, setObservacoes ] = useState('')
     const [ troco, setTroco ] = useState('Não é necessário troco')
+    const [ isProcessando, setIsProcessando ] = useState(true)
     
     useEffect(() => {
         if (props.produtoSelecionado) {
@@ -19,7 +20,15 @@ export default function ModalFazerPedido(props) {
             props.produtoSelecionado.precoDescontado = precoOriginal * 0.8
           }
         }
-      }, [props.produtoSelecionado])
+    }, [props.produtoSelecionado])
+
+    useEffect(() => {
+
+        isProcessando ? alert(
+            'Processando ...'
+        ) : undefined
+
+    }, [isProcessando])
       
     let subtotal
     
@@ -88,6 +97,9 @@ export default function ModalFazerPedido(props) {
 
     const guardarPedido = async (situacao) => {
         try {
+
+            setIsProcessando(true)
+
             const utilizadorAtual = auth.currentUser
             
             if (!utilizadorAtual) 
@@ -139,11 +151,13 @@ export default function ModalFazerPedido(props) {
                     cod_pedido: pedidoRef.id,
                 })
                 
-                situacao === 'reservado' ? alert(
-                    'Pedido reservado com sucesso!'
-                ) : alert(
-                    'Pedido guardado no carrinho com sucesso!'
-                )
+                situacao === 'reservado' ? 
+                    alert(
+                        'Pedido reservado com sucesso!'
+                    ) : 
+                    alert(
+                        'Pedido guardado no carrinho com sucesso!'
+                    )
             } else if (props.dataEntrega === '') {
                 Alert.alert('Aviso', 'Por favor insira a data de entrega!')
             }

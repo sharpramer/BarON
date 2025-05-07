@@ -10,53 +10,51 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ModalTermosUtilizacao(props) {
     const [isTermosAceitos, setIsTermosAceitos] = useState(false)
+    const [isProcessando, setIsProcessando] = useState(false)
 
+    useEffect(() => {
+
+      isProcessando ? alert(
+          'Processando ...'
+      ) : undefined
+      
+    }, [isProcessando])
+    
     const auth = getAuth();
     
-    const testarFirebase = async () => {
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, "teste@email.com", "senha123");
-        console.log("Usuário criado:", userCredential.user);
-      } catch (error) {
-        console.error("Erro ao criar usuário:", error.message);
-      }
-    };
-    
     const guardarRegisto = async (colecao, nome, dataNascimento, emailInserido, passeInserido) => {
-        try {
-          console.log("Dados recebidos para registro:");
-          console.log("Coleção:", colecao);
-          console.log("Nome:", nome);
-          console.log("Data de Nascimento:", dataNascimento);
-          console.log("Email:", emailInserido);
-          console.log("Senha:", passeInserido);
+      try {
 
-          const utilizadorCredencial = (await createUserWithEmailAndPassword(auth, emailInserido, passeInserido)).user
-    
-          await addDoc(collection(bd, colecao), {
-            codigo: utilizadorCredencial.uid,
-            nome: nome,
-            dataNascimento: dataNascimento,
-            email: emailInserido,
-          })
-    
-          if(utilizadorCredencial && !utilizadorCredencial.emailVerified){
-            await sendEmailVerification(utilizadorCredencial)
-            alert('Um email de verificação foi enviado para o seu email.')
-          }
-          alert('Registrado com sucesso!')
+        setIsProcessando(true)
+
+        const utilizadorCredencial = (await createUserWithEmailAndPassword(auth, emailInserido, passeInserido)).user
+  
+        await addDoc(collection(bd, colecao), {
+          codigo: utilizadorCredencial.uid,
+          nome: nome,
+          dataNascimento: dataNascimento,
+          email: emailInserido,
+        })
+  
+        if(utilizadorCredencial && !utilizadorCredencial.emailVerified){
+          await sendEmailVerification(utilizadorCredencial)
+          alert('Um email de verificação foi enviado para o seu email.')
         }
-        catch (erro) {
-          if (erro.code === 'auth/email-already-in-use') {
-            alert('O e-mail já está em uso. Por favor, tente outro.');
-          } else if (erro.code === 'auth/weak-password') {
-            alert('A senha é muito fraca. Escolha uma mais segura.');
-          } else {
-            alert('Erro ao registrar. Por favor, tente novamente.');
-          }
-          console.error(`Erro ao registrar: ${erro.message}`);
-        }
+        alert('Registrado com sucesso!')
+
+        setIsProcessando(false)
       }
+      catch (erro) {
+        if (erro.code === 'auth/email-already-in-use') {
+          alert('O e-mail já está em uso. Por favor, tente outro.');
+        } else if (erro.code === 'auth/weak-password') {
+          alert('A senha é muito fraca. Escolha uma mais segura.');
+        } else {
+          alert('Erro ao registrar. Por favor, tente novamente.');
+        }
+        console.error(`Erro ao registrar: ${erro.message}`);
+      }
+    }
 
     return(
       <SafeAreaView>
