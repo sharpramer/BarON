@@ -11,6 +11,15 @@ export const estilos = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    
+    conteinerCheckbox:{
+        flexDirection:"row",
+    },
+
+    chb:{
+        marginRight: 8,
+        marginLeft: 14
+    },
 
     txtCabecalhoTitulo: {
         fontSize: 10,
@@ -28,7 +37,7 @@ export const estilos = StyleSheet.create({
         alignSelf: "flex-end",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: '#e80e0e',
+        backgroundColor: 'red',
         borderRadius: 5,
     },
 

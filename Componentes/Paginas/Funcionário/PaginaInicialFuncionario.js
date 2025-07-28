@@ -1,10 +1,13 @@
-import React, {useState} from "react"
-import { StyleSheet, View, TouchableHighlight, TextInput, Text, Image} from "react-native";
+import React from "react"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import PaginaPedidos from "./PaginaPedidos"
 
-export default function PaginaInicialAluno({navigation}) {
-    return(
-      <View>
-        <Text>Ínicio Funcionário</Text>
-      </View>
-    )
+const Separador = createBottomTabNavigator()
+
+export default function PaginaInicialUtilizador() {
+  return (
+    <Separador.Navigator initialRouteName="Inicio" screenOptions={{ headerShown: false }}>
+      <Separador.Screen name="Pedidos" component={PaginaPedidos} options={{ title: 'Pedidos' }} />
+    </Separador.Navigator>
+  )
 }

@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { View, Text, TouchableHighlight, Modal, StyleSheet } from "react-native"
 import { estilos } from "../../../estilos"
+import { estilosMenus } from "./estilos/estilosMenus"
 import MenuEditar from "./MenuEditar"
 import MenuRelatorioMensal from "./MenuRelatorioMensal"
 import MenuEliminar from "./MenuEliminar"
@@ -12,6 +13,7 @@ export function MenuConta() {
     <View>
       {/* Botão menu definições conta */}
       <TouchableHighlight
+        style={estilosMenus.tituloMenu}
         onPress={() => {
           setModalContaVisibilidade(true)
         }}
@@ -26,7 +28,7 @@ export function MenuConta() {
       >
         {/* Botão fechar modal */}
         <TouchableHighlight
-          style={estilos.btnFecharModal}
+          style={estilos.btnFechar}
           onPress={() => {
             setModalContaVisibilidade(false)
           }}

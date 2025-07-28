@@ -1,85 +1,192 @@
-import { collection, getDocs, query, where } from "firebase/firestore"
-import React, { useState, useEffect } from "react"
-import { View, StyleSheet, Text, FlatList } from "react-native"
-import { bd } from "../firebase"
-import { SafeAreaView } from "react-native-safe-area-context"
+import React, { useState, useEffect } from 'react'
+import { View, Text, Image, TouchableOpacity, TouchableHighlight, FlatList, StyleSheet } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { addDoc, collection, deleteDoc, doc, getDocs, query, updateDoc, where } from "firebase/firestore" 
+import { auth, bd } from "../firebase"
 
 export default function Pedidos(props) {
   const [dadosPedido, setDadosPedido] = useState([])
+  const [opcoesPedidoVisibilidade, setOpcoesPedidoVisibilidade] = useState({})
+  const [recarregar, setRecarregar] = useState(false)
 
   useEffect(() => {
-    // Função para buscar os dados
-    const obterPedido = async () => {
-      try {
+    const intervalo = setInterval(() => {
+      obterPedido()
+    }, 1000) 
 
-        const pedidosRef = await getDocs(collection(bd, 'pedidos'))
+    return () => clearInterval(intervalo)
+    
+  }, [])
 
-        const dadosPedidos = await Promise.all(
-          pedidosRef.docs.map(async (doc) => {
-            const dadosPedido = {
-              id: doc.id,
-              dataEntrega: doc.data().data_entrega,
-              horaEntrega: doc.data().hora_entrega,
-            }
+  const aoAtualizar = async () => {
+    setRecarregar(true)
+    await obterPedido()
+    setRecarregar(false)
+  }
+  
+  const obterPedido = async () => {
+    try {
+      const utilizadorAtual = auth.currentUser
+      const pedidosRef = await getDocs(collection(bd, 'Pedidos'))
 
-            // Filtrar itens_pedido onde situacao é igual a 'reservado'
+      const dadosPedidos = await Promise.all(
+        pedidosRef.docs.map(async (doc) => {
+          const dadosPedido = {
+            id: doc.id,
+            dataEntrega: doc.data().data_entrega,
+            horaEntrega: doc.data().hora_entrega,
+            nomeUtilizador: doc.data().nome_utilizador
+          }
+
+          if (props.tipoConta === 'utilizador') {
             const itensPedidosLinha = query(
               collection(doc.ref, 'itens_pedido'),
-              where('situacao', '==', props.situacao)
+              where('situacao', '==', props.situacao),
+              where('codigo_utilizador', '==', utilizadorAtual.uid)
             )
+            
             const itensPedidosRef = await getDocs(itensPedidosLinha)
 
-            // Mapeia apenas os itens que atendem ao filtro
             const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
               id: itemDoc.id,
               nomeCurto: itemDoc.data().nome_curto,
               subtotal: itemDoc.data().subtotal,
               quantidade: itemDoc.data().quantidade,
               precoVenda: itemDoc.data().preco_venda,
+              troco: itemDoc.data().troco,
+              localEntrega: itemDoc.data().localEntrega,
+              telefone: itemDoc.data().telefone
             }))
 
-            // Apenas adiciona o pedido se houver itens com situacao 'reservado'
             if (dadosItensPedios.length > 0) {
               return { ...dadosPedido, itensPedido: dadosItensPedios }
             }
-            return null // Ignora pedidos sem itens reservados
-          })
-        )
+            return null
+          } else {
+            const itensPedidosLinha = query(
+              collection(doc.ref, 'itens_pedido'),
+              where('situacao', '==', props.situacao)
+            )
+            const itensPedidosRef = await getDocs(itensPedidosLinha)
 
-        // Filtra qualquer entrada nula (onde não havia itens 'reservado')
-        setDadosPedido(dadosPedidos.filter(pedido => pedido !== null))
-      } catch (erro) {
-        console.error('Erro ao obter documento: ', erro)
-      }
+            const dadosItensPedios = itensPedidosRef.docs.map(itemDoc => ({
+              id: itemDoc.id,
+              nomeCurto: itemDoc.data().nome_curto,
+              subtotal: itemDoc.data().subtotal,
+              quantidade: itemDoc.data().quantidade,
+              precoVenda: itemDoc.data().preco_venda,
+              troco: itemDoc.data().troco,
+              localEntrega: itemDoc.data().localEntrega,
+              telefone: itemDoc.data().telefone
+            }))
+
+            if (dadosItensPedios.length > 0) {
+              return { ...dadosPedido, itensPedido: dadosItensPedios }
+            }
+            return null
+          }
+        })
+      )
+
+      setDadosPedido(dadosPedidos.filter(pedido => pedido !== null))
+    } catch (erro) {
+      console.error('Erro ao obter documento: ', erro)
     }
+  }
 
-    obterPedido()
-  }, [])
+
+  const alternarVisibilidadeOpcaoPedido = produtoId => {
+    setOpcoesPedidoVisibilidade(prevState => ({
+      ...prevState,
+      [produtoId]: !prevState[produtoId]
+    }))
+  }
+
+  const eliminarPedido = async pedidoId => {
+    try {
+      const itensSnapshot = await getDocs(collection(bd, `Pedidos/${pedidoId}/itens_pedido`))
+      const promises = itensSnapshot.docs.map(doc => deleteDoc(doc.ref))
+      await Promise.all(promises)
+
+      await deleteDoc(doc(bd, 'Pedidos', pedidoId))
+      console.log('Eliminado com sucesso!')
+      alert('Eliminado com sucesso!')
+    } catch (erro) {
+      console.error("Erro ao eliminar pedido com itens: ", erro)
+    }
+  }
 
   return(
     <SafeAreaView>
-      <View style={estilos.linha}>
-        <Text style={estilos.linhaTexto}>Produto</Text>
-        <Text style={estilos.linhaTexto}>Data</Text>
-        <Text style={estilos.linhaTexto}>Hora</Text>
-        <Text style={estilos.linhaTexto}>Quantidade</Text>
-        <Text style={estilos.linhaTexto}>Valor</Text>
-        <Text style={estilos.linhaTexto}>Subtotal</Text>
-      </View>
-      
-      {/* Linha tabela */}
       <FlatList
         data={dadosPedido}
+        refreshing={recarregar}
+        onRefresh={aoAtualizar}
         renderItem={({ item }) => (
-          <View>
-            {item.itensPedido.map((produto) => (
-              <View style={estilos.linha} key={produto.id}>
-                <Text style={estilos.linhaTexto}>{produto.nomeCurto}</Text>
-                <Text style={estilos.linhaTexto}>{item.dataEntrega}</Text>
-                <Text style={estilos.linhaTexto}>{item.horaEntrega}</Text>
-                <Text style={estilos.linhaTexto}>{produto.quantidade}</Text>
-                <Text style={estilos.linhaTexto}>{produto.precoVenda}</Text>
-                <Text style={estilos.linhaTexto}>{produto.subtotal}</Text>
+          <View style={estilos.conteinerPedido}>
+            {item.itensPedido.map((itens_pedido) => (
+              <View key={itens_pedido.id}>
+                <TouchableOpacity 
+                  style={estilos.conteinerConteudo}
+                  onPress={() => alternarVisibilidadeOpcaoPedido(itens_pedido.id)}
+                >
+
+                  <View style={estilos.infoConteiner}>
+                    <Text style={estilos.nomeProduto}>{itens_pedido.nomeCurto}</Text>
+                    
+                    <Text style={estilos.nomeUtilizador}>Nome: {item.nomeUtilizador}</Text>
+                    
+                    <Text style={estilos.detalhes}>
+                      Entrega: {item.dataEntrega} às {item.horaEntrega}
+                    </Text>
+                    <Text style={estilos.detalhes}>
+                      No local: {itens_pedido.localEntrega}
+                    </Text>
+                    
+                    <Text style={estilos.detalhes}>Quantidade: {itens_pedido.quantidade}</Text>
+                    <Text style={estilos.detalhes}>Total: R$ {itens_pedido.subtotal}</Text>
+                    <Text style={estilos.detalhes}>Troco: {itens_pedido.troco}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                { opcoesPedidoVisibilidade[itens_pedido.id] && ( 
+                  <View style={estilos.opcoesConteiner}>
+                    { props.tipoConta === 'funcionario' ? 
+                    /* Botão finalizar pedido */
+                    <TouchableHighlight
+                      style={estilos.botaoFinalizar}
+                      onPress={async() => {
+                        try {
+                          const docRef = doc(bd, 'Pedidos', item.id, 'itens_pedido', itens_pedido.id)
+                          
+                          await updateDoc(docRef, {
+                            situacao: 'finalizado'
+                          })
+                          
+                          obterPedido()
+                          alert('Finalizado com sucesso')
+                        } catch (erro) {
+                          console.error(`Erro ao finalizar pedido ${erro}`);
+                        }
+                      }}
+                    >
+                      <Text style={estilos.textoBotaoFinalizar}>Finalizar</Text>  
+                    </TouchableHighlight>
+                      : undefined
+                    }
+
+                    {/* Botão eliminar pedido */}
+                    <TouchableHighlight
+                      style={estilos.botaoEliminar}
+                      onPress={() => {
+                        eliminarPedido(item.id)
+                      }}
+                    >
+                      <Text style={estilos.textoBotaoEliminar}>Eliminar</Text>
+                    </TouchableHighlight>
+
+                  </View>
+                )}
               </View>
             ))}
           </View>
@@ -91,16 +198,77 @@ export default function Pedidos(props) {
 }
 
 const estilos = StyleSheet.create({
-  linha:{
-    flexDirection: 'row',
+  conteinerPedido:{
+    flex: 1,
+    margin: 8,
+    flexDirection: 'column'
   },
 
-  linhaTexto:{
+  conteinerConteudo:{
+    flexDirection: 'row',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#f9f9f9',
+  },
+
+  imagemProduto: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+
+  infoConteiner:{
     flex: 1,
-    borderWidth: 1,
-    borderColor: '#000',
-    padding: 5,
-    textAlign: 'center',
-    textAlignVertical: 'center'
-  }
+    justifyContent: 'space-between',
+  },
+
+  nomeProduto:{
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
+
+  nomeProduto:{
+    fontSize: 14,
+    fontWeight: 'black',
+    marginBottom: 3,
+  },
+
+  detalhes:{
+    fontSize: 14,
+    color: '#636262',
+  },
+
+  opcoesConteiner:{
+    marginTop: 10,
+    alignItems: "center",
+    width: 'auto'
+  },
+
+  botaoEliminar:{
+    backgroundColor: '#ff4d4d',
+    paddingVertical: 10,
+    paddingHorizontal: 150,
+    borderRadius: 8,
+  },
+
+  textoBotaoEliminar:{
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+
+  botaoFinalizar:{
+    backgroundColor: 'lightgreen',
+    paddingVertical: 10,
+    paddingHorizontal: 150,
+    borderRadius: 8,
+    marginBottom: 10
+  },
+
+  textoBotaoFinalizar:{
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
 })

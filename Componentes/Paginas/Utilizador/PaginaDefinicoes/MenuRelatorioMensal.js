@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { View, TouchableHighlight, Modal, Text, StyleSheet, FlatList } from "react-native";
 import { estilos } from "../../../estilos"
+import { estilosMenus } from "./estilos/estilosMenus"
 
 function TabelaRelatorioMensal({ dados }) {
     const renderizarItem = ({ item }) => (
@@ -39,6 +40,7 @@ export default function MenuRelatorioMensal() {
         <View>
             {/* Botão menu relatório mensal */}
             <TouchableHighlight
+                style={estilosMenus.tituloMenu}
                 onPress={() => {
                     setModalRelatorioMensalVisibilidade(true);
                 }}
@@ -53,7 +55,7 @@ export default function MenuRelatorioMensal() {
             >
                 {/* Botão fechar modal menu relatório mensal */}
                 <TouchableHighlight
-                    style={estilos.btnFecharModal}
+                    style={estilos.btnFechar}
                     onPress={() => {
                         setModalRelatorioMensalVisibilidade(false);
                     }}
@@ -71,12 +73,14 @@ export default function MenuRelatorioMensal() {
 const estilosRelatorioMensal = StyleSheet.create({
     linha:{
         flexDirection: 'row',
-    },
-  
-    linhaTexto:{
-      flexDirection: 'row',
-      borderWidth: 1,
-      borderColor: '#000',
-      padding: 5,
-    }
+      },
+    
+      linhaTexto:{
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#000',
+        padding: 5,
+        textAlign: 'center',
+        textAlignVertical: 'center'
+      }
 })

@@ -1,8 +1,7 @@
-import React, { Component, useState } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { auth, bd } from "../../firebase";
-import { View, TextInput, TouchableHighlight, StyleSheet, Text } from "react-native";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import React, { useState } from "react";
+import { View, TextInput, TouchableHighlight, StyleSheet, Text, TouchableOpacity, Modal } from "react-native";
+import ModalTermosUtilizacao from "../Termos/TermosUtilizacao/ModalTermosUtilizacao";
+import ModalPoliticaPrivacidade from "../Termos/PoliticaPrivacidade/ModalPoliticaPrivacidade";
 import { estilos } from "../estilos";
 
 export default function PaginaRegistar() {
@@ -11,34 +10,26 @@ export default function PaginaRegistar() {
     nome: '',
     dataNascimento: '',
     email: '',
-    passe: ''
+    passe: '',
+    isTermosAceitos: false
   })
 
   const [funcionario, setFuncionario] = useState({
     nome: '',
     dataNascimento: '',
     email: '',
-    passe: ''
+    passe: '',
+    isTermosAceitos: false
   })
 
-  const guardarRegisto = async (colecao, nome, dataNascimento, numero, email, passe) => {
-    try {
-      const utilizadorCredencial = await createUserWithEmailAndPassword(auth, email, passe)
-      const utilizador = utilizadorCredencial.user
-      await addDoc(collection(bd, colecao), {
-        codigo: utilizador.uid,
-        nome: nome,
-        dataNascimento: dataNascimento,
-        numero: numero + 1,
-        email: email,
-      })
-      alert('Registado com sucesso!')
-    }
-    catch (erro) {
-      alert('Erro ao registar')
-      console.log(`Erro ao registar: ${erro}`)
-    }
-  }
+  const [modalTermosUtilizacao, setModalTermosUtilizacao] = useState({
+    tipoConta: undefined,
+    visibilidade: false
+  })
+  const [modalPoliticaPrivacidade, setModalPoliticaPrivacidade] = useState({
+    tipoConta: undefined,
+    visibilidade: false
+  })
   
   return (
     <View style={estilosPaginaRegistar.conteinerPaginaRegistar}> 
@@ -54,7 +45,7 @@ export default function PaginaRegistar() {
             setOpRegistar('Utilizador')
           }}
         >
-          <Text>Utilizador</Text>
+          <Text>Usuário</Text>
         </TouchableHighlight>
 
         {/* Botão opção de registar funcionário */}
@@ -94,8 +85,9 @@ export default function PaginaRegistar() {
             onChangeText={txtPasse => {
               setUtilizador({ ...utilizador, passe: txtPasse })
             }}
-            placeholder="Passe"
+            placeholder="Senha"
             placeholderTextColor={"black"}
+            secureTextEntry={true}
             value={utilizador.passe}
           />
 
@@ -125,13 +117,12 @@ export default function PaginaRegistar() {
             value={utilizador.dataNascimento}
           />
 
-
           <View style={estilos.separadorCx}></View>
 
           {/* Botão registar aluno */}
           <TouchableHighlight
-            style={estilos.btn}
-            onPress={() => {
+            style={[estilos.btn, {width: 80}]}
+            onPress={async () => {
               if (
                 utilizador.nome === '' ||
                 utilizador.dataNascimento === '' ||
@@ -140,18 +131,18 @@ export default function PaginaRegistar() {
               ) {
                 alert('Favor preencher todos os campos');
               } else {
-                guardarRegisto(
-                  'utilizador',
-                  utilizador.nome,
-                  utilizador.dataNascimento,
-                  utilizador.numero,
-                  utilizador.email,
-                  utilizador.passe
-                );
+                setModalPoliticaPrivacidade({
+                  tipoConta: 'utilizador',
+                  visibilidade: true
+                })
+                setModalTermosUtilizacao({
+                  tipoConta: 'utilizador',
+                  visibilidade: true
+                })
               }
             }}
           >
-            <Text>Registar</Text>
+            <Text style={estilos.txtBtn}>Registrar</Text>
           </TouchableHighlight>
         </View> :
 
@@ -175,8 +166,9 @@ export default function PaginaRegistar() {
             onChangeText={txtPasse => {
               setFuncionario({ ...funcionario, passe: txtPasse })
             }}
-            placeholder="Passe"
+            placeholder="Senha"
             placeholderTextColor={"black"}
+            secureTextEntry={true}
             value={funcionario.passe}
           />
 
@@ -208,21 +200,52 @@ export default function PaginaRegistar() {
 
           <View style={estilos.separadorCx}></View>
 
+
           {/* Botão registar funcionário */}
           <TouchableHighlight
-            style={estilos.btn}
+            style={[estilos.btn, {width: 80}]}
             onPress={ () => {
-              if (funcionario.nome === '' || funcionario.numero === '' || funcionario.dataNascimento === '' || funcionario.email === '' || funcionario.passe === '')
-                alert('Favor preencher todos os campos')
+              if (
+                funcionario.nome === '' || 
+                funcionario.dataNascimento === '' || 
+                funcionario.email === '' || 
+                funcionario.passe === ''
+              )
+              alert('Favor preencher todos os campos')
               else {
-                guardarRegisto('funcionario', funcionario.nome, funcionario.dataNascimento, funcionario.numero, funcionario.email, funcionario.passe)
+                setModalPoliticaPrivacidade({
+                  tipoConta: 'funcionario',
+                  visibilidade: true
+                })
+                setModalTermosUtilizacao({
+                  tipoConta: 'funcionario',
+                  visibilidade: true
+                })
               }
             }}
-          >
-            <Text>Registar</Text>
+            >
+            <Text style={estilos.txtBtn}>Registrar</Text>
           </TouchableHighlight>
         </View>
       }
+
+
+      {/* Modal Termos de Utilização */}
+      <ModalTermosUtilizacao
+        modalTermosUtilizacao={modalTermosUtilizacao}
+        setModalTermosUtilizacao={setModalTermosUtilizacao}
+        utilizador={utilizador}
+        setUtilizador={setUtilizador}
+        funcionario={funcionario}
+        setFuncionario={setFuncionario}
+      />
+
+      {/* Modal Politica Privacidade */}
+      <ModalPoliticaPrivacidade
+        modalPoliticaPrivacidade={modalPoliticaPrivacidade}
+        setModalPoliticaPrivacidade={setModalPoliticaPrivacidade}
+      />
+
     </View>
   )
 }

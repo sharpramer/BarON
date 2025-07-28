@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { auth, bd } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { auth, bd } from "../firebase"
+import { collection, addDoc, deleteDoc, doc, getDocs, query, where } from "firebase/firestore"
 import { estilos } from "./estilos"
 
 
@@ -21,19 +21,54 @@ export class Funcionario{
     static passe = ''
 }
 
-export function MudarAparenciaConteinerUtilizador() {
-    return Utilizador.aparencia === 'claro' ? estilos.conteinerModoClaro : estilos.conteinerModoEscuro 
-}
-
-export function MudarAparenciaTextoUtilizador() {
-    return Utilizador.aparencia === 'claro' ? estilos.modoClaro : estilos.modoEscuro 
-}
 
 export function adicionarBd(nomeColecao, dado) {
     const docRef = collection(bd, nomeColecao)
-    addDoc(docRef, {
-        dado
-    })
+    addDoc(docRef, dado)
+}
+
+export const eliminarFirestore = async (nomeColecao, dado) => {
+    try {
+        await deleteDoc(doc(bd, nomeColecao, dado))
+        alert('Eliminado com sucesso')      
+    } catch (erro) {
+        console.error('Erro ao eliminar documento')
+    }
+}
+
+export async function buscarValorFirestore(nomeColecao, campo, valor) {
+    try {
+        const linha = await getDocs(query(
+            collection(bd, nomeColecao),
+            where(campo, '==', valor)
+        ))
+
+        if (!linha.empty) {
+            const dados = linha.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+            return dados[0]
+        }
+
+    } catch (erro) {
+        console.error(`Erro ao buscar documento: ${erro}`)
+        Alert('Erro ao boscar documento')
+    }
+}
+
+export async function buscarDocumentoFirestore(nomeColecao,) {
+    try {
+        const linha = await getDocs(
+            collection(bd, nomeColecao),
+        )
+
+        if (!linha.empty) {
+            const dados = linha.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+            return dados[0]
+        }
+
+    } catch (erro) {
+        console.error(`Erro ao buscar documento: ${erro}`)
+        Alert('Erro ao boscar documento')
+    }
 }
 
 export const guardarLocal = (chave, valor) => {
@@ -76,18 +111,18 @@ export async function buscarTudoLocal(){
 
 export const fazerLogout = async(navegacao) => {
     try {
-      await auth.signOut();
+      await auth.signOut()
       await apagarLocal("Passe")
       
-      alert('Saiu com sucesso');
+      alert('Saiu com sucesso')
 
       // Reseta a navegação e redireciona para a tela de login
       navegacao.reset({
         index: 0, // Zera o histórico de navegação
         routes: [{ name: 'PaginaLogin' }], // Redireciona para a tela de login
-      });
+      })
     } catch (erro) {
-      console.error("Erro ao realizar logout:", erro.message);
-      alert(`Erro ao sair: ${erro.message}`);
+      console.error("Erro ao realizar logout:", erro.message)
+      alert(`Erro ao sair: ${erro.message}`)
     }
 }

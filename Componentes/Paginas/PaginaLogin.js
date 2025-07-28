@@ -2,9 +2,10 @@ import React, {useEffect, useState} from "react"
 import { StyleSheet, View, TouchableHighlight, TextInput, Text} from "react-native"
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Checkbox from 'expo-checkbox'
-import { auth } from "../../firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { guardarLocal, buscarLocal } from "../Global"
+import { auth, bd } from "../../firebase"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { guardarLocal, buscarLocal, buscarValorFirestore } from "../Global"
+import { collection, getDocs, query, where } from "firebase/firestore"
 
 export default function PaginaLogin({navigation}) {
   const [opLogin, setOpLogin] = useState("Utilizador")
@@ -18,7 +19,16 @@ export default function PaginaLogin({navigation}) {
     passe: '',
     guardarPasse: true,
   })
+  
   const [mostrarPasse, setMostrarPasse] = useState(false)
+
+  const emailsPermitidos = [
+    "enzoceleghini.work@gmail.com",
+    "athosfrota.saoleo@gmail.com",
+    "suelencruz.saoleo@gmail.com",
+    "rogerioceleghini@gmail.com",
+    "rogerioceleghini@outlook.com",
+  ]
 
   useEffect(() => {
     const carregarPasse = async () => {
@@ -27,6 +37,60 @@ export default function PaginaLogin({navigation}) {
     }
     carregarPasse()
   },[])
+
+  // Função para verificar se o email existe na coleção inserida
+
+  async function verificarEmail(colecao, email) {
+    try {
+      const linha = await getDocs(query(
+        collection(bd, colecao),
+        where('email', '==', email)
+      ))
+      if(!linha.empty){
+        console.log('Email encontrado no verificarEmail')
+        return true
+      }
+      else {
+        console.log('Email não encontrado')
+        return false
+      }
+    } catch (erro) {
+      console.error(`Erro ao encontrar email: ${erro}`)
+    }
+  }
+
+  async function fazerLogin(colecao, email, passe, guardarPasse, paginaInicial) {
+    if (email === '' || passe === '') {
+      alert('Favor preencher todos os campos')
+      return
+    }
+  
+    try {
+      // Fazer login no Firebase Auth
+      const credencial = await signInWithEmailAndPassword(auth, email, passe)
+  
+      if (credencial.user.emailVerified) {
+        if (guardarPasse) {
+          guardarLocal('Passe', passe)  // Memorizar passe
+        }
+  
+        // Verifica se o email existe na coleção
+        const emailExiste = await verificarEmail(colecao, email)
+  
+        if (emailExiste) {
+          console.log('Email verificado e login bem-sucedido')
+          navigation.navigate(paginaInicial)  // Navegar para a página inicial
+        } else {
+          alert('Conta não encontrada. Verifique seu email e tente novamente.')
+        }
+      } else {
+        alert('Por favor, verifique seu email antes de fazer login.')
+      }
+    } catch (erro) {
+      console.error('Erro ao fazer login:', erro)
+      alert('Erro ao fazer login. Verifique suas credenciais e tente novamente.')
+    }
+  }  
 
   return(
     <SafeAreaView style={estilos.conteiner}>
@@ -43,7 +107,7 @@ export default function PaginaLogin({navigation}) {
             setOpLogin("Utilizador")
           }}
         >
-          <Text>Utilizador</Text>
+          <Text>Usuário</Text>
         </TouchableHighlight>
 
         {/* Botão opção de login funcionário */}
@@ -61,13 +125,13 @@ export default function PaginaLogin({navigation}) {
       {/* Conteiner login utilizador */}
       { opLogin === 'Utilizador' ?
         <View style={estilos.loginConteiner}>
-          {/* Caixa de texto Codigo utilizador */}
+          {/* Caixa de texto email utilizador */}
           <TextInput
             style={estilos.cx}
             onChangeText={texto => {
               setUtilizador({...utilizador, email: texto})
             }}
-            placeholder="Código ou email"
+            placeholder="Email"
             placeholderTextColor={"white"}
             value={utilizador.email}
           />
@@ -80,7 +144,7 @@ export default function PaginaLogin({navigation}) {
             onChangeText={texto => {
               setUtilizador({...utilizador, passe: texto})
             }}
-            placeholder="Palavra-Passe"
+            placeholder="Senha"
             placeholderTextColor={"white"}
             secureTextEntry={!mostrarPasse} 
             value={utilizador.passe}
@@ -101,7 +165,7 @@ export default function PaginaLogin({navigation}) {
               }}
               color={utilizador.guardarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Memorizar passe</Text>
+            <Text style={{color: "white"}}>Memorizar senha</Text>
 
             <Checkbox // Checkbox mostrar passe
               style={estilos.chb}
@@ -111,31 +175,45 @@ export default function PaginaLogin({navigation}) {
               }}
               color={mostrarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Mostrar passe</Text>
+            <Text style={{color: "white"}}>Mostrar senha</Text>
           </View>
 
-          {/* Botão login utilizador */}
-          <TouchableHighlight
-            style={estilos.btnLogin}
-            onPress={async () => {
-              if (utilizador.email === '' || utilizador.passe === '') {
-                alert('Favor preencher todos os campos')
-              } else {
-                if (utilizador.guardarPasse) {
-                  guardarLocal('Passe', utilizador.passe)
+          <View style={estilos.conteinerBotoes}>
+            {/* Botão login funcionário */}
+            <TouchableHighlight
+              style={[estilos.btnLogin, {marginHorizontal: 20}]}
+              onPress={async () => {
+                if (!emailsPermitidos.includes(funcionario.email.toLocaleLowerCase())) {
+                  alert("Você não tem permissão para fazer login como funcionário. Tente novamente mais tarde")
+                } else {
+                  await fazerLogin(
+                    'Funcionarios', 
+                    funcionario.email,
+                    funcionario.passe,
+                    funcionario.guardarPasse,
+                    'PaginaInicialFuncionario'
+                  )
                 }
-                try {
-                  await signInWithEmailAndPassword(auth, utilizador.email, utilizador.passe)
-                  navigation.navigate('PaginaInicialUtilizador')
-                } catch (erro) {
-                  alert('Erro ao fazer login, verifique o email e palavra-passe e tente novamente!')
-                  console.log(erro)
-                }
-              }
-            }}
-          >
-            <Text style={estilos.txtBtnLogin}>Login</Text>
-          </TouchableHighlight>
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Login</Text>
+            </TouchableHighlight>
+            {/* Botão login utilizador */}
+            <TouchableHighlight
+              style={estilos.btnLogin}
+              onPress={async () => {
+                await fazerLogin(
+                  'Utilizadores', 
+                  utilizador.email,
+                  utilizador.passe,
+                  utilizador.guardarPasse,
+                  'PaginaInicialUtilizador'
+                )
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Login</Text>
+            </TouchableHighlight>
+          </View> :
         </View> :
 
         <View style={estilos.loginConteiner}>
@@ -143,7 +221,7 @@ export default function PaginaLogin({navigation}) {
           <TextInput
             style={estilos.cx}
             onChangeText={(texto) => {setFuncionario({...funcionario, email: texto})}}
-            placeholder="Código ou email"
+            placeholder="Email"
             placeholderTextColor={"white"}
             value={funcionario.email}
           />
@@ -154,7 +232,7 @@ export default function PaginaLogin({navigation}) {
           <TextInput
             style={estilos.cx}
             onChangeText={(texto) => {setFuncionario({...funcionario, passe: texto})}}
-            placeholder="Palavra-Passe"
+            placeholder="Senha"
             placeholderTextColor={"white"}
             secureTextEntry={!mostrarPasse}
             value={funcionario.passe}
@@ -168,14 +246,14 @@ export default function PaginaLogin({navigation}) {
               style={estilos.chb}
               value={funcionario.guardarPasse}
               onValueChange={() => {
-                setUtilizador(prevFuncionario => ({
+                setFuncionario(prevFuncionario => ({
                   ...prevFuncionario,
                   guardarPasse: !prevFuncionario.guardarPasse
                 }))
               }}
               color={funcionario.guardarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Memorizar passe</Text>
+            <Text style={{color: "white"}}>Memorizar senha</Text>
 
             <Checkbox
               style={estilos.chb}
@@ -183,31 +261,41 @@ export default function PaginaLogin({navigation}) {
               onValueChange={() => setMostrarPasse(prevMostrarPasse => !prevMostrarPasse)}
               color={mostrarPasse ? "black" : undefined}
             />
-            <Text style={{color: "white"}}>Mostrar passe</Text>
+            <Text style={{color: "white"}}>Mostrar senha</Text>
           </View>
 
-          {/* Botão login funcionário */}
-          <TouchableHighlight
-            style={estilos.btnLogin}
-            onPress={async () => {
-              if (funcionario.email === '' || funcionario.passe === '') {
-                alert('Favor preencher todos os campos')
-              } else {
-                if (funcionario.guardarPasse) {
-                  guardarLocal('Passe', funcionario.passe)
+          <View style={estilos.conteinerBotoes}>
+            {/* Botão login funcionário */}
+            <TouchableHighlight
+              style={[estilos.btnLogin, {marginHorizontal: 20}]}
+              onPress={async () => {
+                if (!emailsPermitidos.includes(funcionario.email.toLocaleLowerCase())) {
+                  alert("Você não tem permissão para fazer login como funcionário. Tente novamente mais tarde")
+                } else {
+                  await fazerLogin(
+                    'Funcionarios', 
+                    funcionario.email,
+                    funcionario.passe,
+                    funcionario.guardarPasse,
+                    'PaginaInicialFuncionario'
+                  )
                 }
-                try {
-                  await signInWithEmailAndPassword(auth, funcionario.email, funcionario.passe)
-                  navigation.navigate('PaginaInicialFuncionario')
-                } catch (erro) {
-                  alert('Erro ao fazer login, verifique o email e palavra-passe e tente novamente!')
-                  console.log(erro)
-                }
-              }
-            }}
-          >
-            <Text style={estilos.txtBtnLogin}>Login</Text>
-          </TouchableHighlight>
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Login</Text>
+            </TouchableHighlight>
+    
+            <TouchableHighlight
+              style={[estilos.btnLogin, {marginHorizontal: 20}]}
+              onPress={() => {
+                alert('Caso necessite de algum suporte, contacte-nos pelo email: divinobarrasul@gmail.com')
+              }}
+            >
+              <Text style={estilos.txtBtnLogin}>Ajuda</Text>
+            </TouchableHighlight>
+  
+          </View>
+
         </View>
       }
     </SafeAreaView>
@@ -274,5 +362,10 @@ const estilos = StyleSheet.create({
   txtBtnLogin:{
     textAlign: "center",
   },
+
+  conteinerBotoes:{
+    flexDirection: 'row', 
+    alignItems: 'center'
+  }
 
 })  

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableHighlight, Modal } from "react-native"
 import Utilizador, { MudarAparenciaConteinerUtilizador, MudarAparenciaTextoUtilizador } from "../../../Global";
+import { estilos } from "../../../estilos";
 
 export function MenuAparencia() {
   const [modalAparenciaVisibilidade, setModalAparenciaVisibilidade] = useState(false)
@@ -30,6 +31,7 @@ export function MenuAparencia() {
         <View style={ MudarAparenciaConteinerUtilizador() }>
           {/* Botão fechar modal */}
           <TouchableHighlight
+            style={estilos.btnFechar}
             onPress={() => {
               setModalAparenciaVisibilidade(false)
             }}
