@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Checkbox from 'expo-checkbox'
 import { auth, bd } from "../../firebase"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { guardarLocal, buscarLocal, buscarValorFirestore } from "../Global"
+import { guardarLocal, buscarLocal } from "../Global"
 import { collection, getDocs, query, where } from "firebase/firestore"
 
 export default function PaginaLogin({navigation}) {

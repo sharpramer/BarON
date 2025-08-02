@@ -29,6 +29,5 @@ try {
   console.log(`Deu erro: ${error}`)
 }
 
-export const utilizadorAtual = auth.currentUser
 
 export let auth
